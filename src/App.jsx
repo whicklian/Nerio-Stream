@@ -15,6 +15,7 @@ import Profile from './Pages/Profile';
 import Downloads from './Pages/Downloads';
 import Subscriptions from './Pages/Subscriptions';
 import SearchResults from './Pages/SearchResults';
+import Auth from './Pages/Auth';
 import { Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -38,6 +39,8 @@ function App() {
               <Route path='/tv/:id'         element={<TVDetail />} />
               <Route path='/live'           element={<LiveTV />} />
               <Route path='/profile'        element={<Profile />} />
+              <Route path='/auth'           element={<Auth />} />
+              <Route path='/login'          element={<Auth />} />
               <Route path='/downloads'      element={<Downloads />} />
               <Route path='/subscriptions'  element={<Subscriptions />} />
               <Route path='/search'         element={<SearchResults />} />
