@@ -1,10 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../Contexts/AuthContext";
+import AuthModal from "./AuthModal";
 
 function TopNavbar({ toggleSidebar }) {
   const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
+  const { currentUser } = useAuth();
 
   const handleSearchSubmit = (event) => {
     event.preventDefault();
@@ -39,11 +44,12 @@ function TopNavbar({ toggleSidebar }) {
             </Link>
           </div>
 
-          <div className="flex items-center justify-end pr-1 relative">
+          <div className="flex items-center justify-end gap-2 pr-1 relative">
+            {/* Search Button */}
             <button 
               type="button" 
               aria-label="Search"
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-700/60 bg-slate-900/50 text-slate-300 hover:text-white transition-all shrink-0 hover:bg-slate-800/80"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-700/60 bg-slate-900/50 text-slate-300 hover:text-white transition-all shrink-0 hover:bg-slate-800/80 cursor-pointer"
               title="Search"
               onClick={() => setIsSearchOpen((open) => !open)}
             >
@@ -52,6 +58,37 @@ function TopNavbar({ toggleSidebar }) {
               </svg>
             </button>
 
+            {/* Auth / Profile Button */}
+            {currentUser ? (
+              <Link
+                to="/profile"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700/60 bg-slate-900/50 hover:bg-slate-800/80 text-xs text-slate-200 transition-all cursor-pointer"
+                title="View Profile"
+              >
+                {currentUser.photoURL ? (
+                  <img src={currentUser.photoURL} alt="Avatar" className="w-5 h-5 rounded-full object-cover" />
+                ) : (
+                  <div className="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">
+                    {(currentUser.displayName || currentUser.email || "U")[0].toUpperCase()}
+                  </div>
+                )}
+                <span className="hidden sm:inline font-medium max-w-[100px] truncate">
+                  {currentUser.displayName || currentUser.email?.split("@")[0]}
+                </span>
+              </Link>
+            ) : (
+              <button
+                onClick={() => setIsAuthModalOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-xs font-semibold text-white shadow-md transition-all cursor-pointer"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                </svg>
+                <span>Sign In</span>
+              </button>
+            )}
+
+            {/* Search Dropdown Modal */}
             {isSearchOpen && (
               <div className="absolute right-0 top-full mt-2 z-50 w-[340px] rounded-xl border border-slate-800 bg-[#12172a]/95 p-4 shadow-2xl backdrop-blur-md">
                 <form onSubmit={handleSearchSubmit} className="flex items-center justify-between gap-2">
@@ -102,6 +139,9 @@ function TopNavbar({ toggleSidebar }) {
           </div>
         </div>
       </header>
+
+      {/* Auth Modal */}
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </>
   );
 }

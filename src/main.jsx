@@ -12,6 +12,7 @@ import { createRoot } from 'react-dom/client'
 import './css/index.css'
 import App from './App.jsx'
 import { MovieProvider } from './Contexts/MovieContexts'
+import { AuthProvider } from './Contexts/AuthContext'
 
 // Capacitor StatusBar plugin: set status bar color on native only
 // This import is safe on the web because we dynamically load the plugin only when running on Capacitor/native.
@@ -40,9 +41,11 @@ configureStatusBar();
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <MovieProvider>
-        <App />
-      </MovieProvider>
+      <AuthProvider>
+        <MovieProvider>
+          <App />
+        </MovieProvider>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>
 );
