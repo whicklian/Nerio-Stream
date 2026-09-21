@@ -1,16 +1,68 @@
-# React + Vite
+# 🎬 Nerio Stream
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, high-performance Movie, TV Shows & Live Sports streaming platform with native video playback.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📁 Project Architecture
 
-## React Compiler
+```
+Nerio-Stream/
+├── frontend/             # React 19 + Vite client application
+│   ├── src/              # Components, Pages, Contexts, Hooks, CSS
+│   ├── public/           # Static web assets & icons
+│   ├── .env              # Frontend environment variables (TMDB, Firebase, Backend URL)
+│   ├── .env.example      # Frontend env template
+│   ├── vite.config.js    # Vite bundling config
+│   └── package.json      # Frontend dependencies
+│
+├── backend/              # Node.js + Express video streaming engine
+│   ├── controllers/      # Video streaming and proxy logic
+│   ├── routes/           # Stream endpoints (/api/stream/video, /sources, /proxy)
+│   ├── services/         # HTTP Range 206 streaming and HLS proxying
+│   ├── .env              # Backend environment variables
+│   ├── .env.example      # Backend env template
+│   ├── server.js         # Express server entry point
+│   └── package.json      # Backend dependencies
+│
+├── package.json          # Root workspace scripts (concurrent runner)
+└── README.md
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🚀 Quick Start
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 1. Install Dependencies
+Run from root:
+```bash
+npm run install:all
+```
+Or install in each directory:
+```bash
+cd backend && npm install
+cd ../frontend && npm install
+```
+
+### 2. Configure Environment Variables
+Copy and check `.env` files:
+- In `frontend/`: ensure `.env` has your `VITE_TMDB_API_KEY`, `VITE_FIREBASE_*`, and `VITE_BACKEND_URL=http://localhost:5000`.
+- In `backend/`: ensure `.env` has `PORT=5000` and `FRONTEND_URL=http://localhost:5173`.
+
+### 3. Run Development Servers
+From the root directory, start both frontend and backend concurrently:
+```bash
+npm run dev
+```
+
+Or start individually:
+- **Frontend only**: `npm run dev:frontend` (starts at `http://localhost:5173`)
+- **Backend only**: `npm run dev:backend` (starts at `http://localhost:5000`)
+
+---
+
+## 🎥 Native Video Streaming Engine
+
+- **HTTP 206 Partial Content**: Full support for `Range: bytes=start-end` requests for instant seeking and minimal buffering.
+- **No Iframe Embeds**: Movie and TV streaming routes natively via HTML5 `<video>` and Hls.js with custom player controls.
+- **HLS Proxy**: Proxies HLS manifests and segment chunks with rewritten headers to bypass CORS and hotlink protection.

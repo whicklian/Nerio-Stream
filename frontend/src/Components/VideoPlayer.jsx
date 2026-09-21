@@ -3,38 +3,42 @@ import Hls from "hls.js";
 import "../css/VideoPlayer.css";
 import { getCustomStreamUrl, saveCustomStreamUrl } from "../utils";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 const DEMO_HLS_STREAM = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
 const DEMO_MP4_STREAM = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
 
 export function getMoviePlayerSrc(id) {
-    return `https://vidsrc.me/embed/movie?tmdb=${id}`;
+    return `${BACKEND_URL}/api/stream/video?id=${id}&type=movie`;
 }
 
 export function getTVPlayerSrc(id, season, episode) {
     const s = season || 1;
     const e = episode || 1;
-    return `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`;
+    return `${BACKEND_URL}/api/stream/video?id=${id}&season=${s}&episode=${e}&type=tv`;
 }
 
 export function getMovieAllSources(id) {
-    return [
-        `https://vidsrc.me/embed/movie?tmdb=${id}`,
-        `https://vidsrc.cc/v2/embed/movie/${id}`,
-        `https://embed.su/embed/movie/${id}`,
-        `https://2embed.org/embed/movie/${id}`,
-        DEMO_HLS_STREAM
+    const custom = getCustomStreamUrl(`movie-${id}`);
+    const list = [
+        `${BACKEND_URL}/api/stream/video?id=${id}&type=movie`,
+        `${BACKEND_URL}/api/stream/proxy?url=${encodeURIComponent(DEMO_HLS_STREAM)}`,
+        DEMO_HLS_STREAM,
+        DEMO_MP4_STREAM
     ];
+    return custom ? [custom, ...list] : list;
 }
 
 export function getTVAllSources(id, season, episode) {
     const s = season || 1;
     const e = episode || 1;
-    return [
-        `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
-        `https://vidsrc.cc/v2/embed/tv/${id}/${s}/${e}`,
-        `https://embed.su/embed/tv/${id}/${s}/${e}`,
-        DEMO_HLS_STREAM
+    const custom = getCustomStreamUrl(`tv-${id}`);
+    const list = [
+        `${BACKEND_URL}/api/stream/video?id=${id}&season=${s}&episode=${e}&type=tv`,
+        `${BACKEND_URL}/api/stream/proxy?url=${encodeURIComponent(DEMO_HLS_STREAM)}`,
+        DEMO_HLS_STREAM,
+        DEMO_MP4_STREAM
     ];
+    return custom ? [custom, ...list] : list;
 }
 
 function VideoPlayer({ src, allSources = [], title = "Video Player", overview, movie, show, similar = [], onSelectRecommendation, onClose, onNextEpisode }) {
@@ -47,7 +51,8 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
     const [srcIndex, setSrcIndex] = useState(0);
     const currentSrc = sources[srcIndex] || src;
 
-    const isIframeEmbed = currentSrc.includes("vidsrc") || currentSrc.includes("embed") || currentSrc.includes("youtube.com/embed");
+    // Only YouTube trailers if any fallback to iframe; all movie/show streaming is 100% native
+    const isIframeEmbed = Boolean(currentSrc && currentSrc.includes("youtube.com/embed"));
 
     // Player State
     const [isPlaying, setIsPlaying] = useState(false);

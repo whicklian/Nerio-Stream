@@ -3,8 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
     getTVDetails,
     getTVSeasonDetails,
-    getSimilarTV,
-    getTVEpisodeEmbedUrl
+    getSimilarTV
 } from "../Components/Apis";
 import { saveContinueWatching, getWatchedEpisodes, markEpisodeWatched } from "../utils";
 import TVCard from "../Components/TVCard";
