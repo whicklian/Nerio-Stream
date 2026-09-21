@@ -1,20 +1,26 @@
-import { streamMedia, proxyHlsStream } from "../services/videoStreamer.js";
+import { proxyHlsStream } from "../services/videoStreamer.js";
 
-const DEFAULT_STREAM_URL = process.env.DEFAULT_STREAM_URL || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
 const DEFAULT_HLS_STREAM = process.env.DEFAULT_HLS_STREAM || "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
 
 /**
- * Controller for video range streaming endpoint
+ * Controller for video streaming endpoint — redirects to the proxied HLS stream.
+ * The proxy rewrites all segment URLs so the browser never needs to contact the
+ * origin CDN directly (bypasses CORS / hotlink protection).
+ *
  * GET /api/stream/video?id=123&type=movie
+ * GET /api/stream/video?id=123&season=1&episode=1&type=tv
  */
 export async function streamVideo(req, res) {
     const { id, type = "movie", season = 1, episode = 1, src } = req.query;
 
-    // If a specific source URL is requested to stream
-    const targetSource = src || DEFAULT_STREAM_URL;
+    // If a caller passes an explicit src= URL, proxy that; otherwise use the default HLS demo stream.
+    const targetStream = src || DEFAULT_HLS_STREAM;
 
-    console.log(`[Stream] Serving ${type} stream for ID: ${id || "default"} (Season ${season}, Ep ${episode})`);
-    await streamMedia(req, res, targetSource);
+    console.log(`[Stream] ${type.toUpperCase()} id=${id || "demo"} S${season}E${episode} → proxying HLS`);
+
+    // Redirect to our own HLS proxy endpoint so the client loads the playlist through the backend
+    const proxyUrl = `/api/stream/proxy?url=${encodeURIComponent(targetStream)}`;
+    return res.redirect(302, proxyUrl);
 }
 
 /**
@@ -25,18 +31,14 @@ export async function getMovieSources(req, res) {
     const { id } = req.params;
     const host = req.protocol + "://" + req.get("host");
 
+    // Primary: proxied HLS (rewrites all segment URLs → no CORS issues)
+    // Secondary: direct HLS (works on most browsers natively)
     const sources = [
-        `${host}/api/stream/video?id=${id}&type=movie`,
         `${host}/api/stream/proxy?url=${encodeURIComponent(DEFAULT_HLS_STREAM)}`,
-        DEFAULT_HLS_STREAM,
-        DEFAULT_STREAM_URL
+        DEFAULT_HLS_STREAM
     ];
 
-    res.json({
-        id,
-        type: "movie",
-        sources
-    });
+    res.json({ id, type: "movie", sources });
 }
 
 /**
@@ -48,10 +50,8 @@ export async function getTVSources(req, res) {
     const host = req.protocol + "://" + req.get("host");
 
     const sources = [
-        `${host}/api/stream/video?id=${id}&season=${season}&episode=${episode}&type=tv`,
         `${host}/api/stream/proxy?url=${encodeURIComponent(DEFAULT_HLS_STREAM)}`,
-        DEFAULT_HLS_STREAM,
-        DEFAULT_STREAM_URL
+        DEFAULT_HLS_STREAM
     ];
 
     res.json({
