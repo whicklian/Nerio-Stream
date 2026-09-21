@@ -65,4 +65,19 @@ Or start individually:
 
 - **HTTP 206 Partial Content**: Full support for `Range: bytes=start-end` requests for instant seeking and minimal buffering.
 - **No Iframe Embeds**: Movie and TV streaming routes natively via HTML5 `<video>` and Hls.js with custom player controls.
-- **HLS Proxy**: Proxies HLS manifests and segment chunks with rewritten headers to bypass CORS and hotlink protection.
+- **Owned media only**: Movie and episode playback reads files from `backend/media`; playback URLs are never taken from third parties.
+
+### Add playable media
+
+Use the TMDB ID shown in the URL and place licensed files using this layout:
+
+```text
+backend/media/movies/<tmdb-id>.mp4
+backend/media/tv/<tmdb-id>/s01e01.mp4
+```
+
+For example, movie `550` uses `backend/media/movies/550.mp4`; TV show `1399`, season 1 episode 1 uses `backend/media/tv/1399/s01e01.mp4`.
+
+### Gemini search
+
+Put `GEMINI_API_KEY` in `backend/.env` based on `backend/.env.example`. The key stays server-side. Search uses Gemini to generate alternate title queries, then resolves those queries through TMDB.

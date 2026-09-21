@@ -6,6 +6,32 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const MEDIA_ROOT = path.resolve(__dirname, "..", "media");
+
+export function getMediaPath(type, id, season, episode) {
+    const safeId = String(id).replace(/[^a-zA-Z0-9_-]/g, "");
+    if (!safeId) return null;
+
+    if (type === "tv") {
+        const safeSeason = Number.parseInt(season, 10);
+        const safeEpisode = Number.parseInt(episode, 10);
+        if (!Number.isInteger(safeSeason) || !Number.isInteger(safeEpisode)) return null;
+        return path.join(MEDIA_ROOT, "tv", safeId, `s${String(safeSeason).padStart(2, "0")}e${String(safeEpisode).padStart(2, "0")}.mp4`);
+    }
+
+    return path.join(MEDIA_ROOT, "movies", `${safeId}.mp4`);
+}
+
+export function hasMedia(type, id, season, episode) {
+    const mediaPath = getMediaPath(type, id, season, episode);
+    return Boolean(mediaPath && fs.existsSync(mediaPath));
+}
+
+export function getMediaRelativePath(type, id, season, episode) {
+    const mediaPath = getMediaPath(type, id, season, episode);
+    return mediaPath ? path.relative(path.resolve(__dirname, ".."), mediaPath) : null;
+}
+
 /**
  * Handles HTTP 206 Range-based video streaming for local files and remote media.
  */

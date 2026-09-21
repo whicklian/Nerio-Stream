@@ -1,44 +1,36 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Hls from "hls.js";
 import "../css/VideoPlayer.css";
-import { getCustomStreamUrl, saveCustomStreamUrl } from "../utils";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-const DEMO_HLS_STREAM = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
-const DEMO_MP4_STREAM = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+
+/** Detect whether a URL is an HLS stream (including backend proxy URLs) */
+export function isHlsUrl(url) {
+    if (!url) return false;
+    return (
+        url.includes(".m3u8") ||
+        url.includes("mux.dev") ||
+        url.includes("/api/stream/proxy") ||
+        url.includes("/api/stream/video")  // backend now redirects to HLS proxy
+    );
+}
 
 export function getMoviePlayerSrc(id) {
-    return `${BACKEND_URL}/api/stream/video?id=${id}&type=movie`;
+    return `${BACKEND_URL}/api/stream/video?id=${encodeURIComponent(id)}&type=movie`;
 }
 
 export function getTVPlayerSrc(id, season, episode) {
-    const s = season || 1;
-    const e = episode || 1;
-    return `${BACKEND_URL}/api/stream/video?id=${id}&season=${s}&episode=${e}&type=tv`;
+    return `${BACKEND_URL}/api/stream/video?id=${encodeURIComponent(id)}&season=${season}&episode=${episode}&type=tv`;
 }
 
 export function getMovieAllSources(id) {
-    const custom = getCustomStreamUrl(`movie-${id}`);
-    const list = [
-        `${BACKEND_URL}/api/stream/video?id=${id}&type=movie`,
-        `${BACKEND_URL}/api/stream/proxy?url=${encodeURIComponent(DEMO_HLS_STREAM)}`,
-        DEMO_HLS_STREAM,
-        DEMO_MP4_STREAM
-    ];
-    return custom ? [custom, ...list] : list;
+    return [getMoviePlayerSrc(id)];
 }
 
 export function getTVAllSources(id, season, episode) {
     const s = season || 1;
     const e = episode || 1;
-    const custom = getCustomStreamUrl(`tv-${id}`);
-    const list = [
-        `${BACKEND_URL}/api/stream/video?id=${id}&season=${s}&episode=${e}&type=tv`,
-        `${BACKEND_URL}/api/stream/proxy?url=${encodeURIComponent(DEMO_HLS_STREAM)}`,
-        DEMO_HLS_STREAM,
-        DEMO_MP4_STREAM
-    ];
-    return custom ? [custom, ...list] : list;
+    return [getTVPlayerSrc(id, s, e)];
 }
 
 function VideoPlayer({ src, allSources = [], title = "Video Player", overview, movie, show, similar = [], onSelectRecommendation, onClose, onNextEpisode }) {
@@ -51,7 +43,10 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
     const [srcIndex, setSrcIndex] = useState(0);
     const currentSrc = sources[srcIndex] || src;
 
-    // Only YouTube trailers if any fallback to iframe; all movie/show streaming is 100% native
+    // Source-advance state
+    const [sourceStatus, setSourceStatus] = useState(null); // null | 'trying' | 'all_failed'
+
+    // Only YouTube trailers use iframe; all streaming is native
     const isIframeEmbed = Boolean(currentSrc && currentSrc.includes("youtube.com/embed"));
 
     // Player State
@@ -111,7 +106,7 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
             hlsRef.current = null;
         }
 
-        const isHlsStream = currentSrc.includes(".m3u8") || currentSrc.includes("mux.dev");
+        const isHlsStream = isHlsUrl(currentSrc);
 
         if (isHlsStream && Hls.isSupported()) {
             const hls = new Hls({ capLevelToPlayerSize: true, autoStartLoad: true });
@@ -422,7 +417,17 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
                                         onTimeUpdate={handleTimeUpdate}
                                         onPlay={() => setIsPlaying(true)}
                                         onPause={() => setIsPlaying(false)}
-                                        onError={() => setPlayerError(true)}
+                                        onError={() => {
+                                    const nextIndex = srcIndex + 1;
+                                    if (nextIndex < sources.length) {
+                                        setSourceStatus('trying');
+                                        setPlayerError(false);
+                                        setSrcIndex(nextIndex);
+                                    } else {
+                                        setSourceStatus('all_failed');
+                                        setPlayerError(true);
+                                    }
+                                }}
                                         playsInline
                                     />
 
@@ -432,12 +437,34 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
                                         </div>
                                     )}
 
-                                    {playerError && (
-                                        <div className="vp-error">
-                                            <p>⚠️ Stream unavailable natively.</p>
-                                            <button className="vp-retry-btn" onClick={() => setSrcIndex((srcIndex + 1) % sources.length)}>
-                                                Try Source ({srcIndex + 1}/{sources.length})
-                                            </button>
+                                    {/* Source trying indicator */}
+                                    {sourceStatus === 'trying' && !playerError && (
+                                        <div style={{
+                                            position:'absolute', top:'12px', left:'50%',
+                                            transform:'translateX(-50%)',
+                                            background:'rgba(0,0,0,0.75)', backdropFilter:'blur(8px)',
+                                            border:'1px solid rgba(99,102,241,0.4)',
+                                            borderRadius:'999px', padding:'6px 16px',
+                                            color:'#a5b4fc', fontSize:'12px', fontWeight:600,
+                                            zIndex:20, display:'flex', alignItems:'center', gap:'8px'
+                                        }}>
+                                            <span style={{width:8,height:8,borderRadius:'50%',background:'#6366f1',display:'inline-block',animation:'pulse 1s infinite'}} />
+                                            Trying source {srcIndex + 1} of {sources.length}…
+                                        </div>
+                                    )}
+
+                                    {/* Only app-owned media can be played here. */}
+                                    {playerError && sourceStatus === 'all_failed' && (
+                                        <div className="vp-error" style={{padding:'24px',display:'flex',flexDirection:'column',alignItems:'center',gap:'14px'}}>
+                                            <div style={{fontSize:'32px'}}>📡</div>
+                                            <p style={{margin:0,fontWeight:700,fontSize:'15px'}}>This title is not available to stream</p>
+                                            <p style={{margin:0,color:'#94a3b8',fontSize:'13px',textAlign:'center'}}>
+                                                Add the licensed video to the Nerio media library, then try again.
+                                            </p>
+                                            <button
+                                                style={{background:'transparent',border:'none',color:'#64748b',fontSize:'12px',cursor:'pointer',textDecoration:'underline'}}
+                                                onClick={() => { setSrcIndex(0); setPlayerError(false); setSourceStatus('trying'); }}
+                                            >Retry from beginning</button>
                                         </div>
                                     )}
 
@@ -565,23 +592,6 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
                                             👎
                                         </button>
                                     </div>
-
-                                    {/* Link Custom Stream Pill */}
-                                    <button
-                                        className="yt-pill-btn"
-                                        onClick={() => {
-                                            const streamId = movie ? `movie-${movie.id}` : show ? `tv-${show.id}` : null;
-                                            const inputUrl = prompt(`Paste your direct ad-free video stream URL (.m3u8 or .mp4) for "${movieTitle}":`);
-                                            if (inputUrl && inputUrl.trim()) {
-                                                saveCustomStreamUrl(streamId || "default", inputUrl.trim());
-                                                alert("✨ Custom ad-free stream saved successfully! The player will now use your direct video link.");
-                                                window.location.reload();
-                                            }
-                                        }}
-                                        title="Attach your own direct ad-free HLS (.m3u8) or MP4 link"
-                                    >
-                                        🔗 Stream URL
-                                    </button>
 
                                     {/* Share Pill */}
                                     <button className="yt-pill-btn" onClick={handleShare}>

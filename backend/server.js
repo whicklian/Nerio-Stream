@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import streamRoutes from "./routes/stream.js";
+import searchRoutes from "./routes/search.js";
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.get("/api/health", (req, res) => {
 
 // Video Streaming Routes
 app.use("/api/stream", streamRoutes);
+app.use("/api/search", searchRoutes);
 
 // 404 handler
 app.use((req, res) => {

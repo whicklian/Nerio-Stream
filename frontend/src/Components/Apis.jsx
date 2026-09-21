@@ -13,11 +13,7 @@ export const getMovieStreamSources = async (tmdbId) => {
     } catch (err) {
         console.warn("Backend stream sources error, fallback to direct stream:", err);
     }
-    return [
-        `${BACKEND_URL}/api/stream/video?id=${tmdbId}&type=movie`,
-        "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-    ];
+    return [];
 };
 
 export const getTVStreamSources = async (tmdbId, season = 1, episode = 1) => {
@@ -30,11 +26,20 @@ export const getTVStreamSources = async (tmdbId, season = 1, episode = 1) => {
     } catch (err) {
         console.warn("Backend stream sources error, fallback to direct stream:", err);
     }
-    return [
-        `${BACKEND_URL}/api/stream/video?id=${tmdbId}&season=${season}&episode=${episode}&type=tv`,
-        "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-    ];
+    return [];
+};
+
+export const enhanceSearchQuery = async (query) => {
+    if (!query) return [];
+    try {
+        const res = await fetch(`${BACKEND_URL}/api/search/enhance?q=${encodeURIComponent(query)}`);
+        if (!res.ok) return [];
+        const data = await res.json();
+        return Array.isArray(data.queries) ? data.queries : [];
+    } catch (err) {
+        console.warn("Gemini search enhancement unavailable:", err);
+        return [];
+    }
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────

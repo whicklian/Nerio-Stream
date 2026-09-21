@@ -35,7 +35,7 @@ const queueMovieDownload = (movie) => {
         status: "downloading",
         progress: 0,
         thumbnail: movie.poster_path ? `https://image.tmdb.org/t/p/w300${movie.poster_path}` : "",
-        downloadUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+        downloadUrl: null,
     };
 
     saveStoredDownloads([item, ...current]);
@@ -66,7 +66,6 @@ function MovieDetail() {
     const [movie, setMovie] = useState(null);
     const [similar, setSimilar] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [trailerKey, setTrailerKey] = useState(null);
     const [showPlayer, setShowPlayer] = useState(false);
     const [playerSrc, setPlayerSrc] = useState("");
     const [playerTitle, setPlayerTitle] = useState("");
@@ -83,12 +82,6 @@ function MovieDetail() {
             ]);
             setMovie(details);
             setSimilar(similarMovies.slice(0, 8));
-            if (details?.videos?.results) {
-                const trailer = details.videos.results.find(
-                    v => v.type === "Trailer" && v.site === "YouTube"
-                );
-                setTrailerKey(trailer?.key || null);
-            }
             setLoading(false);
         };
         loadDetails();
@@ -100,17 +93,10 @@ function MovieDetail() {
         setShowPlayer(true);
     };
 
-    const openTrailer = () => {
-        if (!trailerKey) return;
-        setPlayerSrc(`https://www.youtube.com/embed/${trailerKey}?autoplay=1`);
-        setPlayerTitle(`${movie?.title} — Trailer`);
-        setShowPlayer(true);
-    };
-
     const downloadMovie = async () => {
         if (!movie) return;
         const queued = queueMovieDownload(movie);
-        await triggerMediaDownload(movie.title, queued.downloadUrl);
+        if (queued.downloadUrl) await triggerMediaDownload(movie.title, queued.downloadUrl);
     };
 
     if (loading) {
@@ -148,7 +134,7 @@ function MovieDetail() {
             {showPlayer && (
                 <VideoPlayer
                     src={playerSrc}
-                    allSources={playerTitle.includes("Trailer") ? [playerSrc] : getMovieAllSources(id)}
+                    allSources={getMovieAllSources(id)}
                     title={playerTitle}
                     overview={movie?.overview}
                     movie={movie}
@@ -241,12 +227,6 @@ function MovieDetail() {
                             <button className="watch-now-btn" onClick={openMovie}>
                                 ▶ Watch Now
                             </button>
-                            {/* Trailer */}
-                            {trailerKey && (
-                                <button className="trailer-btn" onClick={openTrailer}>
-                                    🎬 Trailer
-                                </button>
-                            )}
                             <button className="trailer-btn" onClick={downloadMovie}>
                                 ⬇ Download
                             </button>
