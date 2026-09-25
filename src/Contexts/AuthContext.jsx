@@ -6,7 +6,8 @@ import {
   onAuthStateChanged, 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
-  signInWithPopup, 
+  signInWithPopup,
+  signInWithRedirect,
   signOut,
   updateProfile,
   doc, 
@@ -14,6 +15,7 @@ import {
   getDoc, 
   onSnapshot 
 } from "../firebase";
+import { getRedirectResult } from "firebase/auth";
 
 const AuthContext = createContext();
 
@@ -23,6 +25,23 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Handle Google redirect result on page load (fallback from popup-blocked scenario)
+  useEffect(() => {
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result?.user) {
+          // User signed in via redirect – onAuthStateChanged will pick this up automatically.
+          console.debug("Google redirect sign-in completed:", result.user.displayName);
+        }
+      })
+      .catch((err) => {
+        // Ignore "no redirect operation pending" which fires on normal page loads
+        if (err.code !== "auth/no-auth-event") {
+          console.error("Google redirect result error:", err);
+        }
+      });
+  }, []);
 
   // Sync user profile document from Firestore
   useEffect(() => {
@@ -89,8 +108,27 @@ export const AuthProvider = ({ children }) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  const loginWithGoogle = () => {
-    return signInWithPopup(auth, googleProvider);
+  /**
+   * Google Sign-In:
+   * - Tries a popup first (works on desktop and most browsers).
+   * - If popup is blocked (e.g. mobile WebView / Capacitor),
+   *   falls back to a full-page redirect automatically.
+   */
+  const loginWithGoogle = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      return result;
+    } catch (err) {
+      // Popup blocked or not supported — fall back to redirect
+      if (
+        err.code === "auth/popup-blocked" ||
+        err.code === "auth/popup-closed-by-user" ||
+        err.code === "auth/cancelled-popup-request"
+      ) {
+        return signInWithRedirect(auth, googleProvider);
+      }
+      throw err;
+    }
   };
 
   const logout = () => {

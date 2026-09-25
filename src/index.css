@@ -104,3 +104,10 @@ button:focus-visible {
     width: 0 !important;
     height: 0 !important;
 }
+
+/* Input focus & hover resets to remove browser red borders */
+input, input:focus, input:hover, input:active, input:invalid, input:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
