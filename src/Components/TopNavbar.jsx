@@ -62,27 +62,27 @@ function TopNavbar({ toggleSidebar }) {
             {currentUser ? (
               <Link
                 to="/profile"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700/60 bg-slate-900/50 hover:bg-slate-800/80 text-xs text-slate-200 transition-all cursor-pointer"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-indigo-500/40 bg-indigo-950/40 hover:bg-indigo-900/60 text-xs text-slate-100 transition-all cursor-pointer shadow-sm"
                 title="View Profile"
               >
                 {currentUser.photoURL ? (
-                  <img src={currentUser.photoURL} alt="Avatar" className="w-5 h-5 rounded-full object-cover" />
+                  <img src={currentUser.photoURL} alt="Avatar" className="w-6 h-6 rounded-full border border-indigo-400 object-cover" />
                 ) : (
-                  <div className="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white flex items-center justify-center font-black text-[11px] shadow-sm">
                     {(currentUser.displayName || currentUser.email || "U")[0].toUpperCase()}
                   </div>
                 )}
-                <span className="hidden sm:inline font-medium max-w-[100px] truncate">
+                <span className="hidden sm:inline font-bold max-w-[110px] truncate text-indigo-200">
                   {currentUser.displayName || currentUser.email?.split("@")[0]}
                 </span>
               </Link>
             ) : (
               <button
                 onClick={() => setIsAuthModalOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-xs font-semibold text-white shadow-md transition-all cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-xs font-bold text-white shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5 transition-all cursor-pointer"
               >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                <svg className="w-4 h-4 text-cyan-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                 </svg>
                 <span>Sign In</span>
               </button>

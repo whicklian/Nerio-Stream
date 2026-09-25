@@ -1,7 +1,8 @@
 .home {
     width: 100%;
     box-sizing: border-box;
-    padding: 1.5rem 1.5rem 0;
+    padding: 0;
+    margin: 0;
 }
 
 .hero-section {

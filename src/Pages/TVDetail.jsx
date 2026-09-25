@@ -3,7 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
     getTVDetails,
     getTVSeasonDetails,
-    getSimilarTV
+    getSimilarTV,
+    getTVEpisodeEmbedUrl
 } from "../Components/Apis";
 import { saveContinueWatching, getWatchedEpisodes, markEpisodeWatched } from "../utils";
 import TVCard from "../Components/TVCard";
@@ -32,6 +33,8 @@ function TVDetail() {
     const [currentPlayingEp, setCurrentPlayingEp] = useState(null); // { seasonNum, ep }
 
     // Features
+    const [hoveredEpisode, setHoveredEpisode] = useState(null);
+    const [hoverTimer, setHoverTimer] = useState(null);
     const [watchedEpisodes, setWatchedEpisodes] = useState([]);
     const [subscribed, setSubscribed] = useState(false);
 
@@ -49,11 +52,23 @@ function TVDetail() {
             if (details?.seasons) {
                 setSeasons(details.seasons.filter(s => s.season_number > 0));
             }
-            setWatchedEpisodes(getWatchedEpisodes(id));
             setLoading(false);
         };
         load();
+        setWatchedEpisodes(getWatchedEpisodes(id));
     }, [id]);
+
+    const handleMouseEnter = (epId) => {
+        const timer = setTimeout(() => {
+            setHoveredEpisode(epId);
+        }, 1000); // Auto-play preview after 1s linger
+        setHoverTimer(timer);
+    };
+
+    const handleMouseLeave = () => {
+        if (hoverTimer) clearTimeout(hoverTimer);
+        setHoveredEpisode(null);
+    };
 
     const toggleSeason = async (seasonNum) => {
         if (openSeason === seasonNum) {
@@ -132,11 +147,10 @@ function TVDetail() {
             status: "downloading",
             progress: 0,
             thumbnail: ep.still_path ? `https://image.tmdb.org/t/p/w300${ep.still_path}` : "",
-            downloadUrl: null,
+            downloadUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
         };
         localStorage.setItem("nerio_downloads", JSON.stringify([item, ...queue]));
 
-        if (!item.downloadUrl) return;
         fetch(item.downloadUrl)
             .then(response => response.blob())
             .then(blob => {
@@ -342,9 +356,21 @@ function TVDetail() {
                                                     <div 
                                                         key={ep.id} 
                                                         className="episode-card"
+                                                        onMouseEnter={() => handleMouseEnter(ep.id)}
+                                                        onMouseLeave={handleMouseLeave}
                                                     >
                                                         <div className="ep-thumb-wrap">
-                                                            <img
+                                                            {hoveredEpisode === ep.id ? (
+                                                                <video 
+                                                                    className="ep-thumb-video" 
+                                                                    src="https://www.w3schools.com/html/mov_bbb.mp4" 
+                                                                    autoPlay 
+                                                                    loop 
+                                                                    muted 
+                                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+                                                                />
+                                                            ) : (
+                                                                <img
                                                                     className="ep-thumb"
                                                                     src={
                                                                         ep.still_path
@@ -353,6 +379,7 @@ function TVDetail() {
                                                                     }
                                                                     alt={ep.name}
                                                                 />
+                                                            )}
                                                             <button
                                                                 className="ep-play-btn"
                                                                 onClick={() => playEpisode(season.season_number, ep)}

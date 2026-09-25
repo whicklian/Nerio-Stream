@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { enhanceSearchQuery, searchMovies } from "../Components/Apis";
+import { searchMovies } from "../Components/Apis";
 import MovieCard from "../Components/MovieCard";
 
 function SearchResults() {
@@ -12,12 +12,8 @@ function SearchResults() {
   useEffect(() => {
     const runSearch = async () => {
       setLoading(true);
-      const expandedQueries = await enhanceSearchQuery(query);
-      const queries = expandedQueries.length ? expandedQueries : [query];
-      const resultGroups = await Promise.all(queries.map(searchMovies));
-      const uniqueMovies = new Map();
-      resultGroups.flat().forEach(movie => uniqueMovies.set(movie.id, movie));
-      setMovies([...uniqueMovies.values()]);
+      const results = await searchMovies(query);
+      setMovies(results);
       setLoading(false);
     };
 

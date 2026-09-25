@@ -1,46 +1,12 @@
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
-const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL || "https://api.themoviedb.org/3";
-export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+const API_KEY = "c9bff9d37b7004fbd0de5008cbd01501";
+const BASE_URL = "https://api.themoviedb.org/3";
 
-// ─── Native Video Streaming Sources (Backend-Powered, No Iframe Embeds) ──────
-export const getMovieStreamSources = async (tmdbId) => {
-    try {
-        const res = await fetch(`${BACKEND_URL}/api/stream/sources/movie/${tmdbId}`);
-        if (res.ok) {
-            const data = await res.json();
-            if (data.sources && data.sources.length > 0) return data.sources;
-        }
-    } catch (err) {
-        console.warn("Backend stream sources error, fallback to direct stream:", err);
-    }
-    return [];
-};
+// ─── Embed URLs (vidsrc.to) ────────────────────────────────────────────────
+export const getMovieEmbedUrl = (tmdbId) =>
+    `https://vidsrc.to/embed/movie/${tmdbId}`;
 
-export const getTVStreamSources = async (tmdbId, season = 1, episode = 1) => {
-    try {
-        const res = await fetch(`${BACKEND_URL}/api/stream/sources/tv/${tmdbId}/${season}/${episode}`);
-        if (res.ok) {
-            const data = await res.json();
-            if (data.sources && data.sources.length > 0) return data.sources;
-        }
-    } catch (err) {
-        console.warn("Backend stream sources error, fallback to direct stream:", err);
-    }
-    return [];
-};
-
-export const enhanceSearchQuery = async (query) => {
-    if (!query) return [];
-    try {
-        const res = await fetch(`${BACKEND_URL}/api/search/enhance?q=${encodeURIComponent(query)}`);
-        if (!res.ok) return [];
-        const data = await res.json();
-        return Array.isArray(data.queries) ? data.queries : [];
-    } catch (err) {
-        console.warn("Gemini search enhancement unavailable:", err);
-        return [];
-    }
-};
+export const getTVEpisodeEmbedUrl = (tmdbId, season, episode) =>
+    `https://vidsrc.to/embed/tv/${tmdbId}/${season}/${episode}`;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 async function fetchJSON(url) {
@@ -155,8 +121,8 @@ export const getTVByGenre = async (genreId, page = 1) => {
 };
 
 // ─── Live Sports (Sportmonks API) ─────────────────────────────────────────
-const SPORTMONKS_TOKEN = import.meta.env.VITE_SPORTMONKS_TOKEN || "";
-const SPORTMONKS_BASE = import.meta.env.VITE_SPORTMONKS_BASE || "https://api.sportmonks.com/v3";
+const SPORTMONKS_TOKEN = "Nz1xMD7EinA5zpMSqmzHyMwRyuYkxGPeZUECgCIrrsoBGQjkNs13ts8zyFjE";
+const SPORTMONKS_BASE = "https://api.sportmonks.com/v3";
 
 const fetchSportmonks = async (path) => {
     const rawUrl = `${SPORTMONKS_BASE}${path}`;
@@ -195,12 +161,9 @@ export const getTeamSquad = async (teamId = 85) => {
 };
 
 // ─── Live Sports (SoccersAPI) ─────────────────────────────────────────
-const SOCCERS_USER = import.meta.env.VITE_SOCCERS_USER || "41bJK";
-const SOCCERS_TOKEN = import.meta.env.VITE_SOCCERS_TOKEN || "IvbKSOWNBr";
-
 export const getSoccersLeagues = async () => {
     try {
-        const url = `https://api.soccersapi.com/v2.2/leagues/?user=${SOCCERS_USER}&token=${SOCCERS_TOKEN}&t=list`;
+        const url = `https://api.soccersapi.com/v2.2/leagues/?user=41bJK&token=IvbKSOWNBr&t=list`;
         const data = await fetchJSON(url);
         return data.data || [];
     } catch (err) {

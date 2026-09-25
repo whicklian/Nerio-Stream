@@ -7,31 +7,10 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Node modules & dependencies
-node_modules/
-frontend/node_modules/
-backend/node_modules/
-
-# Build artifacts
-dist/
-dist-ssr/
-frontend/dist/
-backend/dist/
+node_modules
+dist
+dist-ssr
 *.local
-
-# Environment variables & secrets
-.env
-*.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-frontend/.env
-frontend/.env.*
-!frontend/.env.example
-backend/.env
-backend/.env.*
-!backend/.env.example
 
 # Editor directories and files
 .vscode/*
@@ -44,14 +23,27 @@ backend/.env.*
 *.sln
 *.sw?
 
-# Capacitor / Android / iOS native build artifacts
-frontend/android/.gradle/
-frontend/android/build/
-frontend/android/app/build/
-frontend/android/.cxx/
-frontend/android/local.properties
-frontend/android/**/gradle-wrapper.jar
-frontend/android/**/*.iml
-frontend/android/keystore/
+# Capacitor / Android / iOS native build artifacts (ignore outputs, keep project files)
+# Android build outputs
+/android/.gradle/
+/android/build/
+/android/app/build/
+/android/.cxx/
+/android/local.properties
+/android/**/gradle-wrapper.jar
+/android/**/*.iml
+/android/keystore/
 
+# iOS build outputs
+/ios/Pods/
+/ios/DerivedData/
+/ios/build/
+/ios/Pods/
+/ios/Podfile.lock
+
+# IDE and Gradle caches
+/.idea/
 .gradle/
+
+# Do NOT ignore the android/ or ios/ root folders entirely if you want to commit native projects.
+# The rules above only ignore generated build artifacts so Vercel's web deployment remains unaffected.
