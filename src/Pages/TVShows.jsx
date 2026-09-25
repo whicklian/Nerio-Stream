@@ -65,18 +65,18 @@ function TVShows() {
                 </div>
 
                 {continueWatching.length > 0 && !searchQuery && !selectedGenre && (
-                    <div className="continue-watching-section" style={{ padding: '2rem 5%', background: 'rgba(99, 102, 241, 0.05)', marginBottom: '2rem' }}>
+                    <div className="continue-watching-section" style={{ padding: '2rem 5%', background: 'rgba(229, 9, 20, 0.05)', marginBottom: '2rem' }}>
                         <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             ▶ Continue Watching
                         </h2>
                         <div className="continue-watching-grid" style={{ display: 'flex', gap: '1.5rem', overflowX: 'auto', paddingBottom: '1rem' }}>
                             {continueWatching.map(item => (
                                 <Link to={`/tv/${item.showId}`} key={item.showId} style={{ textDecoration: 'none', color: 'inherit', flexShrink: 0, width: '250px' }}>
-                                    <div className="cw-card" style={{ background: '#1e1e2f', borderRadius: '12px', overflow: 'hidden', transition: 'transform 0.2s', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <div className="cw-card" style={{ background: '#18181b', borderRadius: '12px', overflow: 'hidden', transition: 'transform 0.2s', border: '1px solid rgba(255,255,255,0.05)' }}>
                                         <div style={{ position: 'relative', width: '100%', height: '140px' }}>
                                             <img src={`https://image.tmdb.org/t/p/w500${item.posterPath}`} alt={item.showName} style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }} />
                                             <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '4px', background: '#333' }}>
-                                                <div style={{ width: '65%', height: '100%', background: '#6366f1' }}></div>
+                                                <div style={{ width: '65%', height: '100%', background: '#e50914' }}></div>
                                             </div>
                                         </div>
                                         <div style={{ padding: '1rem' }}>

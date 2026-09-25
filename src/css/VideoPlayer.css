@@ -378,7 +378,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #6366f1, #ec4899);
+    background: linear-gradient(135deg, #e50914, #ff3b30);
     color: #ffffff;
     font-weight: 800;
     font-size: 1.2rem;
@@ -581,7 +581,7 @@
     width: 100%;
     aspect-ratio: 2/3;
     overflow: hidden;
-    background: #1e293b;
+    background: #18181b;
 }
 
 .yt-more-thumb img {

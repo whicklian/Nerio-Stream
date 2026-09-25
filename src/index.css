@@ -5,20 +5,21 @@
   line-height: 1.5;
   font-weight: 400;
 
-  --primary-color: #6366f1; /* Indigo */
-  --primary-hover: #4f46e5;
-  --bg-color: #0f172a; /* Deep Slate */
-  --surface-color: #1e293b;
-  --surface-hover: #334155;
-  --text-color: #f8fafc;
-  --text-muted: #94a3b8;
-  --accent-color: #ec4899; /* Pink */
-  
+  --bg-color: #141414;
+  --surface-color: #1f1f1f;
+  --surface-hover: #2b2b2b;
+  --primary-color: #e50914;
+  --primary-hover: #b81d24;
+  --accent-color: #e50914;
+  --text-color: #ffffff;
+  --text-muted: #aaaaaa;
+  --border-color: #2b2b2b;
+
   color-scheme: dark;
   color: var(--text-color);
   background-color: var(--bg-color);
-  background-image: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
-                    radial-gradient(circle at bottom left, rgba(236, 72, 153, 0.1) 0%, transparent 40%);
+  background-image: radial-gradient(circle at top right, rgba(229, 9, 20, 0.12) 0%, transparent 40%),
+                    radial-gradient(circle at bottom left, rgba(229, 9, 20, 0.08) 0%, transparent 40%);
   background-attachment: fixed;
 
   font-synthesis: none;
@@ -37,8 +38,8 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background-color: var(--bg-color);
-  background-image: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
-                    radial-gradient(circle at bottom left, rgba(236, 72, 153, 0.1) 0%, transparent 40%);
+  background-image: radial-gradient(circle at top right, rgba(229, 9, 20, 0.15) 0%, transparent 40%),
+                    radial-gradient(circle at bottom left, rgba(255, 59, 48, 0.1) 0%, transparent 40%);
   background-attachment: fixed;
 }
 
@@ -78,10 +79,15 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    --bg-color: #f8fafc;
-    --surface-color: #ffffff;
-    --text-color: #0f172a;
-    --text-muted: #64748b;
+    --bg-color: #141414;
+    --surface-color: #1f1f1f;
+    --surface-hover: #2b2b2b;
+    --primary-color: #e50914;
+    --primary-hover: #b81d24;
+    --accent-color: #e50914;
+    --text-color: #ffffff;
+    --text-muted: #aaaaaa;
+    --border-color: #2b2b2b;
   }
 }
 

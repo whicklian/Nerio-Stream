@@ -59,23 +59,23 @@ function Home() {
       {/* Main Content Sections below Hero */}
       <div className="px-6 md:px-8 pt-4 space-y-8">
         {continueWatching.length > 0 && !searchQuery && !selectedGenre && (
-            <div className="continue-watching-section rounded-2xl" style={{ padding: '2rem 5%', background: 'rgba(99, 102, 241, 0.05)', marginBottom: '2rem' }}>
-                <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div className="continue-watching-section rounded-2xl" style={{ padding: '2rem 5%', background: 'rgba(229, 9, 20, 0.05)', marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: '#fff', display: 'flex', items: 'center', gap: '0.5rem' }}>
                     ▶ Continue Watching
                 </h2>
                 <div className="continue-watching-grid hide-scroll" style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '1rem', msOverflowStyle: 'none', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
                     {continueWatching.map(item => (
                         <Link to={`/tv/${item.showId}`} key={item.showId} style={{ textDecoration: 'none', color: 'inherit', flexShrink: 0 }} className="w-48 md:w-64">
-                            <div className="cw-card" style={{ background: '#1e1e2f', borderRadius: '12px', overflow: 'hidden', transition: 'transform 0.2s', border: '1px solid rgba(255,255,255,0.05)' }}>
+                            <div className="cw-card" style={{ background: '#18181b', borderRadius: '12px', overflow: 'hidden', transition: 'transform 0.2s', border: '1px solid rgba(255,255,255,0.05)' }}>
                                 <div style={{ position: 'relative', width: '100%', height: '140px' }}>
                                     <img src={`https://image.tmdb.org/t/p/w500${item.posterPath}`} alt={item.showName} style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }} />
                                     <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '4px', background: '#333' }}>
-                                        <div style={{ width: '65%', height: '100%', background: '#6366f1' }}></div>
+                                        <div style={{ width: '65%', height: '100%', background: '#e50914' }}></div>
                                     </div>
                                 </div>
                                 <div style={{ padding: '1rem' }}>
                                     <h3 style={{ fontSize: '1rem', margin: '0 0 0.5rem 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.showName}</h3>
-                                    <p style={{ fontSize: '0.85rem', color: '#9ca3af', margin: 0 }}>S{item.seasonNum} E{item.episodeNum} • {item.episodeName}</p>
+                                    <p style={{ fontSize: '0.85rem', color: '#a1a1aa', margin: 0 }}>S{item.seasonNum} E{item.episodeNum} • {item.episodeName}</p>
                                 </div>
                             </div>
                         </Link>
@@ -94,8 +94,8 @@ function Home() {
                         key={genre.id} 
                         className={`relative flex items-center justify-center rounded-2xl transition-all duration-300 ease-in-out shrink-0 overflow-hidden group ${
                           selectedGenre === genre.id 
-                            ? 'border-2 border-indigo-500 shadow-[0_0_20px_rgba(99,102,241,0.4)] scale-105 z-10' 
-                            : 'border border-slate-700/50 hover:scale-105 hover:border-indigo-400/50 hover:shadow-lg hover:z-10'
+                            ? 'border-2 border-red-600 shadow-[0_0_20px_rgba(229,9,20,0.4)] scale-105 z-10' 
+                            : 'border border-zinc-700/50 hover:scale-105 hover:border-red-500/50 hover:shadow-lg hover:z-10'
                         }`}
                         style={{ width: '150px', height: '80px', flexShrink: 0 }}
                         onClick={() => handleGenreSelect(genre.id)}
@@ -103,13 +103,13 @@ function Home() {
                         {/* Background */}
                         <div className={`absolute inset-0 transition-all duration-300 ${
                             selectedGenre === genre.id 
-                                ? 'bg-gradient-to-br from-indigo-600 to-purple-700 opacity-100' 
-                                : 'bg-slate-800/70 group-hover:bg-slate-700/80'
+                                ? 'bg-gradient-to-br from-red-600 to-rose-700 opacity-100' 
+                                : 'bg-zinc-900/80 group-hover:bg-zinc-800/80'
                         }`}></div>
                         
                         {/* Text */}
                         <span className={`relative z-10 font-bold tracking-wide transition-all duration-300 ${
-                            selectedGenre === genre.id ? 'text-white text-lg' : 'text-slate-300 group-hover:text-white text-base'
+                            selectedGenre === genre.id ? 'text-white text-lg' : 'text-zinc-300 group-hover:text-white text-base'
                         }`}>
                             {genre.name}
                         </span>

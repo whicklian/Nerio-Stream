@@ -7,7 +7,7 @@ const PLANS = [
         name: "Free (AVOD)",
         price: "$0",
         period: "forever",
-        color: "#9ca3af",
+        color: "#a1a1aa",
         features: ["Ad-supported streaming", "Standard Definition (480p)", "1 Concurrent Stream", "Community Forums Access"]
     },
     {
@@ -15,7 +15,7 @@ const PLANS = [
         name: "Standard (SVOD)",
         price: "$9.99",
         period: "per month",
-        color: "#6366f1",
+        color: "#e50914",
         features: ["Ad-free experience", "Full HD (1080p)", "2 Concurrent Streams", "Offline Downloads", "Watch Parties"]
     },
     {
@@ -23,7 +23,7 @@ const PLANS = [
         name: "Premium (SVOD)",
         price: "$15.99",
         period: "per month",
-        color: "#f59e0b",
+        color: "#ff3b30",
         popular: true,
         features: ["Ad-free experience", "Ultra HD (4K HDR) & Atmos", "4 Concurrent Streams", "Offline Downloads", "Watch Parties", "Early Access to Originals"]
     }

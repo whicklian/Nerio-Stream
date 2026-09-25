@@ -396,7 +396,7 @@ function LiveTV() {
                         </div>
                         <div style={{ display: 'flex', gap: '5px' }}>
                             <button className={`ctrl-btn ${socialTab === 'Chat' ? 'active' : ''}`} onClick={() => setSocialTab("Chat")} style={{ flex: 1, padding: '8px' }}>Chat</button>
-                            <button className={`ctrl-btn ${socialTab === 'Data' ? 'active' : ''}`} onClick={() => setSocialTab("Data")} style={{ flex: 1, padding: '8px', background: '#6366f1', borderColor: '#4f46e5' }}>Match</button>
+                            <button className={`ctrl-btn ${socialTab === 'Data' ? 'active' : ''}`} onClick={() => setSocialTab("Data")} style={{ flex: 1, padding: '8px', background: '#e50914', borderColor: '#b80710' }}>Match</button>
                             <button className={`ctrl-btn ${socialTab === 'Fixtures' ? 'active' : ''}`} onClick={() => setSocialTab("Fixtures")} style={{ flex: 1, padding: '8px', background: '#10b981', borderColor: '#059669' }}>Fixtures</button>
                             <button className={`ctrl-btn ${socialTab === 'Leagues' ? 'active' : ''}`} onClick={() => setSocialTab("Leagues")} style={{ flex: 1, padding: '8px', background: '#f59e0b', borderColor: '#d97706' }}>Leagues</button>
                         </div>
@@ -406,7 +406,7 @@ function LiveTV() {
                         <div style={{ padding: '15px', overflowY: 'auto', flex: 1 }}>
                             {matchData ? (
                                 <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '15px' }}>
-                                    <h3 style={{ margin: '0 0 10px 0', fontSize: '1.1rem', color: '#a5b4fc' }}>Live Match Center</h3>
+                                    <h3 style={{ margin: '0 0 10px 0', fontSize: '1.1rem', color: '#fca5a5' }}>Live Match Center</h3>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                                         <div style={{ textAlign: 'center' }}>
                                             <div style={{ fontWeight: 'bold' }}>{matchData.participants?.[0]?.name || "Team 1"}</div>

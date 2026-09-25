@@ -14,7 +14,7 @@
 .subs-title {
     font-size: 2.5rem;
     margin-bottom: 1rem;
-    background: linear-gradient(90deg, #a5b4fc, #6366f1);
+    background: linear-gradient(90deg, #fca5a5, #e50914);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -47,7 +47,7 @@
 }
 
 .toggle-btn.active {
-    background: #6366f1;
+    background: #e50914;
     color: white;
     font-weight: bold;
 }
@@ -94,8 +94,8 @@
 }
 
 .plan-card.popular {
-    border-color: #f59e0b;
-    background: linear-gradient(180deg, rgba(245, 158, 11, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-color: #e50914;
+    background: linear-gradient(180deg, rgba(229, 9, 20, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
 }
 
 .popular-badge {
@@ -103,8 +103,8 @@
     top: -14px;
     left: 50%;
     transform: translateX(-50%);
-    background: #f59e0b;
-    color: #000;
+    background: #e50914;
+    color: #fff;
     font-size: 0.8rem;
     font-weight: bold;
     padding: 4px 16px;

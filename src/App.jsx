@@ -22,7 +22,7 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex flex-col h-screen bg-slate-950 text-slate-100 overflow-hidden">
+    <div className="flex flex-col h-screen bg-zinc-950 text-zinc-100 overflow-hidden">
       <TopNavbar toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       
       <div className="flex flex-1 overflow-hidden" style={{ paddingTop: '4rem' }}>

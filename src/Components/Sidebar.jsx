@@ -13,7 +13,7 @@ function Sidebar({ isOpen }) {
   ];
 
   return (
-    <aside className={`hidden md:flex flex-col bg-slate-900 border-r border-slate-800 h-full z-40 transition-all duration-300 overflow-hidden pl-3 ${isOpen ? 'w-16 min-w-[4rem] opacity-100' : 'w-0 min-w-0 opacity-0 border-r-0'}`}>
+    <aside className={`hidden md:flex flex-col bg-zinc-950/90 border-r border-zinc-800/80 h-full z-40 transition-all duration-300 overflow-hidden pl-3 ${isOpen ? 'w-16 min-w-[4rem] opacity-100' : 'w-0 min-w-0 opacity-0 border-r-0'}`}>
       <nav className="flex-1 overflow-y-auto py-4 pl-1 scrollbar-hide">
         <ul className="space-y-3 px-2 flex flex-col items-center ml-1">
           {navItems.map((item) => (
@@ -24,8 +24,8 @@ function Sidebar({ isOpen }) {
                 className={({ isActive }) =>
                   `flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200 ${
                     isActive
-                      ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/20"
-                      : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                      ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
+                      : "text-zinc-400 hover:bg-zinc-800/80 hover:text-zinc-200"
                   }`
                 }
               >

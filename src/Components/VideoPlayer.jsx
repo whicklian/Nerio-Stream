@@ -379,7 +379,7 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
                 <div className="yt-topbar">
                     <div className="yt-logo-group">
                         <span className="ns-logo-text">
-                            <span style={{ color: '#6366f1', fontWeight: 900 }}>NERIO</span> STREAM
+                            <span style={{ color: '#e50914', fontWeight: 900 }}>NERIO</span> STREAM
                         </span>
                     </div>
                     <div className="yt-topbar-right">
