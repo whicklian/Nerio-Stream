@@ -69,6 +69,13 @@ export const getTrending = async (timeWindow = 'week') => {
     } catch (err) { console.error(err); return []; }
 };
 
+export const getTopRatedMovies = async (page = 1) => {
+    try {
+        const data = await fetchJSON(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&page=${page}`);
+        return data.results || [];
+    } catch (err) { console.error(err); return []; }
+};
+
 // ─── TV Shows ─────────────────────────────────────────────────────────────
 export const getTVShows = async (page = 1) => {
     try {
