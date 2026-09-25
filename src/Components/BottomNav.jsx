@@ -14,7 +14,7 @@ function BottomNav() {
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 w-full bg-zinc-950/90 backdrop-blur-xl border-t border-zinc-800/80 z-50 pb-safe">
-      <ul className="flex items-center gap-1 overflow-x-auto px-2 py-2 whitespace-nowrap [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <ul className="flex items-center gap-1 overflow-x-auto pl-3 pr-8 py-2 whitespace-nowrap [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {navItems.map((item) => (
           <li key={item.to} className="flex-none min-w-[72px]">
             <NavLink

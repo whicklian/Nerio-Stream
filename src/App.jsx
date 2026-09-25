@@ -23,11 +23,12 @@ function App() {
 
   return (
     <div className="flex flex-col h-screen bg-zinc-950 text-zinc-100 overflow-hidden">
-      <TopNavbar toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-      
-      <div className="flex flex-1 overflow-hidden" style={{ paddingTop: '4rem' }}>
-        <Sidebar isOpen={isSidebarOpen} />
-        
+      <TopNavbar toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} isSidebarOpen={isSidebarOpen} />
+
+      {/* Floating sidebar — overlays everything, not in the flex row */}
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
+      <div className="flex flex-1 overflow-hidden" style={{ paddingTop: '6rem' }}>
         <div className="flex-1 flex flex-col relative min-w-0 w-full max-w-full overflow-x-hidden">
           <main className="flex-1 overflow-y-auto overflow-x-hidden hide-scroll pb-28 w-full max-w-full break-words" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
             <Routes>

@@ -2,17 +2,17 @@
 
 /* ...existing code... */
 :root {
-  --bg-color: #141414;
-  --surface-color: #1f1f1f;
-  --card-bg: #1f1f1f;
-  --surface-hover: #2b2b2b;
+  --bg-color: #0d0d11;
+  --surface-color: #17191d;
+  --card-bg: #17191d;
+  --surface-hover: #23262b;
   --primary-color: #e50914;
   --primary-hover: #b81d24;
-  --accent-color: #e50914;
+  --accent-color: #ff3b30;
   --text-color: #ffffff;
   --text-muted: #aaaaaa;
   --muted: #aaaaaa;
-  --border-color: #2b2b2b;
+  --border-color: rgba(255, 255, 255, 0.08);
   --radius: 8px;
   color-scheme: dark;
 }

@@ -1,41 +1,188 @@
 import { NavLink } from "react-router-dom";
 
-function Sidebar({ isOpen }) {
-  const navItems = [
-    { to: "/", icon: "🎬", label: "Movies", end: true },
-    { to: "/trending", icon: "🔥", label: "Trending" },
-    { to: "/tv", icon: "📺", label: "TV Shows" },
-    { to: "/live", icon: "📡", label: "Live & Sports" },
-    { to: "/favourites", icon: "❤️", label: "Favorites" },
-    { to: "/downloads", icon: "📥", label: "Downloads" },
-    { to: "/subscriptions", icon: "💎", label: "Premium" },
-    { to: "/profile", icon: "👤", label: "Profile" },
-  ];
+/* ─────────────────────────────────────────────────────────────
+   Lucide-style inline SVG icons (no external package needed).
+   Each renders at w-[18px] h-[18px] with stroke="currentColor".
+───────────────────────────────────────────────────────────── */
+const Icon = ({ d, children, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={26}
+    height={26}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.85}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    {...props}
+  >
+    {children}
+  </svg>
+);
 
+/* Individual icons — paths match Lucide 0.x exactly */
+const ClapperboardIcon = () => (
+  <Icon>
+    <path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z" />
+    <path d="m6.2 5.3 3.1 3.9" />
+    <path d="m12.4 3.4 3.1 3.9" />
+    <path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8Z" />
+  </Icon>
+);
+
+const FlameIcon = () => (
+  <Icon>
+    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+  </Icon>
+);
+
+const TvIcon = () => (
+  <Icon>
+    <rect width="20" height="15" x="2" y="7" rx="2" ry="2" />
+    <polyline points="17 2 12 7 7 2" />
+  </Icon>
+);
+
+const RadioIcon = () => (
+  <Icon>
+    <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9" />
+    <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5" />
+    <circle cx="12" cy="12" r="2" />
+    <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5" />
+    <path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1" />
+  </Icon>
+);
+
+const HeartIcon = () => (
+  <Icon>
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+  </Icon>
+);
+
+const DownloadIcon = () => (
+  <Icon>
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+    <polyline points="7 10 12 15 17 10" />
+    <line x1="12" y1="15" x2="12" y2="3" />
+  </Icon>
+);
+
+const GemIcon = () => (
+  <Icon>
+    <polygon points="6 3 18 3 22 9 12 22 2 9" />
+    <path d="m12 22 4-13-4-6" />
+    <path d="m12 22-4-13 4-6" />
+    <path d="M2 9h20" />
+  </Icon>
+);
+
+const UserIcon = () => (
+  <Icon>
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </Icon>
+);
+
+const XIcon = () => (
+  <Icon width={16} height={16}>
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </Icon>
+);
+
+/* ─────────────────────────────────────────────────────────────
+   Navigation items config
+───────────────────────────────────────────────────────────── */
+const navItems = [
+  { to: "/",              Icon: ClapperboardIcon, label: "Movies",       end: true },
+  { to: "/tv",            Icon: TvIcon,           label: "TV Shows" },
+  { to: "/live",          Icon: RadioIcon,        label: "Live & Sports" },
+  { to: "/subscriptions", Icon: GemIcon,          label: "Premium" },
+  { to: "/profile",       Icon: UserIcon,         label: "Profile" },
+];
+
+/* ─────────────────────────────────────────────────────────────
+   Sidebar component
+───────────────────────────────────────────────────────────── */
+function Sidebar({ isOpen, onClose }) {
   return (
-    <aside className={`hidden md:flex flex-col bg-zinc-950/90 border-r border-zinc-800/80 h-full z-40 transition-all duration-300 overflow-hidden pl-3 ${isOpen ? 'w-16 min-w-[4rem] opacity-100' : 'w-0 min-w-0 opacity-0 border-r-0'}`}>
-      <nav className="flex-1 overflow-y-auto py-4 pl-1 scrollbar-hide">
-        <ul className="space-y-3 px-2 flex flex-col items-center ml-1">
-          {navItems.map((item) => (
-            <li key={item.to} className="w-full flex justify-center" title={item.label}>
-              <NavLink
-                to={item.to}
-                end={item.end}
-                className={({ isActive }) =>
-                  `flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200 ${
-                    isActive
-                      ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
-                      : "text-zinc-400 hover:bg-zinc-800/80 hover:text-zinc-200"
-                  }`
-                }
-              >
-                <span className="text-base flex justify-center">{item.icon}</span>
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </aside>
+    <>
+      {/* ── Backdrop overlay ── */}
+      <div
+        onClick={onClose}
+        aria-hidden="true"
+        className={`fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm transition-opacity duration-300 ${
+          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      />
+
+      {/* ── Drawer panel ── */}
+      <aside
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
+        className={`
+          fixed top-24 left-0 bottom-0 h-[calc(100vh-6rem)] w-72 md:w-80
+          flex flex-col justify-between
+          bg-zinc-950/95 backdrop-blur-xl
+          border-r border-white/10
+          shadow-2xl
+          z-[65]
+          transition-transform duration-300 ease-in-out
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+        `}
+      >
+
+
+        {/* ── Navigation ── */}
+        <nav className="flex-1 overflow-y-auto py-5 px-3 scrollbar-hide">
+          <p className="mb-2 px-2 text-xs font-bold uppercase tracking-widest text-zinc-500">
+            Navigate
+          </p>
+
+          <ul className="space-y-2">
+            {navItems.map(({ to, Icon: NavIcon, label, end }) => (
+              <li key={to}>
+                <NavLink
+                  to={to}
+                  end={end}
+                  onClick={onClose}
+                  className={({ isActive }) =>
+                    [
+                      "flex items-center gap-4 px-4 py-3.5 rounded-xl text-base md:text-lg font-semibold tracking-wide transition-all duration-200",
+                      isActive
+                        ? "bg-red-600/15 text-red-400 border-l-2 border-red-600 pl-[15px]"
+                        : "text-zinc-300 hover:text-white hover:bg-white/10 border-l-2 border-transparent",
+                    ].join(" ")
+                  }
+                >
+                  {({ isActive }) => (
+                    <>
+                      <span
+                        className={`shrink-0 transition-colors duration-200 ${
+                          isActive ? "text-red-500" : "text-zinc-500 group-hover:text-zinc-300"
+                        }`}
+                      >
+                        <NavIcon />
+                      </span>
+                      <span className="truncate">{label}</span>
+                    </>
+                  )}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* ── Footer ── */}
+        <div className="p-4 border-t border-white/10 shrink-0">
+          <p className="text-sm text-zinc-500">© 2026 NerioStream</p>
+          <p className="text-[11px] text-zinc-700 mt-0.5">Cinema-grade streaming experience</p>
+        </div>
+      </aside>
+    </>
   );
 }
 

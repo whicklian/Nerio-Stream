@@ -1,0 +1,64 @@
+mutation CreateStreamCategory @auth(level: NO_ACCESS) {
+  streamCategory_insert(data: { name: "Gaming" })
+}
+
+mutation CreateStream($title: String!) @auth(level: USER) {
+  stream_insert(data: {
+    title: $title,
+    status: "live",
+    createdAt_expr: "request.time",
+    creatorId_expr: "auth.uid"
+  })
+}
+
+mutation CreateChatMessage($streamId: UUID!, $content: String!) @auth(level: USER) {
+  chatMessage_insert(data: {
+    streamId: $streamId,
+    content: $content,
+    timestamp_expr: "request.time",
+    senderId_expr: "auth.uid"
+  })
+}
+
+mutation CreateFollow($creatorId: UUID!) @auth(level: USER) {
+  follow_insert(data: {
+    creatorId: $creatorId,
+    followerId_expr: "auth.uid",
+    createdAt_expr: "request.time"
+  })
+}
+
+mutation UpdateStreamStatus($id: UUID!, $status: String!) @auth(level: USER) {
+  stream_update(
+    first: { where: { id: { eq: $id }, creator: { id: { eq_expr: "auth.uid" }}}},
+    data: { status: $status }
+  )
+}
+
+mutation DeleteChatMessage($id: UUID!) @auth(level: USER) {
+  chatMessage_delete(
+    first: { where: { id: { eq: $id }, sender: { id: { eq_expr: "auth.uid" }}}}
+  )
+}
+
+query GetUser @auth(level: USER) {
+  user(key: { id_expr: "auth.uid" }) {
+    username
+    email
+  }
+}
+
+query ListStreams @auth(level: PUBLIC, insecureReason: "Publicly visible stream listings.") {
+  streams {
+    title
+    status
+    creator { username }
+  }
+}
+
+query ListChatMessages($streamId: UUID!) @auth(level: PUBLIC, insecureReason: "Publicly visible chat history.") {
+  chatMessages(where: { streamId: { eq: $streamId } }, orderBy: [{ timestamp: ASC }]) {
+    content
+    sender { username }
+  }
+}

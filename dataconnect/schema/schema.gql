@@ -1,0 +1,33 @@
+type User @table {
+  username: String!
+  email: String!
+  bio: String
+  avatarUrl: String
+}
+
+type StreamCategory @table {
+  name: String!
+  description: String
+}
+
+type Stream @table {
+  title: String!
+  status: String!
+  createdAt: Timestamp!
+  category: StreamCategory
+  thumbnailUrl: String
+  creator: User!
+}
+
+type ChatMessage @table {
+  content: String!
+  timestamp: Timestamp!
+  stream: Stream!
+  sender: User!
+}
+
+type Follow @table {
+  createdAt: Timestamp!
+  follower: User!
+  creator: User!
+}

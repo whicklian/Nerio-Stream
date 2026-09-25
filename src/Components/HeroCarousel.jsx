@@ -1,244 +1,246 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { getPopularMovies } from "../Components/Apis";
-
-const FALLBACK_SLIDES = [
-  {
-    id: 653346,
-    title: "Kingdom of the Planet of the Apes",
-    overview: "One generation after Caesar's reign, apes are the dominant species living harmoniously, while humans have been reduced to living in the shadows.",
-    release_date: "2024",
-    vote_average: 7.2,
-    backdrop_path: "/fqv8VfvShKMWRgOSSp3GIwScSjT.jpg"
-  },
-  {
-    id: 1022789,
-    title: "Inside Out 2",
-    overview: "Teenager Riley's mind headquarters is undergoing a sudden demolition to make room for something entirely unexpected: new Emotions!",
-    release_date: "2024",
-    vote_average: 7.6,
-    backdrop_path: "/stKGOm9Uy92x2m1zGZ7P921R9w.jpg"
-  },
-  {
-    id: 573435,
-    title: "Bad Boys: Ride or Die",
-    overview: "After their late former Captain is framed, Miami cops Mike Lowrey and Marcus Burnett go on the run to clear his name.",
-    release_date: "2024",
-    vote_average: 7.5,
-    backdrop_path: "/gRAkg8hLMy6vQgCSGZLVywDh9vi.jpg"
-  }
-];
+import { Link } from "react-router-dom";
+import { getTrending, getPopularMovies } from "./Apis";
 
 export default function HeroCarousel() {
-  const [slides, setSlides] = useState(FALLBACK_SLIDES);
+  const [movies, setMovies]         = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
-  const navigate = useNavigate();
+  const [loading, setLoading]       = useState(true);
   const timerRef = useRef(null);
 
+  /* ── Fetch ─────────────────────────────────────────────────────── */
   useEffect(() => {
-    let isMounted = true;
-    getPopularMovies()
-      .then((movies) => {
-        if (isMounted && movies && movies.length > 0) {
-          const validMovies = movies.filter(m => m.backdrop_path).slice(0, 8);
-          if (validMovies.length > 0) {
-            setSlides(validMovies);
-          }
-        }
-      })
-      .catch((err) => console.error("Failed to load hero carousel movies:", err));
-
-    return () => {
-      isMounted = false;
-    };
+    let alive = true;
+    (async () => {
+      try {
+        let results = await getTrending("week");
+        if (!results?.length) results = await getPopularMovies();
+        if (alive && results?.length) setMovies(results.slice(0, 8));
+      } catch (e) {
+        console.error("HeroCarousel:", e);
+      } finally {
+        if (alive) setLoading(false);
+      }
+    })();
+    return () => { alive = false; };
   }, []);
 
-  // Auto-rotate slides
+  /* ── Auto-advance ───────────────────────────────────────────────── */
   useEffect(() => {
-    if (isHovered || slides.length === 0) return;
+    if (!movies.length) return;
+    timerRef.current = setInterval(
+      () => setCurrentIndex(i => (i + 1) % movies.length),
+      7000
+    );
+    return () => clearInterval(timerRef.current);
+  }, [movies]);
 
-    timerRef.current = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
-    }, 5500);
+  const prev = () => setCurrentIndex(i => (i - 1 + movies.length) % movies.length);
+  const next = () => setCurrentIndex(i => (i + 1) % movies.length);
 
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [isHovered, slides.length]);
+  /* ── Loading skeleton ───────────────────────────────────────────── */
+  if (loading) {
+    return (
+      <div className="w-full h-[78vh] min-h-[580px] max-h-[880px] bg-zinc-900 animate-pulse flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-11 w-11 rounded-full border-2 border-red-600 border-t-transparent animate-spin" />
+          <p className="text-sm font-semibold tracking-widest text-zinc-500 uppercase">
+            Loading featured titles…
+          </p>
+        </div>
+      </div>
+    );
+  }
 
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % slides.length);
-  };
+  if (!movies.length) return null;
 
-  const handlePrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
-  };
+  const film = movies[currentIndex];
 
-  const currentSlide = slides[currentIndex] || slides[0];
+  const backdrop = film.backdrop_path
+    ? `https://image.tmdb.org/t/p/original${film.backdrop_path}`
+    : film.poster_path
+    ? `https://image.tmdb.org/t/p/original${film.poster_path}`
+    : null;
 
-  const getBackdropUrl = (slide) => {
-    if (!slide) return "";
-    if (slide.backdrop_path) {
-      if (slide.backdrop_path.startsWith("http")) return slide.backdrop_path;
-      return `https://image.tmdb.org/t/p/w1280${slide.backdrop_path}`;
-    }
-    return slide.backdropUrl || "";
-  };
+  const year = film.release_date
+    ? new Date(film.release_date).getFullYear()
+    : film.first_air_date
+    ? new Date(film.first_air_date).getFullYear()
+    : null;
 
+  const rating = film.vote_average ? film.vote_average.toFixed(1) : "—";
+  const title  = film.title || film.name || "Untitled";
+
+  /* ── Render ─────────────────────────────────────────────────────── */
   return (
-    <div
-      className="relative w-full h-[68vh] md:h-[78vh] lg:h-[84vh] min-h-[520px] max-h-[820px] overflow-hidden group bg-[#09090b] rounded-3xl border border-zinc-800/80 shadow-2xl"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Background Slides */}
-      {slides.map((slide, index) => {
-        const bgUrl = getBackdropUrl(slide);
-        const isActive = index === currentIndex;
-        return (
-          <div
-            key={slide.id || index}
-            className={`absolute inset-0 bg-cover bg-center transition-all duration-1000 ease-in-out transform ${
-              isActive ? "opacity-100 scale-100 z-10" : "opacity-0 scale-105 z-0 pointer-events-none"
-            }`}
-            style={{
-              backgroundImage: bgUrl ? `url(${bgUrl})` : "none",
-              backgroundColor: "#09090b"
-            }}
-          >
-            {/* Multilayered Seamless Hero Gradient Vignettes */}
-            <div 
-              className="absolute inset-0 z-10 pointer-events-none"
-              style={{
-                background: "linear-gradient(90deg, #09090b 0%, rgba(9,9,11,0.92) 35%, rgba(9,9,11,0.4) 70%, transparent 100%)"
-              }}
-            />
-            <div 
-              className="absolute inset-0 z-10 pointer-events-none"
-              style={{
-                background: "linear-gradient(0deg, #09090b 0%, rgba(9,9,11,0.85) 30%, transparent 70%)"
-              }}
-            />
-            <div 
-              className="absolute inset-0 z-10 pointer-events-none"
-              style={{
-                background: "radial-gradient(circle at 80% 20%, rgba(229, 9, 20, 0.18) 0%, transparent 55%)"
-              }}
-            />
+    <section className="relative w-full h-[78vh] min-h-[580px] max-h-[880px] overflow-hidden bg-zinc-950">
+
+      {/* ── 1. Background backdrop ─────────────────────────────────── */}
+      {backdrop && (
+        <img
+          key={backdrop}           /* re-mount on slide change for fade */
+          src={backdrop}
+          alt={title}
+          className="absolute inset-0 h-full w-full object-cover object-center
+                     animate-[fadeIn_0.8s_ease-in-out]"
+        />
+      )}
+
+      {/* ── 2. Gradient overlays ────────────────────────────────────── */}
+      {/* Left-to-right: black covers left content, fades right */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/70 to-transparent" />
+      {/* Top dark wash so navbar stays readable */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent" />
+      {/* Bottom fade — blends into the movie grid below */}
+      <div className="absolute inset-x-0 bottom-0 h-40
+                      bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent" />
+
+      {/* ── 3. Main content ─────────────────────────────────────────── */}
+      <div
+        className="relative z-10 h-full flex flex-col md:flex-row items-center justify-between py-12"
+        style={{ paddingLeft: 'clamp(1.5rem, 3vw, 4rem)', paddingRight: 'clamp(1.5rem, 3vw, 4rem)' }}
+      >
+
+        {/* ── Left column: all the text content ─────────────────────── */}
+        <div className="flex flex-col justify-center w-full" style={{ maxWidth: '680px' }}>
+
+          {/* Top Metadata Badges */}
+          <div className="flex flex-wrap items-center gap-3 mb-4">
+            {/* Featured Tag */}
+            <span className="bg-red-600 text-white font-semibold text-xs uppercase tracking-wider" style={{ borderRadius: '6px', padding: '6px 14px' }}>
+              #{currentIndex + 1} FEATURED MOVIE
+            </span>
+
+            {/* Year */}
+            {year && (
+              <span className="bg-white/10 backdrop-blur-md text-zinc-200 text-xs border border-white/10" style={{ borderRadius: '6px', padding: '6px 12px' }}>
+                {year}
+              </span>
+            )}
+
+            {/* Rating Badge */}
+            <span className="bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20 flex items-center gap-1.5" style={{ borderRadius: '6px', padding: '6px 12px' }}>
+              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              <span>{rating}</span>
+            </span>
+
+            {/* Resolution */}
+            <span className="bg-white/10 backdrop-blur-md text-zinc-200 text-xs border border-white/10" style={{ borderRadius: '6px', padding: '6px 12px' }}>
+              4K ULTRA HD
+            </span>
           </div>
-        );
-      })}
 
-      {/* Content Overlay - Generous spacing away from left & bottom edges */}
-      <div className="absolute inset-0 z-20 flex flex-col justify-end items-start text-left px-8 sm:px-12 md:px-16 lg:px-20 pb-10 sm:pb-14 md:pb-16 max-w-4xl">
-        
-        {/* Rating, Year & Tech Badges Bar */}
-        <div className="flex flex-wrap items-center gap-2 mb-3">
-          {/* TMDB Rating Pill */}
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black text-amber-300 bg-amber-500/20 border border-amber-500/40 backdrop-blur-xl shadow-md">
-            <svg className="w-3.5 h-3.5 fill-amber-400" viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-            {currentSlide?.vote_average ? currentSlide.vote_average.toFixed(1) : "8.5"}
-          </span>
+          {/* Title */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.0] drop-shadow-[0_4px_20px_rgba(0,0,0,1)]">
+            {title}
+          </h1>
 
-          {/* Release Year Pill */}
-          <span className="px-3 py-1 rounded-full text-xs font-extrabold text-red-300 bg-red-500/20 border border-red-500/40 backdrop-blur-xl shadow-md">
-            {currentSlide?.release_date?.split("-")[0] || currentSlide?.year || "2026"}
-          </span>
+          {/* Overview */}
+          <p className="mt-5 max-w-xl text-sm sm:text-base md:text-[17px] text-zinc-300 leading-relaxed line-clamp-3 drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+            {film.overview ||
+              "Stream this blockbuster exclusively in 4K Ultra HD on Nerio Stream."}
+          </p>
 
-          {/* Original Badge */}
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-zinc-200 bg-zinc-900/80 border border-zinc-700/80 backdrop-blur-xl shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
-            Nerio Original
-          </span>
+          {/* Call-to-Action (CTA) Buttons */}
+          <div className="flex items-center gap-4 mt-7">
+            {/* Play Now Button (Subtle 6px Rounded CTA) */}
+            <Link
+              to={`/movie/${film.id}`}
+              className="inline-flex items-center gap-3 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer select-none"
+              style={{
+                background: 'linear-gradient(135deg, #e50914 0%, #b81d24 100%)',
+                color: '#ffffff',
+                fontSize: '16px',
+                fontWeight: '700',
+                padding: '14px 28px',
+                borderRadius: '6px',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                boxShadow: '0 8px 25px rgba(229, 9, 20, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)',
+              }}
+            >
+              <svg className="w-5 h-5 fill-white shrink-0" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <span>Play Now</span>
+            </Link>
 
-          {/* 4K Ultra HD Badge */}
-          <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider text-zinc-300 bg-zinc-800/60 border border-zinc-700/60 backdrop-blur-md">
-            4K ULTRA HD
-          </span>
+            {/* More Info Button (Subtle 6px Glassmorphic CTA) */}
+            <Link
+              to={`/movie/${film.id}`}
+              className="inline-flex items-center gap-3 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer select-none"
+              style={{
+                background: 'rgba(255, 255, 255, 0.12)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                color: '#ffffff',
+                fontSize: '16px',
+                fontWeight: '600',
+                padding: '14px 28px',
+                borderRadius: '6px',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
+              }}
+            >
+              <svg className="w-5 h-5 fill-none stroke-white stroke-[2.2] shrink-0" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9" />
+                <path strokeLinecap="round" d="M12 8h.01M12 11v5" />
+              </svg>
+              <span>More Info</span>
+            </Link>
+          </div>
         </div>
 
-        {/* Hero Title - Balanced Size */}
-        <h1 
-          className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-3 tracking-tight break-words text-left max-w-3xl"
-          style={{
-            background: "linear-gradient(180deg, #ffffff 0%, #f4f4f5 65%, #a1a1aa 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            filter: "drop-shadow(0 8px 20px rgba(0, 0, 0, 0.95))"
-          }}
-        >
-          {currentSlide?.title || currentSlide?.name}
-        </h1>
+        {/* ── Right column: hidden — poster removed to avoid overlap ─── */}
+        {/*
+            The vertical poster was causing visual collision with the backdrop.
+            Intentionally removed from desktop layout per design spec.
+            Re-enable this block if a side-by-side layout is preferred later.
+        */}
+      </div>
 
-        {/* Hero Overview - Line Clamp 2 */}
-        <p className="text-zinc-300 text-xs sm:text-sm md:text-base leading-relaxed line-clamp-2 mb-6 max-w-2xl font-medium text-left drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-          {currentSlide?.overview || "Experience high definition ad-free streaming on Nerio Stream."}
-        </p>
+      {/* ── 4. Bottom indicator row ─────────────────────────────────── */}
+      <div
+        className="absolute bottom-7 inset-x-0 z-20 flex items-center justify-between"
+        style={{ paddingLeft: 'clamp(2.5rem, 6vw, 7rem)', paddingRight: 'clamp(2rem, 4vw, 5rem)' }}
+      >
 
-        {/* Action Buttons: Watch Now & Details - 100% Fully Visible */}
-        <div className="flex flex-wrap items-center gap-3.5 mb-5">
-          <button
-            onClick={() => navigate(`/movie/${currentSlide.id}`)}
-            className="flex items-center gap-2 px-6 py-2.5 md:py-3.5 rounded-xl bg-gradient-to-r from-red-600 via-red-500 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-[0_6px_20px_rgba(229,9,20,0.45)] transition-all hover:scale-[1.03] active:scale-95 cursor-pointer"
-          >
-            <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-            <span>WATCH NOW</span>
-          </button>
-
-          <Link
-            to={`/movie/${currentSlide.id}`}
-            className="flex items-center gap-2 px-5 py-2.5 md:py-3.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-700/80 text-white font-bold text-xs sm:text-sm uppercase tracking-wider backdrop-blur-xl transition-all hover:scale-[1.03] active:scale-95 shadow-md"
-          >
-            <svg className="w-4 h-4 stroke-zinc-300 fill-none" viewBox="0 0 24 24" strokeWidth="2.2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>DETAILS</span>
-          </Link>
-        </div>
-
-        {/* Pagination Dots */}
-        <div className="flex items-center gap-2">
-          {slides.map((_, index) => (
+        {/* Slide dots */}
+        <div className="flex items-center gap-2.5">
+          {movies.map((m, idx) => (
             <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              aria-label={`Go to slide ${index + 1}`}
-              className={`h-2 rounded-full transition-all duration-500 cursor-pointer ${
-                index === currentIndex 
-                  ? "w-8 bg-gradient-to-r from-red-500 to-rose-500 shadow-md shadow-red-500/50" 
-                  : "w-2 bg-white/30 hover:bg-white/60"
-              }`}
+              key={m.id}
+              onClick={() => setCurrentIndex(idx)}
+              aria-label={`Go to slide ${idx + 1}`}
+              className={`h-2.5 rounded-full transition-all duration-300
+                ${idx === currentIndex
+                  ? "w-8 bg-red-600 shadow-[0_0_10px_rgba(229,9,20,0.8)]"
+                  : "w-2.5 bg-white/30 hover:bg-white/60"}`}
             />
           ))}
         </div>
-      </div>
 
-      {/* Manual Navigation Arrows */}
-      <div className="absolute bottom-10 right-8 md:right-16 z-30 hidden sm:flex items-center gap-2.5">
-        <button
-          onClick={handlePrev}
-          aria-label="Previous slide"
-          className="w-10 h-10 rounded-full border border-zinc-700/80 bg-zinc-950/80 hover:bg-red-600 hover:border-red-500 text-white flex items-center justify-center backdrop-blur-xl transition-all hover:scale-110 active:scale-95 shadow-xl cursor-pointer group/btn"
-        >
-          <svg className="w-4 h-4 text-zinc-300 group-hover/btn:text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <button
-          onClick={handleNext}
-          aria-label="Next slide"
-          className="w-10 h-10 rounded-full border border-zinc-700/80 bg-zinc-950/80 hover:bg-red-600 hover:border-red-500 text-white flex items-center justify-center backdrop-blur-xl transition-all hover:scale-110 active:scale-95 shadow-xl cursor-pointer group/btn"
-        >
-          <svg className="w-4 h-4 text-zinc-300 group-hover/btn:text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+        {/* Prev / Next arrows */}
+        <div className="flex items-center gap-2">
+          {[{ fn: prev, icon: "‹", label: "Previous" },
+            { fn: next, icon: "›", label: "Next" }].map(({ fn, icon, label }) => (
+            <button
+              key={label}
+              onClick={fn}
+              aria-label={label}
+              className="flex h-10 w-10 items-center justify-center
+                         rounded-lg border border-white/20 bg-black/50
+                         text-white text-xl font-bold backdrop-blur-md
+                         hover:bg-red-600 hover:border-red-600
+                         transition-all duration-200 shadow-md"
+            >
+              {icon}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

@@ -149,7 +149,7 @@ function MovieSearchBar({ className = "" }) {
           <button
             type="submit"
             aria-label="Search"
-            className="absolute left-3.5 z-10 text-slate-400 hover:text-indigo-400 transition-colors cursor-pointer flex items-center justify-center p-0.5 border-0 bg-transparent outline-none"
+            className="absolute left-3.5 z-10 text-[#aaaaaa] hover:text-white transition-colors cursor-pointer flex items-center justify-center p-0.5 border-0 bg-transparent outline-none"
             title="Search"
           >
             <svg
@@ -184,7 +184,7 @@ function MovieSearchBar({ className = "" }) {
               outline: "none",
               boxShadow: "none",
             }}
-            className="w-full h-10 rounded-full border border-slate-700/80 bg-slate-900/95 text-xs sm:text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 hover:border-indigo-500/50 transition-all duration-200 shadow-inner"
+            className="w-full h-10 rounded-full border border-white/10 bg-[#17191d]/90 text-xs sm:text-sm text-white placeholder-[#aaaaaa] focus:outline-none focus:border-red-500/80 hover:border-red-500/40 transition-all duration-200 shadow-inner"
           />
 
           {/* Right Action: Loading Spinner or Clear Button Only */}

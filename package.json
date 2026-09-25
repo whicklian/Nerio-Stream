@@ -17,8 +17,9 @@
     "@capacitor/android": "^8.5.0",
     "@capacitor/core": "^8.5.0",
     "@capacitor/status-bar": "^8.0.3",
-    "hls.js": "^1.6.16",
+    "@dataconnect/generated": "file:src/dataconnect-generated",
     "firebase": "^10.14.0",
+    "hls.js": "^1.6.16",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.12.0"
