@@ -53,8 +53,10 @@ function Home() {
 
   return (
     <div className="home pb-8 w-full">
-      {/* 100% Edge-to-Edge Hero Banner - Zero Gaps/Spaces */}
-      <HeroCarousel />
+      {/* Hero Banner with Padding & Spacing */}
+      <div className="px-4 md:px-8 pt-4 pb-2">
+        <HeroCarousel />
+      </div>
 
       {/* Main Content Sections below Hero */}
       <div className="px-6 md:px-8 pt-4 space-y-8">

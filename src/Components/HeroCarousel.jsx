@@ -88,7 +88,7 @@ export default function HeroCarousel() {
 
   return (
     <div
-      className="relative w-full h-[70vh] md:h-[82vh] lg:h-[88vh] min-h-[560px] max-h-[880px] overflow-hidden group bg-[#09090b]"
+      className="relative w-full h-[68vh] md:h-[78vh] lg:h-[84vh] min-h-[520px] max-h-[820px] overflow-hidden group bg-[#09090b] rounded-3xl border border-zinc-800/80 shadow-2xl"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -130,11 +130,11 @@ export default function HeroCarousel() {
         );
       })}
 
-      {/* Content Overlay - Proportional sizing & no button clipping */}
-      <div className="absolute inset-0 z-20 flex flex-col justify-end items-start text-left px-6 md:px-8 pb-6 md:pb-8 max-w-3xl">
+      {/* Content Overlay - Generous spacing away from left & bottom edges */}
+      <div className="absolute inset-0 z-20 flex flex-col justify-end items-start text-left px-8 sm:px-12 md:px-16 lg:px-20 pb-10 sm:pb-14 md:pb-16 max-w-4xl">
         
         {/* Rating, Year & Tech Badges Bar */}
-        <div className="flex flex-wrap items-center gap-2 mb-2.5">
+        <div className="flex flex-wrap items-center gap-2 mb-3">
           {/* TMDB Rating Pill */}
           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black text-amber-300 bg-amber-500/20 border border-amber-500/40 backdrop-blur-xl shadow-md">
             <svg className="w-3.5 h-3.5 fill-amber-400" viewBox="0 0 24 24">
@@ -162,7 +162,7 @@ export default function HeroCarousel() {
 
         {/* Hero Title - Balanced Size */}
         <h1 
-          className="text-2xl sm:text-4xl md:text-5xl font-black leading-tight mb-2.5 tracking-tight break-words text-left max-w-2xl"
+          className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-3 tracking-tight break-words text-left max-w-3xl"
           style={{
             background: "linear-gradient(180deg, #ffffff 0%, #f4f4f5 65%, #a1a1aa 100%)",
             WebkitBackgroundClip: "text",
@@ -174,15 +174,15 @@ export default function HeroCarousel() {
         </h1>
 
         {/* Hero Overview - Line Clamp 2 */}
-        <p className="text-zinc-300 text-xs sm:text-sm md:text-base leading-relaxed line-clamp-2 mb-5 max-w-xl font-medium text-left drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+        <p className="text-zinc-300 text-xs sm:text-sm md:text-base leading-relaxed line-clamp-2 mb-6 max-w-2xl font-medium text-left drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
           {currentSlide?.overview || "Experience high definition ad-free streaming on Nerio Stream."}
         </p>
 
         {/* Action Buttons: Watch Now & Details - 100% Fully Visible */}
-        <div className="flex flex-wrap items-center gap-3 mb-4">
+        <div className="flex flex-wrap items-center gap-3.5 mb-5">
           <button
             onClick={() => navigate(`/movie/${currentSlide.id}`)}
-            className="flex items-center gap-2 px-6 py-2.5 md:py-3 rounded-xl bg-gradient-to-r from-red-600 via-red-500 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-[0_6px_20px_rgba(229,9,20,0.45)] transition-all hover:scale-[1.03] active:scale-95 cursor-pointer"
+            className="flex items-center gap-2 px-6 py-2.5 md:py-3.5 rounded-xl bg-gradient-to-r from-red-600 via-red-500 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-[0_6px_20px_rgba(229,9,20,0.45)] transition-all hover:scale-[1.03] active:scale-95 cursor-pointer"
           >
             <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
@@ -192,7 +192,7 @@ export default function HeroCarousel() {
 
           <Link
             to={`/movie/${currentSlide.id}`}
-            className="flex items-center gap-2 px-5 py-2.5 md:py-3 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-700/80 text-white font-bold text-xs sm:text-sm uppercase tracking-wider backdrop-blur-xl transition-all hover:scale-[1.03] active:scale-95 shadow-md"
+            className="flex items-center gap-2 px-5 py-2.5 md:py-3.5 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-700/80 text-white font-bold text-xs sm:text-sm uppercase tracking-wider backdrop-blur-xl transition-all hover:scale-[1.03] active:scale-95 shadow-md"
           >
             <svg className="w-4 h-4 stroke-zinc-300 fill-none" viewBox="0 0 24 24" strokeWidth="2.2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -219,7 +219,7 @@ export default function HeroCarousel() {
       </div>
 
       {/* Manual Navigation Arrows */}
-      <div className="absolute bottom-6 right-6 md:right-8 z-30 hidden sm:flex items-center gap-2.5">
+      <div className="absolute bottom-10 right-8 md:right-16 z-30 hidden sm:flex items-center gap-2.5">
         <button
           onClick={handlePrev}
           aria-label="Previous slide"
