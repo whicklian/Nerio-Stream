@@ -89,7 +89,7 @@ a:focus {
   text-decoration: underline;
 }
 
-button {
+button:not([class]) {
   font: inherit;
   color: inherit;
   background: transparent;

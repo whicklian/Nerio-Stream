@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { getPopularMovies, searchMovies, getGenres, getMoviesByGenre, getTrending, getTopRatedMovies } from "../Components/Apis";
 import { getContinueWatching } from "../utils";
 import MovieCard from "../Components/MovieCard";
 import { Link, useSearchParams } from "react-router-dom";
 import HeroCarousel from "../Components/HeroCarousel";
+
 import "../css/Home.css";
 
 const GENRE_ICONS = {
@@ -35,10 +36,15 @@ function Home() {
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [newReleases, setNewReleases] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
+  const [exploreMovies, setExploreMovies] = useState([]);
+  const [explorePage, setExplorePage] = useState(2);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [genres, setGenres] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState(null);
   const [loading, setLoading] = useState(true);
   const [continueWatching, setContinueWatching] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const sentinelRef = useRef(null);
 
   useEffect(() => {
     getGenres().then(setGenres).catch(console.error);
@@ -79,19 +85,51 @@ function Home() {
       }
   };
 
+  const handleLoadMoreMovies = useCallback(async () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    try {
+      const nextPage = explorePage + 1;
+      const res = await getPopularMovies(nextPage);
+      if (res && res.length > 0) {
+        setExploreMovies(prev => [...prev, ...res]);
+        setExplorePage(nextPage);
+      } else {
+        setHasMore(false);
+      }
+    } catch (err) {
+      console.error("Failed to load more movies:", err);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [loadingMore, hasMore, explorePage]);
+
+  // Infinite scroll — watch sentinel div
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) handleLoadMoreMovies();
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [handleLoadMoreMovies]);
+
   return (
-    <div className="home pb-8 w-full">
+    <div className="home w-full flex flex-col min-h-screen">
       {/* Hero Banner - full bleed, no padding */}
       <div className="w-full">
         <HeroCarousel />
       </div>
 
       {/* Main Content Sections below Hero */}
-      <div className="px-6 md:px-8 pt-4 space-y-8">
+      <div className="pt-4 flex-1" style={{ paddingLeft: 'clamp(1.25rem, 4vw, 4rem)', paddingRight: 'clamp(1.25rem, 4vw, 4rem)' }}>
         {/* Continue Watching Section */}
         {continueWatching.length > 0 && !searchQuery && !selectedGenre && (
             <div className="continue-watching-section rounded-2xl" style={{ padding: '1.5rem 4%', background: 'rgba(229, 9, 20, 0.05)', marginBottom: '1rem' }}>
-                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center gap-2 mb-5">
                   <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
                   <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                     Continue Watching
@@ -119,9 +157,9 @@ function Home() {
         )}
 
         {/* Category Explorer */}
-        <div className="genres-section" style={{ padding: '0.5rem 0', marginBottom: '1.5rem' }}>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
+        <div className="genres-section" style={{ marginTop: '1.5rem', marginBottom: '2.5rem' }}>
+            <div className="flex items-center justify-between mb-5 md:mb-6" style={{ marginBottom: '1.25rem' }}>
+              <div className="flex items-center gap-2.5">
                 <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
                 <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                   Browse by Genre
@@ -137,7 +175,7 @@ function Home() {
               )}
             </div>
 
-            <div className="flex overflow-x-auto whitespace-nowrap scrollbar-hide py-2.5 px-1 gap-3.5" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+            <div className="flex overflow-x-auto whitespace-nowrap scrollbar-hide py-2 px-1 gap-3" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
                 {genres.map(genre => {
                     const isSelected = selectedGenre === genre.id;
                     const icon = GENRE_ICONS[genre.name] || "🎬";
@@ -161,16 +199,17 @@ function Home() {
                     );
                 })}
             </div>
-        </div>
+          </div>
+
 
         {/* ── Main Organized Rows (when browsing default feed) ── */}
         {!searchQuery && !selectedGenre ? (
-          <div className="space-y-10">
-            {/* 1. Trending Now Row */}
+          <div className="flex flex-col" style={{ gap: '2rem' }}>
+            {/* 1. Trending Now Section */}
             {trendingMovies.length > 0 && (
-              <div className="section-row">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
+              <section className="section-row" style={{ marginTop: '1rem', marginBottom: '2rem' }}>
+                <div className="flex items-center justify-between mb-5 md:mb-6" style={{ marginBottom: '1.25rem' }}>
+                  <div className="flex items-center gap-2.5">
                     <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
                     <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                       Trending Now
@@ -185,8 +224,8 @@ function Home() {
                 </div>
                 
                 <div 
-                  className="flex gap-4 overflow-x-auto scrollbar-hide py-2 px-1 scroll-smooth pb-4" 
-                  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
+                  className="flex gap-4 overflow-x-auto scrollbar-hide py-2.5 scroll-smooth pb-3" 
+                  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', paddingLeft: '2px', paddingRight: '2px' }}
                 >
                   {trendingMovies.map((movie) => (
                     <div key={`trending-${movie.id}`} className="w-40 sm:w-44 md:w-52 shrink-0">
@@ -194,14 +233,14 @@ function Home() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </section>
             )}
 
-            {/* 2. New Releases Row */}
+            {/* 2. New Releases Section */}
             {newReleases.length > 0 && (
-              <div className="section-row">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
+              <section className="section-row" style={{ marginTop: '1rem', marginBottom: '2rem' }}>
+                <div className="flex items-center justify-between mb-5 md:mb-6" style={{ marginBottom: '1.25rem' }}>
+                  <div className="flex items-center gap-2.5">
                     <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
                     <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                       New Releases
@@ -216,8 +255,8 @@ function Home() {
                 </div>
                 
                 <div 
-                  className="flex gap-4 overflow-x-auto scrollbar-hide py-2 px-1 scroll-smooth pb-4" 
-                  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
+                  className="flex gap-4 overflow-x-auto scrollbar-hide py-2.5 scroll-smooth pb-3" 
+                  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', paddingLeft: '2px', paddingRight: '2px' }}
                 >
                   {newReleases.map((movie) => (
                     <div key={`new-${movie.id}`} className="w-40 sm:w-44 md:w-52 shrink-0">
@@ -225,14 +264,14 @@ function Home() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </section>
             )}
 
-            {/* 3. Top Rated Row */}
+            {/* 3. Top Rated Section */}
             {topRatedMovies.length > 0 && (
-              <div className="section-row">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
+              <section className="section-row" style={{ marginTop: '1rem', marginBottom: '2rem' }}>
+                <div className="flex items-center justify-between mb-5 md:mb-6" style={{ marginBottom: '1.25rem' }}>
+                  <div className="flex items-center gap-2.5">
                     <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
                     <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                       Top Rated
@@ -247,8 +286,8 @@ function Home() {
                 </div>
                 
                 <div 
-                  className="flex gap-4 overflow-x-auto scrollbar-hide py-2 px-1 scroll-smooth pb-4" 
-                  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
+                  className="flex gap-4 overflow-x-auto scrollbar-hide py-2.5 scroll-smooth pb-3" 
+                  style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', paddingLeft: '2px', paddingRight: '2px' }}
                 >
                   {topRatedMovies.map((movie) => (
                     <div key={`top-${movie.id}`} className="w-40 sm:w-44 md:w-52 shrink-0">
@@ -256,8 +295,41 @@ function Home() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </section>
             )}
+
+            {/* 4. More Movies to Explore Section (Dynamically loaded) */}
+            {exploreMovies.length > 0 && (
+              <section className="section-row" style={{ marginTop: '1rem', marginBottom: '2rem' }}>
+                <div className="flex items-center justify-between mb-5 md:mb-6" style={{ marginBottom: '1.25rem' }}>
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
+                    <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                      More Movies to Explore
+                    </h2>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-6">
+                  {exploreMovies.map((movie, idx) => (
+                    <MovieCard movie={movie} key={`explore-${movie.id}-${idx}`} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* ── Infinite scroll sentinel ── */}
+            <div ref={sentinelRef} className="w-full py-10 flex flex-col items-center justify-center gap-3">
+              {loadingMore && (
+                <div className="flex items-center gap-3 text-zinc-400 text-sm">
+                  <div className="w-5 h-5 rounded-full border-2 border-zinc-700 border-t-red-500 animate-spin" />
+                  <span>Loading more movies…</span>
+                </div>
+              )}
+              {!hasMore && !loadingMore && (
+                <p className="text-zinc-600 text-xs tracking-widest uppercase">You've seen it all</p>
+              )}
+            </div>
           </div>
         ) : (
           /* ── Filtered Search / Genre Grid View ── */
@@ -288,6 +360,8 @@ function Home() {
           </div>
         )}
       </div>
+
+
     </div>
   );
 }

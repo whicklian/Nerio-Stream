@@ -51,6 +51,7 @@ body {
 #root {
   width: 100%;
   min-height: 100vh;
+  height: 100vh;
 }
 
 /* safe-area utilities for mobile devices (notches, status bars, and bottom insets) */
