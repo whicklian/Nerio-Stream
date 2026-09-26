@@ -1,12 +1,12 @@
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
 
-// ─── Embed URLs (vidsrc.to) ────────────────────────────────────────────────
+// ─── Embed URLs (vidsrc.me) ────────────────────────────────────────────────
 export const getMovieEmbedUrl = (tmdbId) =>
-    `https://vidsrc.to/embed/movie/${tmdbId}`;
+    `https://vidsrc.me/embed/movie?tmdb=${tmdbId}`;
 
 export const getTVEpisodeEmbedUrl = (tmdbId, season, episode) =>
-    `https://vidsrc.to/embed/tv/${tmdbId}/${season}/${episode}`;
+    `https://vidsrc.me/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}`;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 async function fetchJSON(url) {

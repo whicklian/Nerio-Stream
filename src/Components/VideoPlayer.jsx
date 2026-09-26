@@ -4,17 +4,18 @@ import "../css/VideoPlayer.css";
 import { getCustomStreamUrl, saveCustomStreamUrl } from "../utils";
 
 export function getMoviePlayerSrc(id) {
-    return `https://vidsrc.to/embed/movie/${id}`;
+    return `https://vidsrc.me/embed/movie?tmdb=${id}`;
 }
 
 export function getTVPlayerSrc(id, season, episode) {
     const s = season || 1;
     const e = episode || 1;
-    return `https://vidsrc.to/embed/tv/${id}/${s}/${e}`;
+    return `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`;
 }
 
 export function getMovieAllSources(id) {
     return [
+        `https://vidsrc.me/embed/movie?tmdb=${id}`,
         `https://vidsrc.to/embed/movie/${id}`,
         `https://vidsrc.xyz/embed/movie?tmdb=${id}`,
         `https://autoembed.cc/embed/tmdb/movie-${id}`,
@@ -27,6 +28,7 @@ export function getTVAllSources(id, season, episode) {
     const s = season || 1;
     const e = episode || 1;
     return [
+        `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
         `https://vidsrc.to/embed/tv/${id}/${s}/${e}`,
         `https://vidsrc.xyz/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
         `https://autoembed.cc/embed/tmdb/tv-${id}-${s}-${e}`,
