@@ -19,7 +19,7 @@ function Trending() {
     }, [timeWindow]);
 
     return (
-        <div className="home px-6 md:px-8 py-6">
+        <div className="home px-3 sm:px-4 md:px-8 py-4 sm:py-6">
             <div className="hero-section" style={{ paddingBottom: "2rem" }}>
                 <h1 className="hero-title">🔥 Trending Now</h1>
                 <p className="hero-subtitle">The most popular movies everyone's watching right now.</p>
@@ -45,8 +45,8 @@ function Trending() {
                     <p>Loading trending movies...</p>
                 </div>
             ) : (
-                <div className="px-6 md:px-8 py-6">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+                <div className="px-0 py-4 sm:py-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-5 md:gap-6">
                         {movies.map(movie => (
                             <MovieCard movie={movie} key={movie.id} />
                         ))}
