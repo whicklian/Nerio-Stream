@@ -105,7 +105,7 @@ export default function HeroCarousel() {
         <div className="flex flex-col justify-end md:justify-center w-full" style={{ maxWidth: '700px', marginTop: '1rem', marginBottom: '1rem', marginLeft: 'clamp(0.75rem, 2.5vw, 2.5rem)' }}>
 
           {/* Top Metadata Badges */}
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-3 sm:mb-4 md:mb-5">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-5 md:mb-6">
             {/* Featured Tag */}
             <span className="bg-red-600 text-white font-semibold text-xs uppercase tracking-wider" style={{ borderRadius: '6px', padding: '6px 14px' }}>
               #{currentIndex + 1} FEATURED MOVIE
@@ -133,18 +133,18 @@ export default function HeroCarousel() {
           </div>
 
           {/* Title */}
-          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-black text-white tracking-tight leading-[0.95] drop-shadow-[0_4px_20px_rgba(0,0,0,1)]">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-black text-white tracking-tight leading-[0.95] drop-shadow-[0_4px_20px_rgba(0,0,0,1)] mb-3 sm:mb-4 md:mb-5">
             {title}
           </h1>
 
           {/* Overview */}
-          <p className="mt-2 sm:mt-3 md:mt-5 max-w-xl text-[11px] sm:text-sm md:text-[17px] text-zinc-300 leading-relaxed line-clamp-2 sm:line-clamp-3 drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+          <p className="mt-0 max-w-xl text-[11px] sm:text-sm md:text-[17px] text-zinc-300 leading-relaxed line-clamp-2 sm:line-clamp-3 drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] mb-5 sm:mb-6 md:mb-8">
             {film.overview ||
               "Stream this blockbuster exclusively in 4K Ultra HD on Nerio Stream."}
           </p>
 
           {/* Call-to-Action (CTA) Buttons */}
-          <div className="flex items-center flex-wrap gap-3 sm:gap-4 mt-5 sm:mt-6 md:mt-8">
+          <div className="flex items-center flex-wrap gap-3 sm:gap-4 md:gap-5 mt-0">
             {/* Play Now Button (Subtle 6px Rounded CTA) */}
             <Link
               to={`/movie/${film.id}`}
