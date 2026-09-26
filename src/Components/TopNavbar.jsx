@@ -7,6 +7,7 @@ import MovieSearchBar from "./MovieSearchBar";
 function TopNavbar({ toggleSidebar, isSidebarOpen }) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { currentUser } = useAuth();
+  const isAuthenticated = !!currentUser && !currentUser.isGuest;
 
   return (
     <>
@@ -88,7 +89,7 @@ function TopNavbar({ toggleSidebar, isSidebarOpen }) {
 
         {/* ── RIGHT: Avatar or Sign In ───────────────────────────── */}
         <div className="shrink-0 flex items-center ml-auto pr-3 sm:pr-5 md:pr-7 pl-2 mr-1 sm:mr-2">
-          {currentUser ? (
+          {isAuthenticated ? (
             <Link
               to="/profile"
               title="View Profile"

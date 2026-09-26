@@ -9,7 +9,8 @@ function Profile() {
     const [history, setHistory] = useState([]);
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const { currentUser, userProfile, logout } = useAuth();
-    
+    const isAuthenticated = !!currentUser && !currentUser.isGuest;
+
     useEffect(() => {
         if (userProfile?.continueWatching && Array.isArray(userProfile.continueWatching)) {
             setHistory(userProfile.continueWatching);
@@ -36,17 +37,17 @@ function Profile() {
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">
-                                {currentUser ? (currentUser.displayName || currentUser.email?.split("@")[0]) : "Guest User"}
+                                {isAuthenticated ? (currentUser.displayName || currentUser.email?.split("@")[0]) : "Guest User"}
                             </h1>
                         </div>
                         <p className="text-xs md:text-sm text-zinc-400">
-                            {currentUser ? currentUser.email : "Signed in as Guest. Sign in to access your account."}
+                            {isAuthenticated ? currentUser.email : "Signed in as Guest. Sign in to access your account."}
                         </p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3 relative z-10 w-full md:w-auto justify-end md:justify-center">
-                    {currentUser ? (
+                    {isAuthenticated ? (
                         <button
                             onClick={logout}
                             className="inline-flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-95 cursor-pointer select-none whitespace-nowrap"
