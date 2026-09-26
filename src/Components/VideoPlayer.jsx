@@ -718,9 +718,7 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
                                             ref={similarSentinelRef}
                                             className="h-px w-full overflow-hidden opacity-0"
                                             aria-hidden="true"
-                                        >
-                                            {loadingMoreSimilar ? "Loading more..." : ""}
-                                        </div>
+                                        />
                                     )}
                                 </div>
                             )}
