@@ -30,6 +30,7 @@ function Home() {
   const [continueWatching, setContinueWatching] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const sentinelRef = useRef(null);
+  const genreRowRefs = useRef({});
 
   useEffect(() => {
     getTrending("week").then(res => setTrendingMovies(res || [])).catch(console.error);
@@ -62,18 +63,16 @@ function Home() {
   }, []);
 
   const handleLoadMoreGenre = useCallback(async (genreId) => {
+    const row = genreRows.find((item) => item.id === genreId);
+    if (!row || row.isLoadingMore || !row.hasMore) return;
+
     setGenreRows((prev) =>
-      prev.map((row) =>
-        row.id === genreId
-          ? { ...row, isLoadingMore: true }
-          : row
+      prev.map((item) =>
+        item.id === genreId ? { ...item, isLoadingMore: true } : item
       )
     );
 
     try {
-      const row = genreRows.find((item) => item.id === genreId);
-      if (!row) return;
-
       const nextPage = (row.page || 1) + 1;
       const moreMovies = await getMoviesByGenre(genreId, nextPage);
 
@@ -102,6 +101,29 @@ function Home() {
       );
     }
   }, [genreRows]);
+
+  useEffect(() => {
+    const refs = Object.values(genreRowRefs.current).filter(Boolean);
+    if (refs.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          const genreId = Number(entry.target.dataset.genreId);
+          const row = genreRows.find((item) => item.id === genreId);
+          if (!row || row.isLoadingMore || !row.hasMore) return;
+
+          handleLoadMoreGenre(genreId);
+        });
+      },
+      { rootMargin: "200px", threshold: 0.1 }
+    );
+
+    refs.forEach((ref) => observer.observe(ref));
+    return () => observer.disconnect();
+  }, [genreRows, handleLoadMoreGenre]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -232,7 +254,15 @@ function Home() {
             {/* 2. Genre-based Collections */}
             {genreRows.map((row) => (
               row.movies.length > 0 && (
-                <section key={row.title} className="section-row" style={{ marginTop: '1rem', marginBottom: '2rem' }}>
+                <section
+                  key={row.title}
+                  ref={(el) => {
+                    if (el) genreRowRefs.current[row.id] = el;
+                  }}
+                  data-genre-id={row.id}
+                  className="section-row"
+                  style={{ marginTop: '1rem', marginBottom: '2rem' }}
+                >
                   <div className="flex items-center justify-between mb-5 md:mb-6" style={{ marginBottom: '1.25rem' }}>
                     <div className="flex items-center gap-2.5">
                       <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
@@ -240,17 +270,6 @@ function Home() {
                         {row.title}
                       </h2>
                     </div>
-
-                    {row.hasMore && (
-                      <button
-                        type="button"
-                        onClick={() => handleLoadMoreGenre(row.id)}
-                        disabled={row.isLoadingMore}
-                        className="text-xs sm:text-sm font-semibold text-red-500 hover:text-red-400 disabled:text-zinc-500 transition-colors"
-                      >
-                        {row.isLoadingMore ? "Loading..." : "Load More"}
-                      </button>
-                    )}
                   </div>
 
                   <div
@@ -263,6 +282,13 @@ function Home() {
                       </div>
                     ))}
                   </div>
+
+                  {row.isLoadingMore && (
+                    <div className="mt-3 flex items-center justify-center text-sm text-zinc-400">
+                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-zinc-700 border-t-red-500" />
+                      Loading more...
+                    </div>
+                  )}
                 </section>
               )
             ))}

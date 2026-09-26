@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getTVShows, getTVByGenre } from "../Components/Apis";
 import { getContinueWatching } from "../utils";
 import TVCard from "../Components/TVCard";
@@ -19,20 +19,21 @@ function TVShows() {
     const [genreRows, setGenreRows] = useState([]);
     const [loading, setLoading] = useState(true);
     const [continueWatching, setContinueWatching] = useState([]);
+    const genreRowRefs = useRef({});
 
     const handleLoadMoreTVGenre = async (genreId) => {
+        const row = genreRows.find((item) => item.id === genreId);
+        if (!row || row.isLoadingMore || !row.hasMore) return;
+
         setGenreRows((prev) =>
-            prev.map((row) =>
-                row.id === genreId
-                    ? { ...row, isLoadingMore: true }
-                    : row
+            prev.map((item) =>
+                item.id === genreId
+                    ? { ...item, isLoadingMore: true }
+                    : item
             )
         );
 
         try {
-            const row = genreRows.find((item) => item.id === genreId);
-            if (!row) return;
-
             const nextPage = (row.page || 1) + 1;
             const moreShows = await getTVByGenre(genreId, nextPage);
 
@@ -61,6 +62,29 @@ function TVShows() {
             );
         }
     };
+
+    useEffect(() => {
+        const refs = Object.values(genreRowRefs.current).filter(Boolean);
+        if (refs.length === 0) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+
+                    const genreId = Number(entry.target.dataset.genreId);
+                    const row = genreRows.find((item) => item.id === genreId);
+                    if (!row || row.isLoadingMore || !row.hasMore) return;
+
+                    handleLoadMoreTVGenre(genreId);
+                });
+            },
+            { rootMargin: "200px", threshold: 0.1 }
+        );
+
+        refs.forEach((ref) => observer.observe(ref));
+        return () => observer.disconnect();
+    }, [genreRows, handleLoadMoreTVGenre]);
 
     useEffect(() => {
         const loadInitial = async () => {
@@ -163,23 +187,20 @@ function TVShows() {
                         )}
 
                         {genreRows.map((row) => (
-                            <section key={row.title} className="section-row" style={{ marginTop: '1rem', marginBottom: '2rem' }}>
+                            <section
+                                key={row.title}
+                                ref={(el) => {
+                                    if (el) genreRowRefs.current[row.id] = el;
+                                }}
+                                data-genre-id={row.id}
+                                className="section-row"
+                                style={{ marginTop: '1rem', marginBottom: '2rem' }}
+                            >
                                 <div className="flex items-center justify-between mb-5 md:mb-6" style={{ marginBottom: '1.25rem' }}>
                                     <div className="flex items-center gap-2.5">
                                         <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
                                         <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">{row.title}</h2>
                                     </div>
-
-                                    {row.hasMore && (
-                                        <button
-                                            type="button"
-                                            onClick={() => handleLoadMoreTVGenre(row.id)}
-                                            disabled={row.isLoadingMore}
-                                            className="text-xs sm:text-sm font-semibold text-red-500 hover:text-red-400 disabled:text-zinc-500 transition-colors"
-                                        >
-                                            {row.isLoadingMore ? "Loading..." : "Load More"}
-                                        </button>
-                                    )}
                                 </div>
 
                                 <div className="flex gap-4 overflow-x-auto scrollbar-hide py-2.5 scroll-smooth pb-3" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', paddingLeft: '2px', paddingRight: '2px' }}>
@@ -189,6 +210,13 @@ function TVShows() {
                                         </div>
                                     ))}
                                 </div>
+
+                                {row.isLoadingMore && (
+                                    <div className="mt-3 flex items-center justify-center text-sm text-zinc-400">
+                                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-zinc-700 border-t-red-500" />
+                                        Loading more...
+                                    </div>
+                                )}
                             </section>
                         ))}
 
