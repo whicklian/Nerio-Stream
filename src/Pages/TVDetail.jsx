@@ -127,6 +127,15 @@ function TVDetail() {
         }
     };
 
+    const handleBack = () => {
+        const referrer = document.referrer;
+        if (referrer && referrer.startsWith(window.location.origin)) {
+            navigate(-1);
+            return;
+        }
+        navigate('/tv');
+    };
+
     const toggleSubscribe = () => {
         setSubscribed(!subscribed);
         alert(subscribed ? "Unsubscribed from notifications." : "You will now be notified when new episodes air!");
@@ -228,7 +237,7 @@ function TVDetail() {
             </div>
 
             <div className="detail-content">
-                <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
+                <button className="back-btn" onClick={handleBack}>← Back</button>
 
                 <div className="detail-main">
                     {/* Poster */}

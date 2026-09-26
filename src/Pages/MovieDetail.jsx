@@ -107,6 +107,15 @@ function MovieDetail() {
         setShowPlayer(true);
     };
 
+    const handleBack = () => {
+        const referrer = document.referrer;
+        if (referrer && referrer.startsWith(window.location.origin)) {
+            navigate(-1);
+            return;
+        }
+        navigate('/');
+    };
+
     const downloadMovie = async () => {
         if (!movie) return;
         const queued = queueMovieDownload(movie);
@@ -174,7 +183,7 @@ function MovieDetail() {
             </div>
 
             <div className="detail-content">
-                <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
+                <button className="back-btn" onClick={handleBack}>← Back</button>
 
                 <div className="detail-main">
                     {/* Poster */}

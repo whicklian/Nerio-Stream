@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { getPopularMovies, searchMovies, getGenres, getMoviesByGenre, getTrending, getTopRatedMovies } from "../Components/Apis";
+import { getPopularMovies, searchMovies, getMoviesByGenre, getTrending, getTopRatedMovies } from "../Components/Apis";
 import { getContinueWatching } from "../utils";
 import MovieCard from "../Components/MovieCard";
 import { Link, useSearchParams } from "react-router-dom";
@@ -7,27 +7,13 @@ import HeroCarousel from "../Components/HeroCarousel";
 
 import "../css/Home.css";
 
-const GENRE_ICONS = {
-  Action: "💥",
-  Adventure: "🤠",
-  Animation: "🎨",
-  Comedy: "😂",
-  Crime: "🕵️",
-  Documentary: "📹",
-  Drama: "🎭",
-  Family: "👨‍👩‍👧‍👦",
-  Fantasy: "🧙‍♂️",
-  History: "📜",
-  Horror: "😱",
-  Music: "🎵",
-  Mystery: "🔍",
-  Romance: "💖",
-  "Science Fiction": "🚀",
-  "TV Movie": "📺",
-  Thriller: "⚡",
-  War: "🪖",
-  Western: "🤠",
-};
+const DEFAULT_GENRE_ROWS = [
+  { id: 28, title: "Action Hits" },
+  { id: 35, title: "Comedy Picks" },
+  { id: 878, title: "Sci‑Fi Adventures" },
+  { id: 18, title: "Drama Stories" },
+  { id: 53, title: "Thriller & Suspense" }
+];
 
 function Home() {
   const [searchParams] = useSearchParams();
@@ -39,19 +25,36 @@ function Home() {
   const [exploreMovies, setExploreMovies] = useState([]);
   const [explorePage, setExplorePage] = useState(2);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [genres, setGenres] = useState([]);
-  const [selectedGenre, setSelectedGenre] = useState(null);
+  const [genreRows, setGenreRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [continueWatching, setContinueWatching] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const sentinelRef = useRef(null);
 
   useEffect(() => {
-    getGenres().then(setGenres).catch(console.error);
     getTrending("week").then(res => setTrendingMovies(res || [])).catch(console.error);
     getPopularMovies(1).then(res => setNewReleases(res || [])).catch(console.error);
     getTopRatedMovies(1).then(res => setTopRatedMovies(res || [])).catch(console.error);
     setContinueWatching(getContinueWatching());
+
+    const fetchGenreRows = async () => {
+      try {
+        const rows = await Promise.all(
+          DEFAULT_GENRE_ROWS.map(async ({ id, title }) => {
+            const movies = await getMoviesByGenre(id);
+            return {
+              title,
+              movies: (movies || []).slice(0, 8)
+            };
+          })
+        );
+        setGenreRows(rows);
+      } catch (err) {
+        console.error("Failed to load genre rows:", err);
+      }
+    };
+
+    fetchGenreRows();
   }, []);
 
   useEffect(() => {
@@ -60,9 +63,6 @@ function Home() {
       try {
         if (searchQuery) {
           const results = await searchMovies(searchQuery);
-          setMovies(results);
-        } else if (selectedGenre) {
-          const results = await getMoviesByGenre(selectedGenre);
           setMovies(results);
         } else {
           const popularMovies = await getPopularMovies();
@@ -75,15 +75,7 @@ function Home() {
       }
     };
     fetchData();
-  }, [searchQuery, selectedGenre]);
-
-  const handleGenreSelect = (genreId) => {
-      if (selectedGenre === genreId) {
-          setSelectedGenre(null);
-      } else {
-          setSelectedGenre(genreId);
-      }
-  };
+  }, [searchQuery]);
 
   const handleLoadMoreMovies = useCallback(async () => {
     if (loadingMore || !hasMore) return;
@@ -127,7 +119,7 @@ function Home() {
       {/* Main Content Sections below Hero */}
       <div className="pt-4 flex-1" style={{ paddingLeft: 'clamp(0.75rem, 4vw, 4rem)', paddingRight: 'clamp(0.75rem, 4vw, 4rem)' }}>
         {/* Continue Watching Section */}
-        {continueWatching.length > 0 && !searchQuery && !selectedGenre && (
+        {continueWatching.length > 0 && !searchQuery && (
             <div className="continue-watching-section rounded-2xl" style={{ padding: '1.5rem 4%', background: 'rgba(229, 9, 20, 0.05)', marginBottom: '1rem' }}>
                 <div className="flex items-center gap-2 mb-5">
                   <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
@@ -156,54 +148,8 @@ function Home() {
             </div>
         )}
 
-        {/* Category Explorer */}
-        <div className="genres-section" style={{ marginTop: '1.5rem', marginBottom: '2.5rem' }}>
-            <div className="flex items-center justify-between mb-5 md:mb-6" style={{ marginBottom: '1.25rem' }}>
-              <div className="flex items-center gap-2.5">
-                <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
-                <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                  Browse by Genre
-                </h2>
-              </div>
-              {selectedGenre && (
-                <button
-                  onClick={() => setSelectedGenre(null)}
-                  className="text-xs font-semibold text-red-400 hover:text-red-300 bg-red-600/10 hover:bg-red-600/20 border border-red-500/20 px-3 py-1.5 rounded-full transition-all"
-                >
-                  Clear Selection ✕
-                </button>
-              )}
-            </div>
-
-            <div className="flex overflow-x-auto whitespace-nowrap scrollbar-hide py-2 px-1 gap-3" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
-                {genres.map(genre => {
-                    const isSelected = selectedGenre === genre.id;
-                    const icon = GENRE_ICONS[genre.name] || "🎬";
-                    return (
-                        <button 
-                            key={genre.id} 
-                            className={`relative flex items-center gap-3 px-5 py-3 rounded-xl transition-all duration-300 ease-in-out shrink-0 overflow-hidden group cursor-pointer ${
-                              isSelected 
-                                ? 'bg-gradient-to-r from-red-600 to-rose-600 border-2 border-red-500 shadow-[0_0_24px_rgba(229,9,20,0.5)] scale-105 z-10 text-white' 
-                                : 'bg-zinc-900/90 border border-zinc-800/80 hover:bg-zinc-800/90 hover:scale-105 hover:border-red-500/40 text-zinc-300 hover:text-white'
-                            }`}
-                            onClick={() => {
-                                handleGenreSelect(genre.id);
-                            }}
-                        >
-                            <span className="text-lg shrink-0">{icon}</span>
-                            <span className="font-bold text-sm tracking-wide">
-                                {genre.name}
-                            </span>
-                        </button>
-                    );
-                })}
-            </div>
-          </div>
-
-
         {/* ── Main Organized Rows (when browsing default feed) ── */}
-        {!searchQuery && !selectedGenre ? (
+        {!searchQuery ? (
           <div className="flex flex-col" style={{ gap: '2rem' }}>
             {/* 1. Trending Now Section */}
             {trendingMovies.length > 0 && (
@@ -236,7 +182,34 @@ function Home() {
               </section>
             )}
 
-            {/* 2. New Releases Section */}
+            {/* 2. Genre-based Collections */}
+            {genreRows.map((row) => (
+              row.movies.length > 0 && (
+                <section key={row.title} className="section-row" style={{ marginTop: '1rem', marginBottom: '2rem' }}>
+                  <div className="flex items-center justify-between mb-5 md:mb-6" style={{ marginBottom: '1.25rem' }}>
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
+                      <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                        {row.title}
+                      </h2>
+                    </div>
+                  </div>
+
+                  <div
+                    className="flex gap-4 overflow-x-auto scrollbar-hide py-2.5 scroll-smooth pb-3"
+                    style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', paddingLeft: '2px', paddingRight: '2px' }}
+                  >
+                    {row.movies.map((movie) => (
+                      <div key={`${row.title}-${movie.id}`} className="w-40 sm:w-44 md:w-52 shrink-0">
+                        <MovieCard movie={movie} />
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )
+            ))}
+
+            {/* 3. New Releases Section */}
             {newReleases.length > 0 && (
               <section className="section-row" style={{ marginTop: '1rem', marginBottom: '2rem' }}>
                 <div className="flex items-center justify-between mb-5 md:mb-6" style={{ marginBottom: '1.25rem' }}>
@@ -267,7 +240,7 @@ function Home() {
               </section>
             )}
 
-            {/* 3. Top Rated Section */}
+            {/* 4. Top Rated Section */}
             {topRatedMovies.length > 0 && (
               <section className="section-row" style={{ marginTop: '1rem', marginBottom: '2rem' }}>
                 <div className="flex items-center justify-between mb-5 md:mb-6" style={{ marginBottom: '1.25rem' }}>
@@ -332,13 +305,12 @@ function Home() {
             </div>
           </div>
         ) : (
-          /* ── Filtered Search / Genre Grid View ── */
           <div className="px-0 py-4 my-4">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 pb-3 border-b border-zinc-800/80 gap-2">
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
                 <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                  {searchQuery ? `Results for "${searchQuery}"` : "Category Movies"}
+                  Results for "{searchQuery}"
                 </h2>
               </div>
             </div>
@@ -360,8 +332,6 @@ function Home() {
           </div>
         )}
       </div>
-
-
     </div>
   );
 }
