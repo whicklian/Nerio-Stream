@@ -57,8 +57,15 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
     const hlsRef = useRef(null);
 
     const sources = allSources.length ? allSources : [src];
-    const [srcIndex, setSrcIndex] = useState(0);
+    const directSourceIndex = sources.findIndex((url) => typeof url === "string" && !/(vidsrc|embed|multiembed|autoembed|2embed|youtube\.com\/embed)/i.test(url));
+    const [srcIndex, setSrcIndex] = useState(Math.max(0, directSourceIndex >= 0 ? directSourceIndex : 0));
     const currentSrc = sources[srcIndex] || src;
+
+    useEffect(() => {
+        if (directSourceIndex >= 0 && srcIndex !== directSourceIndex) {
+            setSrcIndex(directSourceIndex);
+        }
+    }, [directSourceIndex, srcIndex]);
 
     const isIframeEmbed = currentSrc.includes("vidsrc") || currentSrc.includes("embed") || currentSrc.includes("multiembed") || currentSrc.includes("autoembed") || currentSrc.includes("2embed") || currentSrc.includes("youtube.com/embed");
 
