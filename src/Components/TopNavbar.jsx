@@ -11,7 +11,7 @@ function TopNavbar({ toggleSidebar, isSidebarOpen }) {
   return (
     <>
       {/* Single header — all horizontal spacing controlled here with px-* */}
-      <header className="fixed top-0 left-0 w-full h-16 sm:h-20 md:h-24 bg-[#0d0d11]/85 border-b border-white/10 z-[70] flex items-center px-3 sm:px-5 md:px-8 lg:px-12 gap-3 sm:gap-4 pt-safe backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.04)]">
+      <header className="fixed top-0 left-0 w-full h-16 sm:h-20 md:h-24 bg-[#0d0d11]/85 border-b border-white/10 z-[70] flex items-center justify-between px-3 sm:px-5 md:px-8 lg:px-12 gap-3 sm:gap-4 pt-safe backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.04)]">
 
         {/* ── LEFT: Hamburger + Brand ────────────────────────────── */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -80,12 +80,14 @@ function TopNavbar({ toggleSidebar, isSidebarOpen }) {
         </div>
 
         {/* ── CENTER: Search bar ─────────────────────────────────── */}
-        <div className="flex-1 min-w-0 max-w-[160px] sm:max-w-xs md:max-w-md">
-          <MovieSearchBar />
+        <div className="flex-1 min-w-0 flex justify-center">
+          <div className="w-full max-w-[220px] sm:max-w-xs md:max-w-md lg:max-w-xl">
+            <MovieSearchBar />
+          </div>
         </div>
 
         {/* ── RIGHT: Avatar or Sign In ───────────────────────────── */}
-        <div className="shrink-0 flex items-center">
+        <div className="shrink-0 flex items-center ml-auto">
           {currentUser ? (
             <Link
               to="/profile"
