@@ -109,9 +109,20 @@ function TopNavbar({ toggleSidebar, isSidebarOpen }) {
           ) : (
             <button
               onClick={() => setIsAuthModalOpen(true)}
-              className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-red-600 via-red-500 to-red-600 hover:from-red-500 hover:to-red-700 text-[10px] sm:text-xs font-bold text-white shadow-lg shadow-red-600/30 hover:shadow-red-500/50 hover:-translate-y-0.5 transition-all cursor-pointer whitespace-nowrap"
+              className="inline-flex items-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-95 cursor-pointer select-none whitespace-nowrap"
+              style={{
+                background: 'linear-gradient(135deg, #e50914 0%, #b81d24 100%)',
+                color: '#ffffff',
+                fontSize: 'clamp(10px, 1.5vw, 13px)',
+                fontWeight: '700',
+                padding: 'clamp(8px, 1.3vw, 11px) clamp(14px, 2.4vw, 20px)',
+                borderRadius: '6px',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                boxShadow: '0 8px 25px rgba(229, 9, 20, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.28)',
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)',
+              }}
             >
-              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-200 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
               </svg>
               <span className="max-[380px]:hidden">Sign In</span>
