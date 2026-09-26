@@ -38,9 +38,9 @@ const UserIcon = ({ className = "h-5 w-5" }) => (
 function BottomNav() {
   const navItems = [
     { to: "/", label: "Home", end: true, Icon: HomeIcon },
-    { to: "/trending", label: "Trending", Icon: FlameIcon },
     { to: "/tv", label: "TV Shows", Icon: TvIcon },
-    { to: "/favourites", label: "Favorites", Icon: HeartIcon },
+    { to: "/live", label: "Live", Icon: FlameIcon },
+    { to: "/subscriptions", label: "Premium", Icon: HeartIcon },
     { to: "/profile", label: "Profile", Icon: UserIcon },
   ];
 

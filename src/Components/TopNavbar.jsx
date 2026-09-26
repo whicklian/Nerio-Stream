@@ -1,43 +1,28 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../Contexts/AuthContext";
 import AuthModal from "./AuthModal";
 import MovieSearchBar from "./MovieSearchBar";
 
 function TopNavbar({ toggleSidebar, isSidebarOpen }) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [showSidebarToggle, setShowSidebarToggle] = useState(() =>
-    typeof window !== "undefined" ? window.innerWidth >= 768 : false
-  );
   const { currentUser } = useAuth();
-
-  useEffect(() => {
-    const handleResize = () => {
-      setShowSidebarToggle(window.innerWidth >= 768);
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   return (
     <>
       {/* Single header — all horizontal spacing controlled here with px-* */}
-      <header className="relative top-0 left-0 w-full h-14 sm:h-16 md:h-20 bg-[#0d0d11]/85 border-b border-white/10 z-40 flex items-center justify-between px-5 sm:px-7 md:px-9 lg:px-12 gap-2 sm:gap-3 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.04)]">
+      <header className="relative top-0 left-0 w-full h-14 sm:h-16 md:h-20 bg-[#0d0d11]/85 border-b border-white/10 z-40 flex items-center justify-between px-[14px] sm:px-[18px] md:px-[28px] lg:px-[32px] gap-2 sm:gap-3 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.04)]">
 
         {/* ── LEFT: Hamburger + Brand ────────────────────────────── */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0 pl-1.5 sm:pl-2 md:pl-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 pl-[2px] sm:pl-[4px] md:pl-[6px]">
 
           {/* Hamburger / Close toggle */}
-          {showSidebarToggle && (
-            <button
-              aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
-              aria-expanded={isSidebarOpen}
-              onClick={toggleSidebar}
-              className="nav-hamburger relative items-center justify-center w-10 h-10 rounded-lg text-gray-200 hover:text-white hover:bg-white/10 transition-colors focus:outline-none shrink-0 cursor-pointer"
-            >
+          <button
+            aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+            aria-expanded={isSidebarOpen}
+            onClick={toggleSidebar}
+            className="nav-hamburger hidden md:flex relative items-center justify-center w-10 h-10 rounded-lg text-gray-200 hover:text-white hover:bg-white/10 transition-colors focus:outline-none shrink-0 cursor-pointer"
+          >
             {/* Menu bars — slides out when sidebar opens */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -81,10 +66,9 @@ function TopNavbar({ toggleSidebar, isSidebarOpen }) {
               <line x1="6"  y1="6"  x2="18" y2="18" />
             </svg>
 
-              {/* Invisible spacer — keeps the button's natural footprint */}
-              <span className="w-5 h-5 sm:w-6 sm:h-6 invisible" aria-hidden="true" />
-            </button>
-          )}
+            {/* Invisible spacer — keeps the button's natural footprint */}
+            <span className="w-5 h-5 sm:w-6 sm:h-6 invisible" aria-hidden="true" />
+          </button>
 
           {/* Brand wordmark */}
           <Link
@@ -103,7 +87,7 @@ function TopNavbar({ toggleSidebar, isSidebarOpen }) {
         </div>
 
         {/* ── RIGHT: Avatar or Sign In ───────────────────────────── */}
-        <div className="shrink-0 flex items-center ml-auto pr-1.5 sm:pr-2 md:pr-3">
+        <div className="shrink-0 flex items-center ml-auto pr-[2px] sm:pr-[4px] md:pr-[6px]">
           {currentUser ? (
             <Link
               to="/profile"
