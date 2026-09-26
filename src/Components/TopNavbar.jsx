@@ -21,7 +21,7 @@ function TopNavbar({ toggleSidebar, isSidebarOpen }) {
             aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
             aria-expanded={isSidebarOpen}
             onClick={toggleSidebar}
-            className="hidden md:flex relative items-center justify-center w-10 h-10 rounded-lg text-gray-200 hover:text-white hover:bg-white/10 transition-colors focus:outline-none shrink-0 cursor-pointer"
+            className="nav-hamburger hidden md:flex relative items-center justify-center w-10 h-10 rounded-lg text-gray-200 hover:text-white hover:bg-white/10 transition-colors focus:outline-none shrink-0 cursor-pointer"
           >
             {/* Menu bars — slides out when sidebar opens */}
             <svg
