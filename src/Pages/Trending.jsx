@@ -19,7 +19,7 @@ function Trending() {
     }, [timeWindow]);
 
     return (
-        <div className="home px-3 sm:px-4 md:px-8 py-4 sm:py-6">
+        <div className="home py-4 sm:py-6" style={{ paddingLeft: 'clamp(0.75rem, 4vw, 4rem)', paddingRight: 'clamp(0.75rem, 4vw, 4rem)' }}>
             <div className="hero-section" style={{ paddingBottom: "2rem" }}>
                 <h1 className="hero-title">🔥 Trending Now</h1>
                 <p className="hero-subtitle">The most popular movies everyone's watching right now.</p>

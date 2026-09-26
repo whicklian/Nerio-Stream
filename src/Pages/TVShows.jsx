@@ -27,7 +27,7 @@ function TVShows() {
             {/* 100% Edge-to-Edge Hero Banner */}
             <HeroCarousel />
 
-            <div className="px-3 sm:px-4 md:px-8 pt-4 pb-8 space-y-8">
+            <div className="pt-4 pb-8 space-y-8" style={{ paddingLeft: 'clamp(0.75rem, 4vw, 4rem)', paddingRight: 'clamp(0.75rem, 4vw, 4rem)' }}>
                 <div className="mb-2 sm:mb-4">
                     <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-red-500">Explore</p>
                     <h1 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white">TV Shows</h1>
