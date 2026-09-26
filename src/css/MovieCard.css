@@ -3,11 +3,14 @@
     color: inherit;
     display: block;
     height: 100%;
+    width: 100%;
+    max-width: 180px;
+    margin: 0 auto;
 }
 
 .movie-card {
     position: relative;
-    border-radius: 18px;
+    border-radius: 14px;
     overflow: hidden;
     background: rgba(23, 25, 29, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -16,7 +19,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
 }
 
 .movie-card:hover {
@@ -27,7 +30,7 @@
 
 .movie-poster {
     position: relative;
-    aspect-ratio: 2/3;
+    aspect-ratio: 3 / 4.4;
     width: 100%;
     overflow: hidden;
     background: #0d0d11;
@@ -150,19 +153,19 @@
 }
 
 .movie-info {
-    padding: 1rem 1rem 1.05rem;
+    padding: 0.7rem 0.7rem 0.85rem;
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 0.5rem;
+    gap: 0.4rem;
     background: rgba(18, 18, 20, 0.88);
     border-top: 1px solid rgba(255, 255, 255, 0.04);
     word-break: break-word;
 }
 
 .movie-info h3 {
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     font-weight: 700;
     margin: 0;
     color: #ffffff;
@@ -170,7 +173,7 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    line-height: 1.4;
+    line-height: 1.35;
     word-break: break-word;
 }
 

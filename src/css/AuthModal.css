@@ -1,6 +1,85 @@
-/* Custom Glassmorphism & High-End Auth Styles */
+/* Premium auth screen styling */
+.auth-screen {
+  position: relative;
+  min-height: calc(100vh - 4rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem 3rem;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(239, 68, 68, 0.18), transparent 26%),
+    radial-gradient(circle at bottom right, rgba(127, 29, 29, 0.2), transparent 25%),
+    linear-gradient(180deg, rgba(9, 9, 11, 0.96) 0%, rgba(3, 7, 18, 1) 100%);
+}
 
-/* Overlay with subtle animated pulse orbs */
+.auth-sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.04) 35%, transparent 100%);
+  transform: translateX(-30%);
+  pointer-events: none;
+}
+
+.auth-stage {
+  position: relative;
+  z-index: 1;
+  width: min(980px, 100%);
+  display: grid;
+  grid-template-columns: 1fr 0.9fr;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+.auth-visual {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1.5rem 1rem 1.5rem 0.25rem;
+}
+
+.auth-visual h1 {
+  margin: 0.8rem 0 0.8rem;
+  font-size: clamp(2rem, 3vw, 3.5rem);
+  line-height: 0.96;
+  letter-spacing: -0.06em;
+  font-weight: 900;
+  color: #fff;
+}
+
+.auth-visual p {
+  max-width: 540px;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(228, 228, 231, 0.8);
+  margin: 0;
+}
+
+.auth-visual-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.6rem 0 0;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.auth-visual-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #f8fafc;
+  font-weight: 600;
+}
+
+.auth-visual-list li::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+  box-shadow: 0 0 18px rgba(239, 68, 68, 0.7);
+}
+
 .auth-overlay {
   position: fixed;
   inset: 0;
@@ -26,18 +105,18 @@
   }
 }
 
-/* Auth Card Box */
 .auth-card {
   position: relative;
   width: 100%;
-  max-width: 450px;
-  background: linear-gradient(165deg, #18181b 0%, #09090b 100%);
+  max-width: 400px;
+  justify-self: end;
+  background: linear-gradient(165deg, rgba(24, 24, 27, 0.9) 0%, rgba(9, 9, 11, 0.96) 100%);
   background-image: 
     radial-gradient(circle at 10% 10%, rgba(229, 9, 20, 0.22) 0%, transparent 45%),
     radial-gradient(circle at 90% 90%, rgba(255, 59, 48, 0.15) 0%, transparent 45%);
   border: 1px solid rgba(229, 9, 20, 0.3);
-  border-radius: 28px;
-  padding: 2.5rem 2.25rem;
+  border-radius: 22px;
+  padding: 1.5rem 1.25rem;
   box-shadow: 
     0 30px 70px -15px rgba(0, 0, 0, 0.9),
     0 0 50px rgba(229, 9, 20, 0.25),
@@ -55,6 +134,27 @@
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
+  }
+}
+
+@media (max-width: 920px) {
+  .auth-stage {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .auth-visual {
+    padding: 1rem 0 0;
+    text-align: center;
+    align-items: center;
+  }
+
+  .auth-visual p {
+    max-width: 100%;
+  }
+
+  .auth-card {
+    justify-self: center;
   }
 }
 
@@ -94,11 +194,11 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 12px;
+  padding: 4px 10px;
   background: rgba(229, 9, 20, 0.15);
   border: 1px solid rgba(229, 9, 20, 0.4);
   border-radius: 9999px;
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   font-weight: 800;
   letter-spacing: 0.14em;
   color: #fca5a5;
@@ -108,10 +208,10 @@
 }
 
 .auth-title {
-  font-size: 1.85rem;
+  font-size: 1.6rem;
   font-weight: 900;
   letter-spacing: -0.02em;
-  margin: 0 0 0.4rem 0;
+  margin: 0 0 0.35rem 0;
   background: linear-gradient(135deg, #ffffff 0%, #f4f4f5 50%, #ef4444 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -119,7 +219,7 @@
 }
 
 .auth-subtitle {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #a1a1aa;
   margin: 0;
   line-height: 1.45;
@@ -130,16 +230,16 @@
   display: flex;
   background: rgba(18, 18, 20, 0.9);
   padding: 5px;
-  border-radius: 16px;
+  border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.1rem;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .auth-tab {
   flex: 1;
-  padding: 11px 0;
-  font-size: 0.85rem;
+  padding: 10px 0;
+  font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   color: #a1a1aa;
@@ -165,7 +265,7 @@
 
 /* Form Controls */
 .auth-form-group {
-  margin-bottom: 1.35rem;
+  margin-bottom: 1rem;
   text-align: left;
 }
 
@@ -198,11 +298,11 @@
 
 .auth-input {
   width: 100%;
-  padding: 13px 16px 13px 46px;
+  padding: 11px 14px 11px 42px;
   background: rgba(24, 24, 27, 0.85);
   border: 1px solid rgba(63, 63, 70, 0.8);
-  border-radius: 14px;
-  font-size: 0.9rem;
+  border-radius: 12px;
+  font-size: 0.88rem;
   color: #ffffff;
   outline: none;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -255,8 +355,8 @@
 /* Submit Button */
 .auth-submit-btn {
   width: 100%;
-  padding: 14px;
-  margin-top: 0.75rem;
+  padding: 12px;
+  margin-top: 0.6rem;
   background: linear-gradient(135deg, #e50914 0%, #dc2626 100%);
   color: #ffffff;
   font-size: 0.925rem;
@@ -296,7 +396,7 @@
 .auth-divider {
   position: relative;
   text-align: center;
-  margin: 1.75rem 0;
+  margin: 1.25rem 0;
 }
 
 .auth-divider::before {
@@ -323,7 +423,7 @@
 /* Google Button */
 .auth-google-btn {
   width: 100%;
-  padding: 13px;
+  padding: 11px;
   background: rgba(24, 24, 27, 0.75);
   border: 1px solid rgba(63, 63, 70, 0.8);
   border-radius: 14px;
