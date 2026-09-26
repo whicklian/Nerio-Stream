@@ -87,7 +87,7 @@ function TopNavbar({ toggleSidebar, isSidebarOpen }) {
         </div>
 
         {/* ── RIGHT: Avatar or Sign In ───────────────────────────── */}
-        <div className="shrink-0 flex items-center ml-auto pr-[2px] sm:pr-[4px] md:pr-[6px] pl-2">
+        <div className="shrink-0 flex items-center ml-auto pr-3 sm:pr-5 md:pr-7 pl-2 mr-1 sm:mr-2">
           {currentUser ? (
             <Link
               to="/profile"
