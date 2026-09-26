@@ -82,7 +82,7 @@ function TopNavbar({ toggleSidebar, isSidebarOpen }) {
 
         {/* ── CENTER: Search bar ─────────────────────────────────── */}
         <div className="flex-1 min-w-0 flex justify-center">
-          <div className="w-full max-w-[220px] sm:max-w-xs md:max-w-md lg:max-w-xl">
+          <div className="w-full max-w-[120px] sm:max-w-xs md:max-w-md lg:max-w-xl">
             <MovieSearchBar />
           </div>
         </div>
