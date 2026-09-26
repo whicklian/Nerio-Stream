@@ -1,12 +1,26 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../Contexts/AuthContext";
 import AuthModal from "./AuthModal";
 import MovieSearchBar from "./MovieSearchBar";
 
 function TopNavbar({ toggleSidebar, isSidebarOpen }) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [showSidebarToggle, setShowSidebarToggle] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth >= 768 : false
+  );
   const { currentUser } = useAuth();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setShowSidebarToggle(window.innerWidth >= 768);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <>
@@ -17,13 +31,13 @@ function TopNavbar({ toggleSidebar, isSidebarOpen }) {
         <div className="flex items-center gap-2 sm:gap-3 shrink-0 pl-1 sm:pl-2">
 
           {/* Hamburger / Close toggle */}
-          <button
-            aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
-            aria-expanded={isSidebarOpen}
-            onClick={toggleSidebar}
-            className="nav-hamburger hidden md:flex relative items-center justify-center w-10 h-10 rounded-lg text-gray-200 hover:text-white hover:bg-white/10 transition-colors focus:outline-none shrink-0 cursor-pointer"
-            style={{ display: 'none' }}
-          >
+          {showSidebarToggle && (
+            <button
+              aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+              aria-expanded={isSidebarOpen}
+              onClick={toggleSidebar}
+              className="nav-hamburger relative items-center justify-center w-10 h-10 rounded-lg text-gray-200 hover:text-white hover:bg-white/10 transition-colors focus:outline-none shrink-0 cursor-pointer"
+            >
             {/* Menu bars — slides out when sidebar opens */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -67,9 +81,10 @@ function TopNavbar({ toggleSidebar, isSidebarOpen }) {
               <line x1="6"  y1="6"  x2="18" y2="18" />
             </svg>
 
-            {/* Invisible spacer — keeps the button's natural footprint */}
-            <span className="w-5 h-5 sm:w-6 sm:h-6 invisible" aria-hidden="true" />
-          </button>
+              {/* Invisible spacer — keeps the button's natural footprint */}
+              <span className="w-5 h-5 sm:w-6 sm:h-6 invisible" aria-hidden="true" />
+            </button>
+          )}
 
           {/* Brand wordmark */}
           <Link
