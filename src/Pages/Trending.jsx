@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { getTrending } from "../Components/Apis";
 import MovieCard from "../Components/MovieCard";
 import "../css/Home.css";
@@ -6,17 +6,71 @@ import "../css/Home.css";
 function Trending() {
     const [movies, setMovies] = useState([]);
     const [timeWindow, setTimeWindow] = useState("week");
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
+    const sentinelRef = useRef(null);
+
+    const loadPage = useCallback(async (nextPage = 1) => {
+        const data = await getTrending(timeWindow, nextPage);
+        if (!data || data.length === 0) {
+            setHasMore(false);
+            return [];
+        }
+        return data;
+    }, [timeWindow]);
 
     useEffect(() => {
+        let isMounted = true;
         const load = async () => {
             setLoading(true);
-            const data = await getTrending(timeWindow);
-            setMovies(data);
+            setLoadingMore(false);
+            const data = await loadPage(1);
+            if (!isMounted) return;
+            setMovies(data || []);
+            setPage(1);
+            setHasMore(Boolean((data || []).length > 0));
             setLoading(false);
         };
+
         load();
-    }, [timeWindow]);
+        return () => { isMounted = false; };
+    }, [timeWindow, loadPage]);
+
+    const handleLoadMore = useCallback(async () => {
+        if (loadingMore || !hasMore) return;
+
+        setLoadingMore(true);
+        const nextPage = page + 1;
+        const data = await loadPage(nextPage);
+
+        if (data && data.length > 0) {
+            setMovies((prev) => [...prev, ...data]);
+            setPage(nextPage);
+            setHasMore(true);
+        } else {
+            setHasMore(false);
+        }
+
+        setLoadingMore(false);
+    }, [hasMore, loadingMore, loadPage, page]);
+
+    useEffect(() => {
+        if (!sentinelRef.current) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0]?.isIntersecting) {
+                    handleLoadMore();
+                }
+            },
+            { rootMargin: "200px", threshold: 0.1 }
+        );
+
+        observer.observe(sentinelRef.current);
+        return () => observer.disconnect();
+    }, [handleLoadMore]);
 
     return (
         <div className="home py-4 sm:py-6" style={{ paddingLeft: 'clamp(0.75rem, 4vw, 4rem)', paddingRight: 'clamp(0.75rem, 4vw, 4rem)' }}>
@@ -51,6 +105,14 @@ function Trending() {
                             <MovieCard movie={movie} key={movie.id} />
                         ))}
                     </div>
+
+                    {hasMore && (
+                        <div
+                            ref={sentinelRef}
+                            className="h-px w-full overflow-hidden opacity-0"
+                            aria-hidden="true"
+                        />
+                    )}
                 </div>
             )}
         </div>

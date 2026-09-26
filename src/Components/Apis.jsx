@@ -99,14 +99,14 @@ export const getSimilarMovies = async (movieId, page = 1) => {
     } catch (err) { console.error(err); return []; }
 };
 
-export const getTrending = async (timeWindow = 'week') => {
+export const getTrending = async (timeWindow = 'week', page = 1) => {
     if (!hasTMDBConfig) {
         warnMissingTMDBConfig();
         return [];
     }
 
     try {
-        const data = await fetchJSON(`${BASE_URL}/trending/movie/${timeWindow}?api_key=${API_KEY}`);
+        const data = await fetchJSON(`${BASE_URL}/trending/movie/${timeWindow}?api_key=${API_KEY}&page=${page}`);
         return data.results || [];
     } catch (err) { console.error(err); return []; }
 };
