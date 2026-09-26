@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getTVShows, searchTV, getTVGenres, getTVByGenre } from "../Components/Apis";
+import { getTVShows } from "../Components/Apis";
 import { getContinueWatching } from "../utils";
 import TVCard from "../Components/TVCard";
 import { Link } from "react-router-dom";
@@ -8,63 +8,33 @@ import "../css/Home.css";
 
 function TVShows() {
     const [shows, setShows] = useState([]);
-    const [genres, setGenres] = useState([]);
-    const [selectedGenre, setSelectedGenre] = useState(null);
-    const [searchQuery, setSearchQuery] = useState("");
     const [loading, setLoading] = useState(true);
     const [continueWatching, setContinueWatching] = useState([]);
 
     useEffect(() => {
         const loadInitial = async () => {
             setLoading(true);
-            const [popularShows, genreList] = await Promise.all([
-                getTVShows(),
-                getTVGenres()
-            ]);
+            const popularShows = await getTVShows();
             setShows(popularShows);
-            setGenres(genreList);
             setContinueWatching(getContinueWatching());
             setLoading(false);
         };
         loadInitial();
     }, []);
 
-    const handleGenreSelect = async (genreId) => {
-        if (selectedGenre === genreId) {
-            setSelectedGenre(null);
-            setLoading(true);
-            const data = await getTVShows();
-            setShows(data);
-            setLoading(false);
-            return;
-        }
-        setSelectedGenre(genreId);
-        setSearchQuery("");
-        setLoading(true);
-        const data = await getTVByGenre(genreId);
-        setShows(data);
-        setLoading(false);
-    };
-
     return (
         <div className="home pb-8 w-full">
             {/* 100% Edge-to-Edge Hero Banner */}
             <HeroCarousel />
 
-            <div className="px-6 md:px-8 pt-4 space-y-8">
-                <div className="genres-container">
-                    {genres.map(genre => (
-                        <button
-                            key={genre.id}
-                            className={`genre-pill ${selectedGenre === genre.id ? "active" : ""}`}
-                            onClick={() => handleGenreSelect(genre.id)}
-                        >
-                            {genre.name}
-                        </button>
-                    ))}
+            <div className="px-3 sm:px-4 md:px-8 pt-4 pb-8 space-y-8">
+                <div className="mb-2 sm:mb-4">
+                    <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-red-500">Explore</p>
+                    <h1 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white">TV Shows</h1>
+                    <p className="mt-2 text-sm text-zinc-400">Binge-worthy series, trending premieres, and fan-favorite episodes.</p>
                 </div>
 
-                {continueWatching.length > 0 && !searchQuery && !selectedGenre && (
+                {continueWatching.length > 0 && (
                     <div className="continue-watching-section" style={{ padding: '2rem 5%', background: 'rgba(229, 9, 20, 0.05)', marginBottom: '2rem' }}>
                         <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             ▶ Continue Watching
@@ -97,7 +67,7 @@ function TVShows() {
                     </div>
                 ) : (
                     <div className="px-0 py-6">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-5 md:gap-6 items-stretch">
                             {shows.length > 0 ? shows.map(show => (
                                 <TVCard show={show} key={show.id} />
                             )) : (

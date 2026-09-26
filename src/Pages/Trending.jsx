@@ -46,7 +46,7 @@ function Trending() {
                 </div>
             ) : (
                 <div className="px-0 py-4 sm:py-6">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-5 md:gap-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-5 md:gap-6 items-stretch">
                         {movies.map(movie => (
                             <MovieCard movie={movie} key={movie.id} />
                         ))}

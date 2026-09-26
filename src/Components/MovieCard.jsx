@@ -27,7 +27,7 @@ function MovieCard({ movie }) {
     return (
         <Link 
             to={movie.media_type === "tv" ? `/tv/${movie.id}` : `/movie/${movie.id}`} 
-            className="movie-card-link group block shrink-0 w-full hover:scale-105 transition-all duration-300"
+            className="movie-card-link group block h-full w-full shrink-0 hover:scale-105 transition-all duration-300"
         >
             <div className="movie-card relative flex flex-col h-full rounded-xl overflow-hidden bg-zinc-900/90 border border-zinc-800/80 shadow-lg">
                 
