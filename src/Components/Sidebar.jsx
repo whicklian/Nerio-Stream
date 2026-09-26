@@ -155,7 +155,7 @@ function Sidebar({ isOpen, onClose }) {
                   onClick={onClose}
                   className={({ isActive }) =>
                     [
-                      "flex items-center gap-4 px-4 py-4 rounded-xl text-base md:text-lg font-semibold tracking-wide transition-all duration-150",
+                      "flex items-center gap-5 px-4 py-4 rounded-xl text-base md:text-lg font-semibold tracking-[0.02em] transition-all duration-150",
                       isActive
                         ? "bg-red-600/12 text-red-400 border-l-2 border-red-500 pl-[14px]"
                         : "text-zinc-300 border-l-2 border-transparent",
@@ -171,7 +171,7 @@ function Sidebar({ isOpen, onClose }) {
                       >
                         <NavIcon />
                       </span>
-                      <span className="truncate">{label}</span>
+                      <span className="truncate leading-relaxed tracking-[0.02em]">{label}</span>
                     </>
                   )}
                 </NavLink>
