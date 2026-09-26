@@ -1,33 +1,60 @@
 import { useState, useEffect } from "react";
-import { getTVShows } from "../Components/Apis";
+import { getTVShows, getTVByGenre } from "../Components/Apis";
 import { getContinueWatching } from "../utils";
 import TVCard from "../Components/TVCard";
 import { Link } from "react-router-dom";
 import HeroCarousel from "../Components/HeroCarousel";
 import "../css/Home.css";
 
+const DEFAULT_TV_GENRE_ROWS = [
+    { id: 10759, title: "Action & Adventure" },
+    { id: 18, title: "Drama Stories" },
+    { id: 35, title: "Comedy Picks" },
+    { id: 80, title: "Crime Thrillers" },
+    { id: 9648, title: "Mystery Series" }
+];
+
 function TVShows() {
     const [shows, setShows] = useState([]);
+    const [genreRows, setGenreRows] = useState([]);
     const [loading, setLoading] = useState(true);
     const [continueWatching, setContinueWatching] = useState([]);
 
     useEffect(() => {
         const loadInitial = async () => {
             setLoading(true);
-            const popularShows = await getTVShows();
-            setShows(popularShows);
+            try {
+                const popularShows = await getTVShows();
+                setShows(popularShows || []);
+
+                const rows = await Promise.all(
+                    DEFAULT_TV_GENRE_ROWS.map(async ({ id, title }) => {
+                        const items = await getTVByGenre(id);
+                        return {
+                            title,
+                            movies: (items || []).slice(0, 8)
+                        };
+                    })
+                );
+
+                setGenreRows(rows.filter((row) => row.movies.length > 0));
+            } catch (error) {
+                console.error("Failed to load TV rows:", error);
+                setGenreRows([]);
+            }
+
             setContinueWatching(getContinueWatching());
             setLoading(false);
         };
+
         loadInitial();
     }, []);
 
     return (
         <div className="home pb-8 w-full">
-            {/* 100% Edge-to-Edge Hero Banner */}
             <HeroCarousel />
 
-            <div className="pt-4 pb-8 space-y-8" style={{ paddingLeft: 'clamp(0.75rem, 4vw, 4rem)', paddingRight: 'clamp(0.75rem, 4vw, 4rem)' }}>
+            <div className="pt-4 pb-8" style={{ paddingLeft: 'clamp(0.75rem, 4vw, 4rem)', paddingRight: 'clamp(0.75rem, 4vw, 4rem)' }}>
                 <div className="mb-2 sm:mb-4">
                     <div className="flex items-center gap-2.5 mb-3 sm:mb-4">
                         <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
@@ -37,13 +64,14 @@ function TVShows() {
                 </div>
 
                 {continueWatching.length > 0 && (
-                    <div className="continue-watching-section" style={{ padding: '2rem 5%', background: 'rgba(229, 9, 20, 0.05)', marginBottom: '2rem' }}>
-                        <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            ▶ Continue Watching
-                        </h2>
-                        <div className="continue-watching-grid" style={{ display: 'flex', gap: '1.5rem', overflowX: 'auto', paddingBottom: '1rem' }}>
+                    <div className="continue-watching-section rounded-2xl" style={{ padding: '1.5rem 4%', background: 'rgba(229, 9, 20, 0.05)', marginBottom: '1rem' }}>
+                        <div className="flex items-center gap-2 mb-5">
+                            <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
+                            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Continue Watching</h2>
+                        </div>
+                        <div className="flex gap-4 overflow-x-auto scrollbar-hide py-2 px-1 scroll-smooth pb-3" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
                             {continueWatching.map(item => (
-                                <Link to={`/tv/${item.showId}`} key={item.showId} style={{ textDecoration: 'none', color: 'inherit', flexShrink: 0, width: '250px' }}>
+                                <Link to={`/tv/${item.showId}`} key={item.showId} style={{ textDecoration: 'none', color: 'inherit', flexShrink: 0 }} className="w-48 md:w-64 shrink-0">
                                     <div className="cw-card" style={{ background: '#18181b', borderRadius: '12px', overflow: 'hidden', transition: 'transform 0.2s', border: '1px solid rgba(255,255,255,0.05)' }}>
                                         <div style={{ position: 'relative', width: '100%', height: '140px' }}>
                                             <img src={`https://image.tmdb.org/t/p/w500${item.posterPath}`} alt={item.showName} style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }} />
@@ -53,7 +81,7 @@ function TVShows() {
                                         </div>
                                         <div style={{ padding: '1rem' }}>
                                             <h3 style={{ fontSize: '1rem', margin: '0 0 0.5rem 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.showName}</h3>
-                                            <p style={{ fontSize: '0.85rem', color: '#9ca3af', margin: 0 }}>S{item.seasonNum} E{item.episodeNum} • {item.episodeName}</p>
+                                            <p style={{ fontSize: '0.85rem', color: '#a1a1aa', margin: 0 }}>S{item.seasonNum} E{item.episodeNum} • {item.episodeName}</p>
                                         </div>
                                     </div>
                                 </Link>
@@ -68,14 +96,61 @@ function TVShows() {
                         <p>Loading shows...</p>
                     </div>
                 ) : (
-                    <div className="px-0 py-6">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-5 md:gap-6 items-stretch">
-                            {shows.length > 0 ? shows.map(show => (
-                                <TVCard show={show} key={show.id} />
-                            )) : (
-                                <div className="no-results">No shows found. Try a different search.</div>
-                            )}
-                        </div>
+                    <div className="flex flex-col" style={{ gap: '2rem' }}>
+                        {shows.length > 0 && (
+                            <section className="section-row" style={{ marginTop: '1rem', marginBottom: '2rem' }}>
+                                <div className="flex items-center justify-between mb-5 md:mb-6" style={{ marginBottom: '1.25rem' }}>
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
+                                        <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Popular Series</h2>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4 overflow-x-auto scrollbar-hide py-2.5 scroll-smooth pb-3" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', paddingLeft: '2px', paddingRight: '2px' }}>
+                                    {shows.slice(0, 8).map((show) => (
+                                        <div key={`popular-${show.id}`} className="w-40 sm:w-44 md:w-52 shrink-0">
+                                            <TVCard show={show} />
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+
+                        {genreRows.map((row) => (
+                            <section key={row.title} className="section-row" style={{ marginTop: '1rem', marginBottom: '2rem' }}>
+                                <div className="flex items-center justify-between mb-5 md:mb-6" style={{ marginBottom: '1.25rem' }}>
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
+                                        <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">{row.title}</h2>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4 overflow-x-auto scrollbar-hide py-2.5 scroll-smooth pb-3" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', paddingLeft: '2px', paddingRight: '2px' }}>
+                                    {row.movies.map((show) => (
+                                        <div key={`${row.title}-${show.id}`} className="w-40 sm:w-44 md:w-52 shrink-0">
+                                            <TVCard show={show} />
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        ))}
+
+                        {shows.length > 0 && (
+                            <section className="section-row" style={{ marginTop: '1rem', marginBottom: '2rem' }}>
+                                <div className="flex items-center justify-between mb-5 md:mb-6" style={{ marginBottom: '1.25rem' }}>
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
+                                        <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Browse All</h2>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-5 md:gap-6 items-stretch">
+                                    {shows.map((show) => (
+                                        <TVCard show={show} key={`all-${show.id}`} />
+                                    ))}
+                                </div>
+                            </section>
+                        )}
                     </div>
                 )}
             </div>
