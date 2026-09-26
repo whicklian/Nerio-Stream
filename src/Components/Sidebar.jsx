@@ -126,10 +126,8 @@ function Sidebar({ isOpen, onClose }) {
         className={`
           hidden md:flex fixed left-0 bottom-0 w-72 md:w-80
           flex-col justify-between
-          bg-[radial-gradient(circle_at_top,_rgba(22,101,52,0.28),_rgba(7,12,10,0.96)_35%,_rgba(2,6,4,1)_100%)]
-          backdrop-blur-2xl
-          border-r border-emerald-500/20
-          shadow-[0_0_0_1px_rgba(16,185,129,0.08),0_30px_60px_rgba(0,0,0,0.5)]
+          bg-[#0b0f0c]/95 backdrop-blur-xl
+          border-r border-white/10
           z-[65]
           transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
@@ -141,14 +139,14 @@ function Sidebar({ isOpen, onClose }) {
       >
 
         {/* ── Navigation ── */}
-        <nav className="flex-1 overflow-y-auto py-6 px-3 scrollbar-hide">
-          <div className="mb-4 px-2">
-            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-emerald-200/65">
+        <nav className="flex-1 overflow-y-auto py-8 px-4 scrollbar-hide">
+          <div className="mb-6 px-2">
+            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-zinc-500">
               Navigate
             </p>
           </div>
 
-          <ul className="space-y-2.5">
+          <ul className="space-y-3">
             {navItems.map(({ to, Icon: NavIcon, label, end }) => (
               <li key={to}>
                 <NavLink
@@ -157,20 +155,18 @@ function Sidebar({ isOpen, onClose }) {
                   onClick={onClose}
                   className={({ isActive }) =>
                     [
-                      "group flex items-center gap-4 px-4 py-3.5 rounded-2xl text-base md:text-lg font-semibold tracking-wide transition-all duration-200 border border-transparent",
+                      "flex items-center gap-4 px-4 py-4 rounded-xl text-base md:text-lg font-semibold tracking-wide transition-all duration-150",
                       isActive
-                        ? "bg-gradient-to-r from-red-600/18 via-red-500/8 to-transparent text-red-400 shadow-[inset_0_0_0_1px_rgba(239,68,68,0.25)] border-red-500/30"
-                        : "text-zinc-300 hover:text-white hover:bg-white/5 border-transparent",
+                        ? "bg-red-600/12 text-red-400 border-l-2 border-red-500 pl-[14px]"
+                        : "text-zinc-300 border-l-2 border-transparent",
                     ].join(" ")
                   }
                 >
                   {({ isActive }) => (
                     <>
                       <span
-                        className={`flex h-9 w-9 items-center justify-center rounded-xl border transition-all duration-200 ${
-                          isActive
-                            ? "border-red-500/30 bg-red-600/10 text-red-400"
-                            : "border-white/5 bg-black/10 text-zinc-400 group-hover:border-white/10 group-hover:text-zinc-200"
+                        className={`flex h-8 w-8 items-center justify-center rounded-lg ${
+                          isActive ? "text-red-400" : "text-zinc-500"
                         }`}
                       >
                         <NavIcon />
@@ -183,12 +179,6 @@ function Sidebar({ isOpen, onClose }) {
             ))}
           </ul>
         </nav>
-
-        {/* ── Footer ── */}
-        <div className="mx-3 mb-4 rounded-2xl border border-emerald-500/15 bg-black/20 px-4 py-3 shadow-inner shadow-black/20">
-          <p className="text-sm font-medium text-zinc-300">© 2026 NerioStream</p>
-          <p className="mt-1 text-[11px] tracking-wide text-zinc-500">Cinema-grade streaming experience</p>
-        </div>
       </aside>
     </>
   );
