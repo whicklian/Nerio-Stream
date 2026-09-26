@@ -3,9 +3,6 @@ import Hls from "hls.js";
 import "../css/VideoPlayer.css";
 import { getCustomStreamUrl, saveCustomStreamUrl } from "../utils";
 
-const DEMO_HLS_STREAM = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
-const DEMO_MP4_STREAM = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
-
 export function getMoviePlayerSrc(id) {
     return `https://vidsrc.me/embed/movie?tmdb=${id}`;
 }
@@ -22,7 +19,6 @@ export function getMovieAllSources(id) {
         `https://vidsrc.cc/v2/embed/movie/${id}`,
         `https://embed.su/embed/movie/${id}`,
         `https://2embed.org/embed/movie/${id}`,
-        DEMO_HLS_STREAM
     ];
 }
 
@@ -33,7 +29,6 @@ export function getTVAllSources(id, season, episode) {
         `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
         `https://vidsrc.cc/v2/embed/tv/${id}/${s}/${e}`,
         `https://embed.su/embed/tv/${id}/${s}/${e}`,
-        DEMO_HLS_STREAM
     ];
 }
 

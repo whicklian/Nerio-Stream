@@ -1,5 +1,5 @@
 .subs-page {
-    padding: 3rem 5%;
+    padding: 1.5rem 4%;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -80,7 +80,7 @@
     border-radius: 16px;
     padding: 2.5rem 2rem;
     flex: 1;
-    min-width: 300px;
+    min-width: min(300px, 100%);
     max-width: 350px;
     display: flex;
     flex-direction: column;
@@ -173,8 +173,14 @@
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 16px;
-    padding: 3rem;
+    padding: 1.5rem;
     margin-bottom: 3rem;
+}
+
+@media (min-width: 640px) {
+    .in-app-purchases {
+        padding: 3rem;
+    }
 }
 
 .iap-header {
@@ -201,7 +207,7 @@
     padding: 2rem;
     text-align: center;
     flex: 1;
-    min-width: 200px;
+    min-width: min(200px, 100%);
     max-width: 250px;
 }
 
@@ -279,5 +285,30 @@
     }
     .plan-card {
         width: 100%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .subs-page {
+        padding: 1rem 3%;
+    }
+    .subs-title {
+        font-size: 1.8rem;
+    }
+    .price-amount {
+        font-size: 2.2rem;
+    }
+    .coin-grid {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .coin-card {
+        max-width: 100%;
+    }
+    .payment-toast {
+        right: 10px;
+        left: 10px;
+        text-align: center;
     }
 }

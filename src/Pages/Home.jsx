@@ -125,7 +125,7 @@ function Home() {
       </div>
 
       {/* Main Content Sections below Hero */}
-      <div className="pt-4 flex-1" style={{ paddingLeft: 'clamp(1.25rem, 4vw, 4rem)', paddingRight: 'clamp(1.25rem, 4vw, 4rem)' }}>
+      <div className="pt-4 flex-1" style={{ paddingLeft: 'clamp(0.75rem, 4vw, 4rem)', paddingRight: 'clamp(0.75rem, 4vw, 4rem)' }}>
         {/* Continue Watching Section */}
         {continueWatching.length > 0 && !searchQuery && !selectedGenre && (
             <div className="continue-watching-section rounded-2xl" style={{ padding: '1.5rem 4%', background: 'rgba(229, 9, 20, 0.05)', marginBottom: '1rem' }}>

@@ -113,7 +113,7 @@ function Sidebar({ isOpen, onClose }) {
       <div
         onClick={onClose}
         aria-hidden="true"
-        className={`fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm transition-opacity duration-300 ${
+        className={`hidden md:block fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm transition-opacity duration-300 ${
           isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       />
@@ -124,8 +124,8 @@ function Sidebar({ isOpen, onClose }) {
         aria-modal="true"
         aria-label="Navigation menu"
         className={`
-          fixed top-24 left-0 bottom-0 h-[calc(100vh-6rem)] w-72 md:w-80
-          flex flex-col justify-between
+          hidden md:flex fixed left-0 bottom-0 w-72 md:w-80
+          flex-col justify-between
           bg-zinc-950/95 backdrop-blur-xl
           border-r border-white/10
           shadow-2xl
@@ -133,6 +133,10 @@ function Sidebar({ isOpen, onClose }) {
           transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
         `}
+        style={{
+          top: 'clamp(4rem, 5vw, 6rem)',
+          height: 'calc(100vh - clamp(4rem, 5vw, 6rem))',
+        }}
       >
 
 

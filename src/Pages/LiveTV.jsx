@@ -53,16 +53,12 @@ const HlsVideo = ({ src, onError, onLoaded }) => {
     return <video ref={videoRef} autoPlay loop playsInline controls />;
 };
 
-const DEFAULT_CHANNELS = [
-    { id: 'c1', name: 'Nerio Sports HD', category: 'Sport', currentShow: 'Premier League: Arsenal vs Chelsea', videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4' },
-];
-
 function LiveTV() {
     const [activeCategory, setActiveCategory] = useState("All");
     const [multiviewCount, setMultiviewCount] = useState(1); // 1, 2, or 4
-    const [channels, setChannels] = useState(DEFAULT_CHANNELS);
-    const [categories, setCategories] = useState(["All", "Sport", "News", "International", "Entertainment"]);
-    const [activeStreams, setActiveStreams] = useState([DEFAULT_CHANNELS[0]]);
+    const [channels, setChannels] = useState([]);
+    const [categories, setCategories] = useState(["All"]);
+    const [activeStreams, setActiveStreams] = useState([]);
     const [isLoadingStreams, setIsLoadingStreams] = useState(true);
 
     // Player Controls
@@ -71,10 +67,7 @@ function LiveTV() {
     const [isRecording, setIsRecording] = useState(false);
 
     // Social Stadium
-    const [chatMessages, setChatMessages] = useState([
-        { user: "Alex22", text: "What a match!" },
-        { user: "FootyFan", text: "Did you see that goal?!" }
-    ]);
+    const [chatMessages, setChatMessages] = useState([]);
     const [chatInput, setChatInput] = useState("");
     const [popupEvent, setPopupEvent] = useState(null);
     const [streamErrors, setStreamErrors] = useState({});
@@ -112,23 +105,6 @@ function LiveTV() {
     }).slice(0, 100); // Slice to 100 strictly for DOM performance
 
     useEffect(() => {
-        // Simulate interactive events for Social Stadium
-        const timer1 = setTimeout(() => {
-            setPopupEvent({
-                type: "poll",
-                question: "Who will score next?",
-                options: ["Arsenal", "Chelsea", "No one"]
-            });
-        }, 10000);
-
-        const timer2 = setTimeout(() => {
-            setPopupEvent({
-                type: "trivia",
-                question: "Trivia: Which team has won more PL titles?",
-                options: ["Arsenal", "Chelsea"]
-            });
-        }, 25000);
-
         const fetchMatchInfo = async () => {
             const data = await getLiveMatchDetails();
             if (data) setMatchData(data);
@@ -184,7 +160,7 @@ function LiveTV() {
         };
         fetchIPTV();
 
-        return () => { clearTimeout(timer1); clearTimeout(timer2); };
+        return undefined;
     }, []);
 
     const handleChannelClick = (channel) => {

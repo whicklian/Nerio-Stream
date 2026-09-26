@@ -7,10 +7,16 @@
 
 .hero-section {
     text-align: center;
-    padding: 4rem 2rem 3rem;
+    padding: 2rem 1rem 2rem;
     background: linear-gradient(to bottom, rgba(30, 41, 59, 0.8), transparent);
     border-radius: 20px;
     margin-bottom: 2rem;
+}
+
+@media (min-width: 640px) {
+    .hero-section {
+        padding: 4rem 2rem 3rem;
+    }
 }
 
 .hero-title {
@@ -139,10 +145,26 @@
 /* Movie Grid */
 .movie-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(220px, 45%), 1fr));
+    gap: 1.25rem;
     padding: 1rem;
     justify-items: center;
+}
+
+@media (max-width: 480px) {
+    .movie-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        padding: 0.5rem;
+    }
+
+    .home .grid.grid-cols-2 {
+        gap: 0.75rem;
+    }
+
+    .home .grid.grid-cols-2 > * {
+        min-width: 0;
+    }
 }
 
 .no-results {

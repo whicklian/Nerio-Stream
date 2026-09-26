@@ -35,7 +35,7 @@ const queueMovieDownload = (movie) => {
         status: "downloading",
         progress: 0,
         thumbnail: movie.poster_path ? `https://image.tmdb.org/t/p/w300${movie.poster_path}` : "",
-        downloadUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+        downloadUrl: "",
     };
 
     saveStoredDownloads([item, ...current]);

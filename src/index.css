@@ -123,3 +123,37 @@ input, input:focus, input:hover, input:active, input:invalid, input:focus-visibl
     box-shadow: none !important;
 }
 
+/* ── Global Mobile Fixes ────────────────────────────────── */
+
+/* Prevent horizontal overflow on all screens */
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+/* Intrinsic sizing for media and embeds */
+img, video, iframe, embed, object {
+    max-width: 100%;
+}
+
+/* Improve tap target sizing for touch devices */
+@media (pointer: coarse) {
+    button, a, [role="button"] {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
+
+/* Prevent text size adjustment on orientation change (iOS) */
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+/* Small screen padding utilities */
+@media (max-width: 480px) {
+    .page-padding {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+}

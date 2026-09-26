@@ -41,7 +41,7 @@ export default function HeroCarousel() {
   /* ── Loading skeleton ───────────────────────────────────────────── */
   if (loading) {
     return (
-      <div className="w-full h-[78vh] min-h-[580px] max-h-[880px] bg-zinc-900 animate-pulse flex items-center justify-center">
+      <div className="w-full h-[50vh] sm:h-[65vh] md:h-[78vh] min-h-[360px] sm:min-h-[480px] md:min-h-[580px] max-h-[880px] bg-zinc-900 animate-pulse flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="h-11 w-11 rounded-full border-2 border-red-600 border-t-transparent animate-spin" />
           <p className="text-sm font-semibold tracking-widest text-zinc-500 uppercase">
@@ -73,7 +73,7 @@ export default function HeroCarousel() {
 
   /* ── Render ─────────────────────────────────────────────────────── */
   return (
-    <section className="relative w-full h-[78vh] min-h-[580px] max-h-[880px] overflow-hidden bg-zinc-950">
+    <section className="relative w-full h-[50vh] sm:h-[65vh] md:h-[78vh] min-h-[360px] sm:min-h-[480px] md:min-h-[580px] max-h-[880px] overflow-hidden bg-zinc-950">
 
       {/* ── 1. Background backdrop ─────────────────────────────────── */}
       {backdrop && (
@@ -97,15 +97,15 @@ export default function HeroCarousel() {
 
       {/* ── 3. Main content ─────────────────────────────────────────── */}
       <div
-        className="relative z-10 h-full flex flex-col md:flex-row items-center justify-between py-12"
-        style={{ paddingLeft: 'clamp(1.5rem, 3vw, 4rem)', paddingRight: 'clamp(1.5rem, 3vw, 4rem)' }}
+        className="relative z-10 h-full flex flex-col justify-end md:justify-center pt-8 pb-28 sm:py-10 md:py-12"
+        style={{ paddingLeft: 'clamp(1rem, 3vw, 4rem)', paddingRight: 'clamp(1rem, 3vw, 4rem)' }}
       >
 
         {/* ── Left column: all the text content ─────────────────────── */}
-        <div className="flex flex-col justify-center w-full" style={{ maxWidth: '680px' }}>
+        <div className="flex flex-col justify-end md:justify-center w-full" style={{ maxWidth: '680px' }}>
 
           {/* Top Metadata Badges */}
-          <div className="flex flex-wrap items-center gap-3 mb-4">
+          <div className="flex flex-wrap items-center gap-2 mb-3 md:mb-4">
             {/* Featured Tag */}
             <span className="bg-red-600 text-white font-semibold text-xs uppercase tracking-wider" style={{ borderRadius: '6px', padding: '6px 14px' }}>
               #{currentIndex + 1} FEATURED MOVIE
@@ -133,18 +133,18 @@ export default function HeroCarousel() {
           </div>
 
           {/* Title */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.0] drop-shadow-[0_4px_20px_rgba(0,0,0,1)]">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-black text-white tracking-tight leading-[1.0] drop-shadow-[0_4px_20px_rgba(0,0,0,1)]">
             {title}
           </h1>
 
           {/* Overview */}
-          <p className="mt-5 max-w-xl text-sm sm:text-base md:text-[17px] text-zinc-300 leading-relaxed line-clamp-3 drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+          <p className="mt-3 md:mt-5 max-w-xl text-xs sm:text-sm md:text-[17px] text-zinc-300 leading-relaxed line-clamp-2 sm:line-clamp-3 drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
             {film.overview ||
               "Stream this blockbuster exclusively in 4K Ultra HD on Nerio Stream."}
           </p>
 
           {/* Call-to-Action (CTA) Buttons */}
-          <div className="flex items-center gap-4 mt-7">
+          <div className="flex items-center flex-wrap gap-3 mt-5 md:mt-7">
             {/* Play Now Button (Subtle 6px Rounded CTA) */}
             <Link
               to={`/movie/${film.id}`}
@@ -152,9 +152,9 @@ export default function HeroCarousel() {
               style={{
                 background: 'linear-gradient(135deg, #e50914 0%, #b81d24 100%)',
                 color: '#ffffff',
-                fontSize: '16px',
+                fontSize: 'clamp(13px, 2vw, 16px)',
                 fontWeight: '700',
-                padding: '14px 28px',
+                padding: 'clamp(10px, 2vw, 14px) clamp(18px, 3vw, 28px)',
                 borderRadius: '6px',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
                 boxShadow: '0 8px 25px rgba(229, 9, 20, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
@@ -176,9 +176,9 @@ export default function HeroCarousel() {
                 backdropFilter: 'blur(16px)',
                 WebkitBackdropFilter: 'blur(16px)',
                 color: '#ffffff',
-                fontSize: '16px',
+                fontSize: 'clamp(13px, 2vw, 16px)',
                 fontWeight: '600',
-                padding: '14px 28px',
+                padding: 'clamp(10px, 2vw, 14px) clamp(18px, 3vw, 28px)',
                 borderRadius: '6px',
                 border: '1px solid rgba(255, 255, 255, 0.25)',
                 boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15)',

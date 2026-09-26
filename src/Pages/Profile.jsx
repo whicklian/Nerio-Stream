@@ -19,7 +19,7 @@ function Profile() {
     }, [userProfile]);
 
     return (
-        <div className="home px-6 md:px-8 py-6" style={{ padding: '2rem 5%' }}>
+        <div className="home px-4 sm:px-6 md:px-8 py-4 sm:py-6" style={{ padding: 'clamp(1rem, 4%, 2rem) clamp(1rem, 5%, 3rem)' }}>
             {/* Account Header Banner */}
             <div className="hero-section flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-6 md:p-8 rounded-3xl bg-gradient-to-r from-zinc-900/90 via-zinc-900/80 to-red-950/40 border border-red-500/20 backdrop-blur-xl shadow-2xl mb-8 relative overflow-hidden">
                 <div className="absolute -top-12 -left-12 w-40 h-40 bg-red-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -65,7 +65,7 @@ function Profile() {
             </div>
             
             {/* Stats Cards Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.75rem', marginBottom: '3rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))', gap: '1.25rem', marginBottom: '3rem' }}>
                 {/* Viewing Stats Card */}
                 <div style={{ background: 'rgba(24, 24, 27, 0.75)', padding: '1.75rem', borderRadius: '20px', border: '1px solid rgba(255, 255, 255, 0.08)', backdropFilter: 'blur(12px)' }}>
                     <h3 style={{ marginTop: 0, color: '#ef4444', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.25rem' }}>📊 Viewing Activity</h3>

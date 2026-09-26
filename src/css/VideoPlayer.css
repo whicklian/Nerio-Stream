@@ -531,9 +531,24 @@
 @media (max-width: 768px) {
     .yt-topbar { padding: 0 8px; }
     .yt-search-group { margin: 0 8px; }
-    .yt-watch-body { padding: 12px; }
+    .yt-watch-body { padding: 8px; gap: 12px; }
     .yt-video-title { font-size: 1.05rem; }
     .yt-channel-row { flex-direction: column; align-items: flex-start; }
+    .yt-action-pills { flex-wrap: wrap; gap: 6px; }
+    .yt-more-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+}
+
+@media (max-width: 480px) {
+    .yt-topbar { padding: 0 6px; height: 50px; }
+    .yt-watch-body { padding: 6px 4px; }
+    .ns-logo-text { font-size: 1rem; }
+    .yt-create-btn { display: none; }
+    .yt-video-title { font-size: 0.95rem; }
+    .yt-action-pills { flex-wrap: wrap; }
+    .yt-pill-btn { padding: 7px 12px; font-size: 0.82rem; }
+    .yt-like-btn, .yt-dislike-btn { padding: 7px 10px; }
+    .yt-volume-slider { width: 36px; }
+    .yt-more-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
 }
 
 /* ── More Like This Recommendations Section ── */

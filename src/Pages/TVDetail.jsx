@@ -96,7 +96,7 @@ function TVDetail() {
         markEpisodeWatched(id, seasonNum, ep.episode_number);
         setWatchedEpisodes(getWatchedEpisodes(id));
 
-        // Save progress mock
+        // Save the current episode for the continue-watching list.
         saveContinueWatching({
             showId: id,
             showName: show.name,
@@ -121,7 +121,7 @@ function TVDetail() {
             // Next episode in same season
             playEpisode(seasonNum, eps[currentIndex + 1]);
         } else {
-            // Might need to switch season, mock handling
+            // The next season can be opened from the season selector.
             alert("End of season! Open next season to continue.");
             setShowPlayer(false);
         }
@@ -147,7 +147,7 @@ function TVDetail() {
             status: "downloading",
             progress: 0,
             thumbnail: ep.still_path ? `https://image.tmdb.org/t/p/w300${ep.still_path}` : "",
-            downloadUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+            downloadUrl: "",
         };
         localStorage.setItem("nerio_downloads", JSON.stringify([item, ...queue]));
 
@@ -363,7 +363,7 @@ function TVDetail() {
                                                             {hoveredEpisode === ep.id ? (
                                                                 <video 
                                                                     className="ep-thumb-video" 
-                                                                    src="https://www.w3schools.com/html/mov_bbb.mp4" 
+                                                                    src={undefined}
                                                                     autoPlay 
                                                                     loop 
                                                                     muted 

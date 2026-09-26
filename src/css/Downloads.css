@@ -1,9 +1,15 @@
 .downloads-page {
-    padding: 2rem 5%;
+    padding: 1.25rem 4%;
     min-height: calc(100vh - 70px);
     color: #fff;
     max-width: 1400px;
     margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+    .downloads-page {
+        padding: 2rem 5%;
+    }
 }
 
 /* Header */
@@ -90,7 +96,7 @@
 /* Stats Grid */
 .dl-stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
 }
@@ -421,4 +427,15 @@
     .dl-item { flex-wrap: wrap; }
     .dl-thumb-wrap { width: 60px; height: 44px; }
     .dl-controls { flex-direction: column; align-items: flex-start; }
+}
+
+@media (max-width: 480px) {
+    .downloads-page { padding: 0.75rem; }
+    .dl-title { font-size: 1.5rem; }
+    .dl-item { gap: 10px; padding: 10px; }
+    .dl-item-title { font-size: 0.85rem; }
+    .dl-item-actions { gap: 5px; }
+    .dl-icon-btn { width: 32px; height: 32px; font-size: 0.8rem; }
+    .dl-filter-btn { padding: 6px 12px; font-size: 0.8rem; }
+    .dl-stat-value { font-size: 1.2rem; }
 }
