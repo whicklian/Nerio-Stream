@@ -19,7 +19,7 @@ function Profile() {
     }, [userProfile]);
 
     return (
-        <div className="home px-4 sm:px-6 md:px-8 py-4 sm:py-6" style={{ padding: 'clamp(1rem, 4%, 2rem) clamp(1rem, 5%, 3rem)' }}>
+        <div className="home px-4 sm:px-6 md:px-8 py-4 sm:py-6" style={{ padding: 'calc(1rem + env(safe-area-inset-top, 0px)) clamp(1rem, 5%, 3rem) 2rem' }}>
             {/* Account Header Banner */}
             <div className="hero-section flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-6 md:p-8 rounded-3xl bg-gradient-to-r from-zinc-900/90 via-zinc-900/80 to-red-950/40 border border-red-500/20 backdrop-blur-xl shadow-2xl mb-8 relative overflow-hidden">
                 <div className="absolute -top-12 -left-12 w-40 h-40 bg-red-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -45,18 +45,18 @@ function Profile() {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3 relative z-10 w-full md:w-auto justify-end">
+                <div className="flex items-center gap-3 relative z-10 w-full md:w-auto justify-end md:justify-center">
                     {currentUser ? (
                         <button
                             onClick={logout}
-                            className="px-5 py-2.5 text-xs font-bold text-red-300 bg-red-950/40 hover:bg-red-900/60 border border-red-500/40 rounded-xl transition-all shadow-md hover:shadow-red-500/20 cursor-pointer"
+                            className="px-5 py-2.5 text-xs font-bold text-red-300 bg-red-950/40 hover:bg-red-900/60 border border-red-500/40 rounded-xl transition-all shadow-md hover:shadow-red-500/20 cursor-pointer whitespace-nowrap"
                         >
                             Sign Out
                         </button>
                     ) : (
                         <button
                             onClick={() => setIsAuthModalOpen(true)}
-                            className="px-6 py-3 text-xs font-extrabold text-white bg-gradient-to-r from-red-600 via-red-500 to-rose-600 hover:from-red-500 hover:to-rose-500 rounded-xl shadow-xl shadow-red-600/30 transition-all hover:-translate-y-0.5 cursor-pointer"
+                            className="px-6 py-3 text-xs font-extrabold text-white bg-gradient-to-r from-red-600 via-red-500 to-rose-600 hover:from-red-500 hover:to-rose-500 rounded-xl shadow-xl shadow-red-600/30 transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
                         >
                             Sign In / Register
                         </button>
@@ -67,7 +67,7 @@ function Profile() {
             {/* Stats Cards Grid */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))', gap: '1.25rem', marginBottom: '3rem' }}>
                 {/* Viewing Stats Card */}
-                <div style={{ background: 'rgba(24, 24, 27, 0.75)', padding: '1.75rem', borderRadius: '20px', border: '1px solid rgba(255, 255, 255, 0.08)', backdropFilter: 'blur(12px)' }}>
+                <div style={{ background: 'rgba(24, 24, 27, 0.75)', padding: '1.75rem', borderRadius: '20px', border: '1px solid rgba(255, 255, 255, 0.08)', backdropFilter: 'blur(12px)', minHeight: '220px' }}>
                     <h3 style={{ marginTop: 0, color: '#ef4444', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.25rem' }}>📊 Viewing Activity</h3>
                     <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                         <div style={{ background: 'rgba(39, 39, 42, 0.7)', padding: '1.25rem', borderRadius: '14px', flex: 1, border: '1px solid rgba(255, 255, 255, 0.05)' }}>
@@ -82,7 +82,7 @@ function Profile() {
                 </div>
                 
                 {/* Gamification Card */}
-                <div style={{ background: 'rgba(24, 24, 27, 0.75)', padding: '1.75rem', borderRadius: '20px', border: '1px solid rgba(255, 255, 255, 0.08)', backdropFilter: 'blur(12px)' }}>
+                <div style={{ background: 'rgba(24, 24, 27, 0.75)', padding: '1.75rem', borderRadius: '20px', border: '1px solid rgba(255, 255, 255, 0.08)', backdropFilter: 'blur(12px)', minHeight: '220px' }}>
                     <h3 style={{ marginTop: 0, color: '#f59e0b', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.25rem' }}>🏆 Gamification & Rewards</h3>
                     <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
                         <div style={{ background: 'rgba(39, 39, 42, 0.7)', padding: '1.25rem', borderRadius: '14px', flex: 1, textAlign: 'center', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
@@ -111,7 +111,7 @@ function Profile() {
                 </div>
 
                 {/* Account Settings Card */}
-                <div style={{ background: 'rgba(24, 24, 27, 0.75)', padding: '1.75rem', borderRadius: '20px', border: '1px solid rgba(255, 255, 255, 0.08)', backdropFilter: 'blur(12px)' }}>
+                <div style={{ background: 'rgba(24, 24, 27, 0.75)', padding: '1.75rem', borderRadius: '20px', border: '1px solid rgba(255, 255, 255, 0.08)', backdropFilter: 'blur(12px)', minHeight: '220px' }}>
                     <h3 style={{ marginTop: 0, color: '#ef4444', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.25rem' }}>⚙️ Account Settings</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                         <Link to="/subscriptions" style={{ textDecoration: 'none' }}>
