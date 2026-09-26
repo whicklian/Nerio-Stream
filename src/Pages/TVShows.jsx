@@ -211,12 +211,10 @@ function TVShows() {
                                     ))}
                                 </div>
 
-                                {row.isLoadingMore && (
-                                    <div className="mt-3 flex items-center justify-center text-sm text-zinc-400">
-                                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-zinc-700 border-t-red-500" />
-                                        Loading more...
-                                    </div>
-                                )}
+                                <div
+                                    className="h-px w-full overflow-hidden opacity-0"
+                                    aria-hidden="true"
+                                />
                             </section>
                         ))}
 

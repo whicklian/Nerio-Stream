@@ -293,12 +293,10 @@ function Home() {
                     ))}
                   </div>
 
-                  {row.isLoadingMore && (
-                    <div className="mt-3 flex items-center justify-center text-sm text-zinc-400">
-                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-zinc-700 border-t-red-500" />
-                      Loading more...
-                    </div>
-                  )}
+                  <div
+                    className="h-px w-full overflow-hidden opacity-0"
+                    aria-hidden="true"
+                  />
                 </section>
               )
             ))}
@@ -386,17 +384,11 @@ function Home() {
             )}
 
             {/* ── Infinite scroll sentinel ── */}
-            <div ref={sentinelRef} className="w-full py-10 flex flex-col items-center justify-center gap-3">
-              {loadingMore && (
-                <div className="flex items-center gap-3 text-zinc-400 text-sm">
-                  <div className="w-5 h-5 rounded-full border-2 border-zinc-700 border-t-red-500 animate-spin" />
-                  <span>Loading more movies…</span>
-                </div>
-              )}
-              {!hasMore && !loadingMore && (
-                <p className="text-zinc-600 text-xs tracking-widest uppercase">You've seen it all</p>
-              )}
-            </div>
+            <div
+              ref={sentinelRef}
+              className="h-px w-full overflow-hidden opacity-0"
+              aria-hidden="true"
+            />
           </div>
         ) : (
           <div className="px-0 py-4 my-4">
