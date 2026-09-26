@@ -30,7 +30,7 @@ function App() {
 
       <div className="flex flex-1 min-h-0 overflow-hidden">
         <div className="flex-1 flex flex-col relative min-w-0 w-full max-w-full overflow-x-hidden min-h-0">
-          <main className="app-main flex-1 min-h-0 overflow-y-auto overflow-x-hidden hide-scroll w-full max-w-full break-words" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+          <main className="app-main flex-1 min-h-0 overflow-y-auto overflow-x-hidden hide-scroll w-full max-w-full break-words pb-20 md:pb-0" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
             <Routes>
               <Route path='/'               element={<Home />} />
               <Route path='/trending'       element={<Trending />} />
