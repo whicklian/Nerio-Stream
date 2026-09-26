@@ -1,19 +1,20 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { 
-  auth, 
-  db, 
-  googleProvider, 
-  onAuthStateChanged, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
+import {
+  auth,
+  db,
+  googleProvider,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   signInWithPopup,
   signInWithRedirect,
   signOut,
   updateProfile,
-  doc, 
-  setDoc, 
-  getDoc, 
-  onSnapshot 
+  doc,
+  setDoc,
+  getDoc,
+  onSnapshot,
+  hasFirebaseConfig
 } from "../firebase";
 import { getRedirectResult } from "firebase/auth";
 
@@ -28,15 +29,20 @@ export const AuthProvider = ({ children }) => {
 
   // Handle Google redirect result on page load (fallback from popup-blocked scenario)
   useEffect(() => {
+    if (!auth || !hasFirebaseConfig) {
+      setCurrentUser(null);
+      setUserProfile(null);
+      setLoading(false);
+      return;
+    }
+
     getRedirectResult(auth)
       .then((result) => {
         if (result?.user) {
-          // User signed in via redirect – onAuthStateChanged will pick this up automatically.
           console.debug("Google redirect sign-in completed:", result.user.displayName);
         }
       })
       .catch((err) => {
-        // Ignore "no redirect operation pending" which fires on normal page loads
         if (err.code !== "auth/no-auth-event") {
           console.error("Google redirect result error:", err);
         }
@@ -45,6 +51,13 @@ export const AuthProvider = ({ children }) => {
 
   // Sync user profile document from Firestore
   useEffect(() => {
+    if (!auth || !db || !hasFirebaseConfig) {
+      setCurrentUser(null);
+      setUserProfile(null);
+      setLoading(false);
+      return;
+    }
+
     let unsubscribeFirestore = () => {};
 
     const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
@@ -52,8 +65,7 @@ export const AuthProvider = ({ children }) => {
 
       if (user) {
         const userRef = doc(db, "users", user.uid);
-        
-        // Ensure user document exists in Firestore
+
         try {
           const docSnap = await getDoc(userRef);
           if (!docSnap.exists()) {
@@ -75,7 +87,6 @@ export const AuthProvider = ({ children }) => {
           console.error("Error creating/checking Firestore user document:", err);
         }
 
-        // Listen for real-time updates to user document
         unsubscribeFirestore = onSnapshot(userRef, (snapshot) => {
           if (snapshot.exists()) {
             setUserProfile(snapshot.data());
@@ -97,6 +108,10 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const signup = async (email, password, displayName) => {
+    if (!auth || !hasFirebaseConfig) {
+      throw new Error("Firebase auth is not configured. Add VITE_FIREBASE_* values to enable sign up.");
+    }
+
     const res = await createUserWithEmailAndPassword(auth, email, password);
     if (displayName && res.user) {
       await updateProfile(res.user, { displayName });
@@ -105,6 +120,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = (email, password) => {
+    if (!auth || !hasFirebaseConfig) {
+      return Promise.reject(new Error("Firebase auth is not configured. Add VITE_FIREBASE_* values to enable login."));
+    }
+
     return signInWithEmailAndPassword(auth, email, password);
   };
 
@@ -115,11 +134,14 @@ export const AuthProvider = ({ children }) => {
    *   falls back to a full-page redirect automatically.
    */
   const loginWithGoogle = async () => {
+    if (!auth || !hasFirebaseConfig) {
+      throw new Error("Firebase auth is not configured. Add VITE_FIREBASE_* values to enable Google sign in.");
+    }
+
     try {
       const result = await signInWithPopup(auth, googleProvider);
       return result;
     } catch (err) {
-      // Popup blocked or not supported — fall back to redirect
       if (
         err.code === "auth/popup-blocked" ||
         err.code === "auth/popup-closed-by-user" ||
@@ -132,6 +154,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    if (!auth || !hasFirebaseConfig) {
+      return Promise.resolve();
+    }
+
     return signOut(auth);
   };
 

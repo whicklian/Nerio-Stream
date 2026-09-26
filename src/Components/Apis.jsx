@@ -1,5 +1,12 @@
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
+const hasTMDBConfig = Boolean(API_KEY && BASE_URL);
+
+const warnMissingTMDBConfig = () => {
+    if (!hasTMDBConfig) {
+        console.warn("TMDB API is not configured. Add VITE_TMDB_API_KEY and VITE_TMDB_BASE_URL to enable movie data.");
+    }
+};
 
 // ─── Embed URLs (vidsrc.me) ────────────────────────────────────────────────
 export const getMovieEmbedUrl = (tmdbId) =>
@@ -20,6 +27,11 @@ async function fetchJSON(url) {
 
 // ─── Movies ───────────────────────────────────────────────────────────────
 export const getPopularMovies = async (page = 1) => {
+    if (!hasTMDBConfig) {
+        warnMissingTMDBConfig();
+        return [];
+    }
+
     try {
         const data = await fetchJSON(`${BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`);
         return data.results || [];
@@ -28,6 +40,11 @@ export const getPopularMovies = async (page = 1) => {
 
 export const searchMovies = async (query, page = 1) => {
     if (!query) return [];
+    if (!hasTMDBConfig) {
+        warnMissingTMDBConfig();
+        return [];
+    }
+
     try {
         const data = await fetchJSON(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`);
         return data.results || [];
@@ -35,6 +52,11 @@ export const searchMovies = async (query, page = 1) => {
 };
 
 export const getGenres = async () => {
+    if (!hasTMDBConfig) {
+        warnMissingTMDBConfig();
+        return [];
+    }
+
     try {
         const data = await fetchJSON(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`);
         return data.genres || [];
@@ -42,6 +64,11 @@ export const getGenres = async () => {
 };
 
 export const getMoviesByGenre = async (genreId, page = 1) => {
+    if (!hasTMDBConfig) {
+        warnMissingTMDBConfig();
+        return [];
+    }
+
     try {
         const data = await fetchJSON(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genreId}&page=${page}`);
         return data.results || [];
@@ -49,6 +76,11 @@ export const getMoviesByGenre = async (genreId, page = 1) => {
 };
 
 export const getMovieDetails = async (movieId) => {
+    if (!hasTMDBConfig) {
+        warnMissingTMDBConfig();
+        return null;
+    }
+
     try {
         const data = await fetchJSON(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&append_to_response=credits,videos`);
         return data;
@@ -56,6 +88,11 @@ export const getMovieDetails = async (movieId) => {
 };
 
 export const getSimilarMovies = async (movieId) => {
+    if (!hasTMDBConfig) {
+        warnMissingTMDBConfig();
+        return [];
+    }
+
     try {
         const data = await fetchJSON(`${BASE_URL}/movie/${movieId}/similar?api_key=${API_KEY}`);
         return data.results || [];
@@ -63,6 +100,11 @@ export const getSimilarMovies = async (movieId) => {
 };
 
 export const getTrending = async (timeWindow = 'week') => {
+    if (!hasTMDBConfig) {
+        warnMissingTMDBConfig();
+        return [];
+    }
+
     try {
         const data = await fetchJSON(`${BASE_URL}/trending/movie/${timeWindow}?api_key=${API_KEY}`);
         return data.results || [];
@@ -70,6 +112,11 @@ export const getTrending = async (timeWindow = 'week') => {
 };
 
 export const getTopRatedMovies = async (page = 1) => {
+    if (!hasTMDBConfig) {
+        warnMissingTMDBConfig();
+        return [];
+    }
+
     try {
         const data = await fetchJSON(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&page=${page}`);
         return data.results || [];
@@ -78,6 +125,11 @@ export const getTopRatedMovies = async (page = 1) => {
 
 // ─── TV Shows ─────────────────────────────────────────────────────────────
 export const getTVShows = async (page = 1) => {
+    if (!hasTMDBConfig) {
+        warnMissingTMDBConfig();
+        return [];
+    }
+
     try {
         const data = await fetchJSON(`${BASE_URL}/tv/popular?api_key=${API_KEY}&page=${page}`);
         return data.results || [];
@@ -86,6 +138,11 @@ export const getTVShows = async (page = 1) => {
 
 export const searchTV = async (query, page = 1) => {
     if (!query) return [];
+    if (!hasTMDBConfig) {
+        warnMissingTMDBConfig();
+        return [];
+    }
+
     try {
         const data = await fetchJSON(`${BASE_URL}/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`);
         return data.results || [];
@@ -93,6 +150,11 @@ export const searchTV = async (query, page = 1) => {
 };
 
 export const getTVDetails = async (tvId) => {
+    if (!hasTMDBConfig) {
+        warnMissingTMDBConfig();
+        return null;
+    }
+
     try {
         const data = await fetchJSON(`${BASE_URL}/tv/${tvId}?api_key=${API_KEY}&append_to_response=credits,videos`);
         return data;
@@ -100,6 +162,11 @@ export const getTVDetails = async (tvId) => {
 };
 
 export const getTVSeasonDetails = async (tvId, seasonNumber) => {
+    if (!hasTMDBConfig) {
+        warnMissingTMDBConfig();
+        return null;
+    }
+
     try {
         const data = await fetchJSON(`${BASE_URL}/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}`);
         return data;
@@ -107,6 +174,11 @@ export const getTVSeasonDetails = async (tvId, seasonNumber) => {
 };
 
 export const getSimilarTV = async (tvId) => {
+    if (!hasTMDBConfig) {
+        warnMissingTMDBConfig();
+        return [];
+    }
+
     try {
         const data = await fetchJSON(`${BASE_URL}/tv/${tvId}/similar?api_key=${API_KEY}`);
         return data.results || [];
@@ -114,6 +186,11 @@ export const getSimilarTV = async (tvId) => {
 };
 
 export const getTVGenres = async () => {
+    if (!hasTMDBConfig) {
+        warnMissingTMDBConfig();
+        return [];
+    }
+
     try {
         const data = await fetchJSON(`${BASE_URL}/genre/tv/list?api_key=${API_KEY}`);
         return data.genres || [];
@@ -121,6 +198,11 @@ export const getTVGenres = async () => {
 };
 
 export const getTVByGenre = async (genreId, page = 1) => {
+    if (!hasTMDBConfig) {
+        warnMissingTMDBConfig();
+        return [];
+    }
+
     try {
         const data = await fetchJSON(`${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=${genreId}&page=${page}`);
         return data.results || [];

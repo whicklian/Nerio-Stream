@@ -33,45 +33,55 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase App
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const hasFirebaseConfig = Object.values(firebaseConfig).every((value) => value && String(value).trim() !== "");
+
+let app = null;
+let auth = null;
+let db = null;
+let analytics = null;
+
+if (hasFirebaseConfig) {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+
+  if (typeof window !== "undefined") {
+    isSupported().then((supported) => {
+      if (supported) {
+        analytics = getAnalytics(app);
+      }
+    }).catch((err) => {
+      console.debug("Firebase Analytics support check failed:", err);
+    });
+  }
+} else {
+  console.warn("Firebase is not configured. Set VITE_FIREBASE_* environment variables to enable auth and Firestore.");
+}
 
 const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({
   prompt: "select_account"
 });
 
-let analytics = null;
-if (typeof window !== "undefined") {
-  isSupported().then((supported) => {
-    if (supported) {
-      analytics = getAnalytics(app);
-    }
-  }).catch((err) => {
-    console.debug("Firebase Analytics support check failed:", err);
-  });
-}
-
-export { 
-  app, 
-  auth, 
-  db, 
-  googleProvider, 
+export {
+  app,
+  auth,
+  db,
+  googleProvider,
   analytics,
+  hasFirebaseConfig,
   signInWithPopup,
   signInWithRedirect,
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  signOut, 
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
   onAuthStateChanged,
   updateProfile,
-  doc, 
-  setDoc, 
-  getDoc, 
-  updateDoc, 
-  arrayUnion, 
-  arrayRemove, 
-  onSnapshot 
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+  onSnapshot
 };
