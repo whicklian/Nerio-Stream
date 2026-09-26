@@ -98,9 +98,10 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
     };
 
     useEffect(() => {
-        setLoadedSimilar((similar || []).slice(0, 6));
+        const initialItems = (similar || []).slice(0, 8);
+        setLoadedSimilar(initialItems);
         setSimilarPage(1);
-        setHasMoreSimilar(Boolean((similar || []).length > 0));
+        setHasMoreSimilar(initialItems.length > 0);
     }, [similar]);
 
     const loadMoreSimilar = useCallback(async () => {
@@ -115,8 +116,13 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
                 : await getSimilarTV(mediaId, nextPage);
 
             if (moreSimilar && moreSimilar.length > 0) {
-                setLoadedSimilar(prev => [...prev, ...moreSimilar]);
+                setLoadedSimilar(prev => {
+                    const seen = new Set(prev.map(item => item.id));
+                    const unique = moreSimilar.filter(item => !seen.has(item.id));
+                    return [...prev, ...unique];
+                });
                 setSimilarPage(nextPage);
+                setHasMoreSimilar(true);
             } else {
                 setHasMoreSimilar(false);
             }
@@ -129,14 +135,15 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
     }, [movie, show, loadingMoreSimilar, hasMoreSimilar, similarPage]);
 
     useEffect(() => {
-        if (!similarSentinelRef.current) return;
+        if (!similarSentinelRef.current || !hasMoreSimilar) return;
+
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0]?.isIntersecting) {
                     loadMoreSimilar();
                 }
             },
-            { rootMargin: "200px", threshold: 0.1 }
+            { rootMargin: "250px", threshold: 0.1 }
         );
 
         observer.observe(similarSentinelRef.current);
