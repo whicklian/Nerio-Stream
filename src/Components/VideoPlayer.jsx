@@ -79,7 +79,6 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
     const [playbackSpeed, setPlaybackSpeed] = useState(1);
     const [qualityLevels, setQualityLevels] = useState([]);
     const [currentQuality, setCurrentQuality] = useState(-1);
-    const [isFullscreen, setIsFullscreen] = useState(false);
     const [showControls, setShowControls] = useState(true);
     const [hoverTime, setHoverTime] = useState(null);
     const [hoverPos, setHoverPos] = useState(0);
@@ -266,19 +265,6 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
         }
     };
 
-    const toggleFullscreen = () => {
-        const container = containerRef.current;
-        if (!container) return;
-
-        if (!document.fullscreenElement) {
-            container.requestFullscreen?.() || container.webkitRequestFullscreen?.();
-            setIsFullscreen(true);
-        } else {
-            document.exitFullscreen?.() || document.webkitExitFullscreen?.();
-            setIsFullscreen(false);
-        }
-    };
-
     const togglePiP = async () => {
         const video = videoRef.current;
         if (!video) return;
@@ -316,7 +302,6 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
                     break;
                 case "f":
                     e.preventDefault();
-                    toggleFullscreen();
                     break;
                 case "m":
                     e.preventDefault();
@@ -389,7 +374,7 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
     return (
         <div className="yt-watch-modal" onClick={onClose}>
             <div
-                className={`yt-watch-container ${isFullscreen ? "fullscreen" : ""}`}
+                className="yt-watch-container"
                 ref={containerRef}
                 onClick={e => e.stopPropagation()}
                 onMouseMove={handleMouseMove}
@@ -534,7 +519,7 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
                                                 </div>
 
                                                 <button className="yt-btn" onClick={togglePiP} title="Miniplayer">🗔</button>
-                                                <button className="yt-btn" onClick={toggleFullscreen} title="Full screen (f)">⛶</button>
+                                                <button className="yt-btn" title="Full screen disabled">⛶</button>
                                             </div>
                                         </div>
                                     </div>
