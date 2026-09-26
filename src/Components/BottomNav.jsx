@@ -38,14 +38,17 @@ const UserIcon = ({ className = "h-5 w-5" }) => (
 function BottomNav() {
   const navItems = [
     { to: "/", label: "Home", end: true, Icon: HomeIcon },
+    { to: "/trending", label: "Trending", Icon: FlameIcon },
     { to: "/tv", label: "TV Shows", Icon: TvIcon },
-    { to: "/live", label: "Live", Icon: FlameIcon },
-    { to: "/subscriptions", label: "Premium", Icon: HeartIcon },
+    { to: "/favourites", label: "Favorites", Icon: HeartIcon },
     { to: "/profile", label: "Profile", Icon: UserIcon },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-zinc-950/90 backdrop-blur-xl px-4 py-2 md:hidden" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 0.5rem)" }}>
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-50 bg-zinc-950/90 backdrop-blur-xl border-t border-white/10 px-4 py-2 md:hidden"
+      style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 0.5rem)" }}
+    >
       <div className="mx-auto flex max-w-md items-center justify-around gap-1">
         {navItems.map(({ to, label, end, Icon }) => (
           <NavLink
