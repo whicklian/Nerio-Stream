@@ -4,6 +4,29 @@ import { db, doc, setDoc, onSnapshot, hasFirebaseConfig } from "../firebase";
 
 const MovieContext = createContext();
 
+const getGuestProfile = () => {
+    const fallback = { favorites: [], continueWatching: [], customStreams: {}, watchedEpisodes: {}, profile: { streamingQuality: 'Auto' }, subscription: { tier: 'free' }, badges: [], points: 0, level: 1 };
+    try {
+        const saved = localStorage.getItem('nerio_guest_profile');
+        if (!saved) return fallback;
+        const parsed = JSON.parse(saved);
+        return {
+            favorites: Array.isArray(parsed.favorites) ? parsed.favorites : fallback.favorites,
+            continueWatching: Array.isArray(parsed.continueWatching) ? parsed.continueWatching : fallback.continueWatching,
+            customStreams: parsed.customStreams || fallback.customStreams,
+            watchedEpisodes: parsed.watchedEpisodes || fallback.watchedEpisodes,
+            profile: { ...fallback.profile, ...(parsed.profile || {}) },
+            subscription: { ...fallback.subscription, ...(parsed.subscription || {}) },
+            badges: Array.isArray(parsed.badges) ? parsed.badges : fallback.badges,
+            points: Number(parsed.points || fallback.points),
+            level: Number(parsed.level || fallback.level),
+        };
+    } catch (error) {
+        console.debug('Failed to parse guest profile:', error);
+        return fallback;
+    }
+};
+
 export const useMovieContext = () => useContext(MovieContext);
 
 export const MovieProvider = ({ children }) => {
@@ -12,6 +35,12 @@ export const MovieProvider = ({ children }) => {
 
     // Sync with Firestore when logged in, or localStorage when logged out
     useEffect(() => {
+        if (currentUser?.isGuest) {
+            const guestProfile = getGuestProfile();
+            setFavorites(guestProfile.favorites || []);
+            return;
+        }
+
         if (currentUser && db && hasFirebaseConfig) {
             const userRef = doc(db, "users", currentUser.uid);
             const unsubscribe = onSnapshot(userRef, (snapshot) => {
@@ -44,6 +73,13 @@ export const MovieProvider = ({ children }) => {
     const syncFavorites = async (updatedFavorites) => {
         setFavorites(updatedFavorites);
         localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+
+        if (currentUser?.isGuest) {
+            const guestProfile = getGuestProfile();
+            const nextGuestProfile = { ...guestProfile, favorites: updatedFavorites };
+            localStorage.setItem("nerio_guest_profile", JSON.stringify(nextGuestProfile));
+            return;
+        }
 
         if (currentUser && db && hasFirebaseConfig) {
             try {
