@@ -102,10 +102,10 @@ export default function HeroCarousel() {
       >
 
         {/* ── Left column: all the text content ─────────────────────── */}
-        <div className="flex flex-col justify-end md:justify-center w-full" style={{ maxWidth: '700px', marginTop: '1rem', marginBottom: '1rem', marginLeft: 'clamp(0.25rem, 1vw, 1rem)' }}>
+        <div className="flex w-full max-w-2xl flex-col justify-end gap-5 md:gap-7" style={{ marginTop: '1rem', marginBottom: '1rem', marginLeft: 'clamp(0.25rem, 1vw, 1rem)' }}>
 
           {/* Top Metadata Badges */}
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-5 md:mb-6">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-5 mb-1">
             {/* Featured Tag */}
             <span className="bg-red-600 text-white font-semibold text-xs uppercase tracking-wider" style={{ borderRadius: '6px', padding: '6px 14px' }}>
               #{currentIndex + 1} FEATURED MOVIE
@@ -133,18 +133,18 @@ export default function HeroCarousel() {
           </div>
 
           {/* Title */}
-          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-black text-white tracking-tight leading-[0.95] drop-shadow-[0_4px_20px_rgba(0,0,0,1)] mb-3 sm:mb-4 md:mb-5">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-black text-white tracking-tight leading-[0.95] drop-shadow-[0_4px_20px_rgba(0,0,0,1)] my-3 md:my-4">
             {title}
           </h1>
 
           {/* Overview */}
-          <p className="mt-0 max-w-xl text-[11px] sm:text-sm md:text-[17px] text-zinc-300 leading-relaxed line-clamp-2 sm:line-clamp-3 drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] mb-5 sm:mb-6 md:mb-8">
+          <p className="max-w-xl text-[11px] sm:text-sm md:text-[17px] text-zinc-300 leading-relaxed line-clamp-3 mb-7 md:mb-8 drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
             {film.overview ||
               "Stream this blockbuster exclusively in 4K Ultra HD on Nerio Stream."}
           </p>
 
           {/* Call-to-Action (CTA) Buttons */}
-          <div className="flex items-center flex-wrap gap-3 sm:gap-4 md:gap-5 mt-0">
+          <div className="flex items-center flex-wrap gap-3 sm:gap-4 md:gap-5 mt-1 md:mt-2">
             {/* Play Now Button (Subtle 6px Rounded CTA) */}
             <Link
               to={`/movie/${film.id}`}
