@@ -98,11 +98,11 @@ export default function HeroCarousel() {
       {/* ── 3. Main content ─────────────────────────────────────────── */}
       <div
         className="relative z-10 h-full flex flex-col justify-end md:justify-center pt-6 pb-20 sm:pt-10 sm:pb-24 md:pt-14 md:pb-14"
-        style={{ paddingLeft: 'clamp(2rem, 6vw, 8rem)', paddingRight: 'clamp(1.5rem, 5vw, 6rem)' }}
+        style={{ paddingLeft: 'clamp(1rem, 4vw, 4.5rem)', paddingRight: 'clamp(1rem, 4vw, 4.5rem)' }}
       >
 
         {/* ── Left column: all the text content ─────────────────────── */}
-        <div className="flex flex-col justify-end md:justify-center w-full" style={{ maxWidth: '700px', marginTop: '1rem', marginBottom: '1rem', marginLeft: 'clamp(0.75rem, 2.5vw, 2.5rem)' }}>
+        <div className="flex flex-col justify-end md:justify-center w-full" style={{ maxWidth: '700px', marginTop: '1rem', marginBottom: '1rem', marginLeft: 'clamp(0.25rem, 1vw, 1rem)' }}>
 
           {/* Top Metadata Badges */}
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-5 md:mb-6">
