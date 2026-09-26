@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { useAuth } from "./AuthContext";
-import { db, doc, setDoc, onSnapshot } from "../firebase";
+import { db, doc, setDoc, onSnapshot, hasFirebaseConfig } from "../firebase";
 
 const MovieContext = createContext();
 
@@ -12,7 +12,7 @@ export const MovieProvider = ({ children }) => {
 
     // Sync with Firestore when logged in, or localStorage when logged out
     useEffect(() => {
-        if (currentUser) {
+        if (currentUser && db && hasFirebaseConfig) {
             const userRef = doc(db, "users", currentUser.uid);
             const unsubscribe = onSnapshot(userRef, (snapshot) => {
                 if (snapshot.exists()) {
@@ -45,7 +45,7 @@ export const MovieProvider = ({ children }) => {
         setFavorites(updatedFavorites);
         localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
 
-        if (currentUser) {
+        if (currentUser && db && hasFirebaseConfig) {
             try {
                 const userRef = doc(db, "users", currentUser.uid);
                 await setDoc(userRef, { favorites: updatedFavorites }, { merge: true });

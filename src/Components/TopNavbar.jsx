@@ -11,10 +11,10 @@ function TopNavbar({ toggleSidebar, isSidebarOpen }) {
   return (
     <>
       {/* Single header — all horizontal spacing controlled here with px-* */}
-      <header className="relative top-0 left-0 w-full h-14 sm:h-16 md:h-20 bg-[#0d0d11]/85 border-b border-white/10 z-40 flex items-center justify-between px-[14px] sm:px-[18px] md:px-[28px] lg:px-[32px] gap-2 sm:gap-3 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.04)]">
+      <header className="relative top-0 left-0 w-full h-14 sm:h-16 md:h-20 bg-[#0d0d11]/85 border-b border-white/10 z-40 flex items-center justify-between px-3 sm:px-4 md:px-6 lg:px-8 gap-3 sm:gap-4 md:gap-5 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.04)]">
 
         {/* ── LEFT: Hamburger + Brand ────────────────────────────── */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0 pl-[2px] sm:pl-[4px] md:pl-[6px]">
+        <div className="flex items-center gap-3 sm:gap-4 shrink-0 pl-[2px] sm:pl-[4px] md:pl-[6px]">
 
           {/* Hamburger / Close toggle */}
           <button
@@ -87,7 +87,7 @@ function TopNavbar({ toggleSidebar, isSidebarOpen }) {
         </div>
 
         {/* ── RIGHT: Avatar or Sign In ───────────────────────────── */}
-        <div className="shrink-0 flex items-center ml-auto pr-[2px] sm:pr-[4px] md:pr-[6px]">
+        <div className="shrink-0 flex items-center ml-auto pr-[2px] sm:pr-[4px] md:pr-[6px] pl-2">
           {currentUser ? (
             <Link
               to="/profile"

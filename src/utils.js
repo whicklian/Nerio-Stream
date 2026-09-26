@@ -1,4 +1,4 @@
-import { auth, db, doc, setDoc } from "./firebase";
+import { auth, db, doc, setDoc, hasFirebaseConfig } from "./firebase";
 
 export const getContinueWatching = () => {
     try {
@@ -19,7 +19,7 @@ export const saveContinueWatching = async (item) => {
     localStorage.setItem("continue_watching", JSON.stringify(updatedList));
 
     // If Firebase user is authenticated, sync to Firestore
-    if (auth?.currentUser && db) {
+    if (hasFirebaseConfig && auth?.currentUser && db) {
         try {
             const userRef = doc(db, "users", auth.currentUser.uid);
             await setDoc(userRef, { continueWatching: updatedList }, { merge: true });
@@ -45,7 +45,7 @@ export const markEpisodeWatched = async (showId, seasonNum, episodeNum) => {
         list.push(epId);
         localStorage.setItem(`watched_${showId}`, JSON.stringify(list));
 
-        if (auth?.currentUser && db) {
+        if (hasFirebaseConfig && auth?.currentUser && db) {
             try {
                 const userRef = doc(db, "users", auth.currentUser.uid);
                 await setDoc(userRef, {
@@ -73,7 +73,7 @@ export const saveCustomStreamUrl = async (id, url) => {
         streams[id] = url;
         localStorage.setItem("nerio_custom_streams", JSON.stringify(streams));
 
-        if (auth?.currentUser && db) {
+        if (hasFirebaseConfig && auth?.currentUser && db) {
             const userRef = doc(db, "users", auth.currentUser.uid);
             await setDoc(userRef, { customStreams: streams }, { merge: true });
         }
