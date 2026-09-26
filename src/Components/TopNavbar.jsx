@@ -11,7 +11,7 @@ function TopNavbar({ toggleSidebar, isSidebarOpen }) {
   return (
     <>
       {/* Single header — all horizontal spacing controlled here with px-* */}
-      <header className="fixed top-0 left-0 w-full h-16 sm:h-20 md:h-24 bg-[#0d0d11]/85 border-b border-white/10 z-[70] flex items-center justify-between px-3 sm:px-5 md:px-8 lg:px-12 gap-3 sm:gap-4 pt-safe backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.04)]">
+      <header className="relative top-0 left-0 w-full h-16 sm:h-20 md:h-24 bg-[#0d0d11]/85 border-b border-white/10 z-40 flex items-center justify-between px-3 sm:px-5 md:px-8 lg:px-12 gap-3 sm:gap-4 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.04)]">
 
         {/* ── LEFT: Hamburger + Brand ────────────────────────────── */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
