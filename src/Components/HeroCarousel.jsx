@@ -97,15 +97,15 @@ export default function HeroCarousel() {
 
       {/* ── 3. Main content ─────────────────────────────────────────── */}
       <div
-        className="relative z-10 h-full flex flex-col justify-end md:justify-center pt-5 pb-20 sm:pt-8 sm:pb-24 md:py-12"
+        className="relative z-10 h-full flex flex-col justify-end md:justify-center pt-6 pb-20 sm:pt-10 sm:pb-24 md:pt-14 md:pb-14"
         style={{ paddingLeft: 'clamp(0.85rem, 3.5vw, 4rem)', paddingRight: 'clamp(0.85rem, 3.5vw, 4rem)' }}
       >
 
         {/* ── Left column: all the text content ─────────────────────── */}
-        <div className="flex flex-col justify-end md:justify-center w-full" style={{ maxWidth: '680px' }}>
+        <div className="flex flex-col justify-end md:justify-center w-full" style={{ maxWidth: '680px', marginTop: '1rem', marginBottom: '1rem' }}>
 
           {/* Top Metadata Badges */}
-          <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-3 md:mb-4">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-3 sm:mb-4 md:mb-5">
             {/* Featured Tag */}
             <span className="bg-red-600 text-white font-semibold text-xs uppercase tracking-wider" style={{ borderRadius: '6px', padding: '6px 14px' }}>
               #{currentIndex + 1} FEATURED MOVIE
@@ -144,7 +144,7 @@ export default function HeroCarousel() {
           </p>
 
           {/* Call-to-Action (CTA) Buttons */}
-          <div className="flex items-center flex-wrap gap-2 sm:gap-3 mt-4 sm:mt-5 md:mt-7">
+          <div className="flex items-center flex-wrap gap-3 sm:gap-4 mt-5 sm:mt-6 md:mt-8">
             {/* Play Now Button (Subtle 6px Rounded CTA) */}
             <Link
               to={`/movie/${film.id}`}
