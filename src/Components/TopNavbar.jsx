@@ -25,10 +25,10 @@ function TopNavbar({ toggleSidebar, isSidebarOpen }) {
   return (
     <>
       {/* Single header — all horizontal spacing controlled here with px-* */}
-      <header className="relative top-0 left-0 w-full h-14 sm:h-16 md:h-20 bg-[#0d0d11]/85 border-b border-white/10 z-40 flex items-center justify-between px-4 sm:px-6 md:px-8 lg:px-10 gap-2 sm:gap-3 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.04)]">
+      <header className="relative top-0 left-0 w-full h-14 sm:h-16 md:h-20 bg-[#0d0d11]/85 border-b border-white/10 z-40 flex items-center justify-between px-5 sm:px-7 md:px-9 lg:px-12 gap-2 sm:gap-3 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.04)]">
 
         {/* ── LEFT: Hamburger + Brand ────────────────────────────── */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0 pl-1 sm:pl-2">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 pl-1.5 sm:pl-2 md:pl-3">
 
           {/* Hamburger / Close toggle */}
           {showSidebarToggle && (
@@ -103,7 +103,7 @@ function TopNavbar({ toggleSidebar, isSidebarOpen }) {
         </div>
 
         {/* ── RIGHT: Avatar or Sign In ───────────────────────────── */}
-        <div className="shrink-0 flex items-center ml-auto pr-1 sm:pr-2">
+        <div className="shrink-0 flex items-center ml-auto pr-1.5 sm:pr-2 md:pr-3">
           {currentUser ? (
             <Link
               to="/profile"
