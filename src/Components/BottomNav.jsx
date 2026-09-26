@@ -37,16 +37,16 @@ const UserIcon = ({ className = "h-5 w-5" }) => (
 
 function BottomNav() {
   const navItems = [
-    { to: "/", label: "Home", end: true, Icon: HomeIcon },
-    { to: "/trending", label: "Trending", Icon: FlameIcon },
+    { to: "/", label: "Movies", end: true, Icon: HomeIcon },
     { to: "/tv", label: "TV Shows", Icon: TvIcon },
-    { to: "/favourites", label: "Favorites", Icon: HeartIcon },
+    { to: "/live", label: "Live & Sports", Icon: FlameIcon },
+    { to: "/subscriptions", label: "Premium", Icon: HeartIcon },
     { to: "/profile", label: "Profile", Icon: UserIcon },
   ];
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 bg-zinc-950/90 backdrop-blur-xl border-t border-white/10 px-4 py-2 md:hidden"
+      className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-zinc-950/95 backdrop-blur-xl px-3 py-2 md:hidden"
       style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 0.5rem)" }}
     >
       <div className="mx-auto flex max-w-md items-center justify-around gap-1">
@@ -57,15 +57,17 @@ function BottomNav() {
             end={end}
             className={({ isActive }) =>
               [
-                "flex flex-col items-center gap-1 rounded-lg px-2 py-1.5 text-[10px] font-medium transition-colors duration-200",
-                isActive ? "text-red-500 font-bold" : "text-zinc-400 hover:text-white",
+                "flex min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 text-[10px] font-medium tracking-wide transition-all duration-200",
+                isActive
+                  ? "bg-red-600/15 text-red-400 shadow-[inset_0_0_0_1px_rgba(239,68,68,0.2)]"
+                  : "text-zinc-400 hover:text-white",
               ].join(" ")
             }
           >
             {({ isActive }) => (
               <>
-                <Icon className={`h-5 w-5 ${isActive ? "text-red-500" : "text-zinc-400"}`} />
-                <span>{label}</span>
+                <Icon className={`h-[18px] w-[18px] ${isActive ? "text-red-500" : "text-zinc-500"}`} />
+                <span className={isActive ? "font-bold" : "font-medium"}>{label}</span>
               </>
             )}
           </NavLink>
