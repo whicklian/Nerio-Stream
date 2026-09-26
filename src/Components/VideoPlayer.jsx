@@ -714,8 +714,12 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
                                     </div>
 
                                     {hasMoreSimilar && (
-                                        <div ref={similarSentinelRef} className="yt-more-sentinel">
-                                            {loadingMoreSimilar ? "Loading more..." : "More recommendations"}
+                                        <div
+                                            ref={similarSentinelRef}
+                                            className="h-px w-full overflow-hidden opacity-0"
+                                            aria-hidden="true"
+                                        >
+                                            {loadingMoreSimilar ? "Loading more..." : ""}
                                         </div>
                                     )}
                                 </div>
