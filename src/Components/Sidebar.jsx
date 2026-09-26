@@ -124,7 +124,7 @@ function Sidebar({ isOpen, onClose }) {
         aria-modal="true"
         aria-label="Navigation menu"
         className={`
-          hidden md:flex fixed left-0 bottom-0 w-72 md:w-80
+          hidden md:flex fixed left-0 bottom-0 w-64 md:w-72
           flex-col justify-between
           bg-[#0b0f0c]/95 backdrop-blur-xl
           border-r border-white/10
@@ -139,14 +139,14 @@ function Sidebar({ isOpen, onClose }) {
       >
 
         {/* ── Navigation ── */}
-        <nav className="flex-1 overflow-y-auto py-8 px-4 scrollbar-hide">
-          <div className="mb-6 px-2">
+        <nav className="flex-1 overflow-y-auto py-8 px-3 scrollbar-hide">
+          <div className="mb-7 px-2">
             <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-zinc-500">
               Navigate
             </p>
           </div>
 
-          <ul className="space-y-3">
+          <ul className="space-y-4">
             {navItems.map(({ to, Icon: NavIcon, label, end }) => (
               <li key={to}>
                 <NavLink
