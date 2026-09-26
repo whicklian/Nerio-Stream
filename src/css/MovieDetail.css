@@ -31,12 +31,12 @@
 .detail-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1rem;
+    padding: 1.25rem 1rem 1rem;
 }
 
 @media (min-width: 640px) {
     .detail-content {
-        padding: 2rem;
+        padding: 2rem 2rem 1rem;
     }
 }
 
@@ -62,7 +62,7 @@
     display: grid;
     grid-template-columns: 300px 1fr;
     gap: 3rem;
-    margin-top: 8rem;
+    margin-top: 2rem;
     margin-bottom: 4rem;
     align-items: start;
 }

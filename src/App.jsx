@@ -28,7 +28,7 @@ function App() {
       {/* Floating sidebar — overlays everything, not in the flex row */}
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-      <div className="flex flex-1 min-h-0 overflow-hidden" style={{ paddingTop: 'clamp(4rem, 5vw, 6rem)' }}>
+      <div className="flex flex-1 min-h-0 overflow-hidden" style={{ paddingTop: 'calc(4rem + env(safe-area-inset-top, 0px))' }}>
         <div className="flex-1 flex flex-col relative min-w-0 w-full max-w-full overflow-x-hidden min-h-0">
           <main className="app-main flex-1 min-h-0 overflow-y-auto overflow-x-hidden hide-scroll w-full max-w-full break-words" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
             <Routes>

@@ -108,11 +108,18 @@ function MovieDetail() {
     };
 
     const handleBack = () => {
-        const referrer = document.referrer;
-        if (referrer && referrer.startsWith(window.location.origin)) {
+        const hasInternalHistory = typeof window !== "undefined"
+            && window.history
+            && window.history.length > 1;
+        const sameOriginReferrer = typeof document !== "undefined"
+            && document.referrer
+            && document.referrer.startsWith(window.location.origin);
+
+        if (hasInternalHistory && (sameOriginReferrer || window.history.state?.idx > 0)) {
             navigate(-1);
             return;
         }
+
         navigate('/');
     };
 
