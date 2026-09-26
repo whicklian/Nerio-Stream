@@ -13,14 +13,8 @@ export function getTVPlayerSrc(id, season, episode) {
     return `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`;
 }
 
-const FALLBACK_DIRECT_STREAMS = [
-    "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-    "https://www.w3schools.com/html/mov_bbb.mp4",
-];
-
 export function getMovieAllSources(id) {
     return [
-        ...FALLBACK_DIRECT_STREAMS,
         `https://vidsrc.me/embed/movie?tmdb=${id}`,
         `https://vidsrc.me/embed/movie/${id}`,
         `https://vidsrc.in/embed/movie?tmdb=${id}`,
@@ -37,7 +31,6 @@ export function getTVAllSources(id, season, episode) {
     const s = season || 1;
     const e = episode || 1;
     return [
-        ...FALLBACK_DIRECT_STREAMS,
         `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
         `https://vidsrc.me/embed/tv/${id}/${s}/${e}`,
         `https://vidsrc.in/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
