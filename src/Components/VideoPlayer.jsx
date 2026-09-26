@@ -16,8 +16,7 @@ export function getTVPlayerSrc(id, season, episode) {
 
 export function getMovieAllSources(id) {
     return [
-        `https://vidsrc.me/embed/movie?tmdb=${id}`,
-        `https://vidsrc.me/embed/movie/${id}`
+        `https://vidsrc.me/embed/movie?tmdb=${id}`
     ];
 }
 
@@ -25,8 +24,7 @@ export function getTVAllSources(id, season, episode) {
     const s = season || 1;
     const e = episode || 1;
     return [
-        `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
-        `https://vidsrc.me/embed/tv/${id}/${s}/${e}`
+        `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`
     ];
 }
 
@@ -45,7 +43,7 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
     const [srcIndex, setSrcIndex] = useState(0);
     const currentSrc = sources[srcIndex] || fallbackSrc;
 
-    const isIframeEmbed = currentSrc.includes("vidsrc") || currentSrc.includes("embed") || currentSrc.includes("multiembed") || currentSrc.includes("autoembed") || currentSrc.includes("2embed") || currentSrc.includes("youtube.com/embed");
+    const isIframeEmbed = currentSrc.includes("vidsrc.me") || currentSrc.includes("vidsrc");
 
     // Player State
     const [isPlaying, setIsPlaying] = useState(false);
