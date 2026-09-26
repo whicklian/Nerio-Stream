@@ -73,7 +73,7 @@ export default function HeroCarousel() {
 
   /* ── Render ─────────────────────────────────────────────────────── */
   return (
-    <section className="relative w-full h-[50vh] sm:h-[65vh] md:h-[78vh] min-h-[360px] sm:min-h-[480px] md:min-h-[580px] max-h-[880px] overflow-hidden bg-zinc-950">
+    <section className="relative w-full h-[42vh] sm:h-[58vh] md:h-[78vh] min-h-[300px] sm:min-h-[420px] md:min-h-[580px] max-h-[880px] overflow-hidden bg-zinc-950">
 
       {/* ── 1. Background backdrop ─────────────────────────────────── */}
       {backdrop && (
@@ -97,15 +97,15 @@ export default function HeroCarousel() {
 
       {/* ── 3. Main content ─────────────────────────────────────────── */}
       <div
-        className="relative z-10 h-full flex flex-col justify-end md:justify-center pt-8 pb-28 sm:py-10 md:py-12"
-        style={{ paddingLeft: 'clamp(1rem, 3vw, 4rem)', paddingRight: 'clamp(1rem, 3vw, 4rem)' }}
+        className="relative z-10 h-full flex flex-col justify-end md:justify-center pt-5 pb-20 sm:pt-8 sm:pb-24 md:py-12"
+        style={{ paddingLeft: 'clamp(0.85rem, 3.5vw, 4rem)', paddingRight: 'clamp(0.85rem, 3.5vw, 4rem)' }}
       >
 
         {/* ── Left column: all the text content ─────────────────────── */}
         <div className="flex flex-col justify-end md:justify-center w-full" style={{ maxWidth: '680px' }}>
 
           {/* Top Metadata Badges */}
-          <div className="flex flex-wrap items-center gap-2 mb-3 md:mb-4">
+          <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-3 md:mb-4">
             {/* Featured Tag */}
             <span className="bg-red-600 text-white font-semibold text-xs uppercase tracking-wider" style={{ borderRadius: '6px', padding: '6px 14px' }}>
               #{currentIndex + 1} FEATURED MOVIE
@@ -133,18 +133,18 @@ export default function HeroCarousel() {
           </div>
 
           {/* Title */}
-          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-black text-white tracking-tight leading-[1.0] drop-shadow-[0_4px_20px_rgba(0,0,0,1)]">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-black text-white tracking-tight leading-[0.95] drop-shadow-[0_4px_20px_rgba(0,0,0,1)]">
             {title}
           </h1>
 
           {/* Overview */}
-          <p className="mt-3 md:mt-5 max-w-xl text-xs sm:text-sm md:text-[17px] text-zinc-300 leading-relaxed line-clamp-2 sm:line-clamp-3 drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+          <p className="mt-2 sm:mt-3 md:mt-5 max-w-xl text-[11px] sm:text-sm md:text-[17px] text-zinc-300 leading-relaxed line-clamp-2 sm:line-clamp-3 drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
             {film.overview ||
               "Stream this blockbuster exclusively in 4K Ultra HD on Nerio Stream."}
           </p>
 
           {/* Call-to-Action (CTA) Buttons */}
-          <div className="flex items-center flex-wrap gap-3 mt-5 md:mt-7">
+          <div className="flex items-center flex-wrap gap-2 sm:gap-3 mt-4 sm:mt-5 md:mt-7">
             {/* Play Now Button (Subtle 6px Rounded CTA) */}
             <Link
               to={`/movie/${film.id}`}
@@ -203,8 +203,8 @@ export default function HeroCarousel() {
 
       {/* ── 4. Bottom indicator row ─────────────────────────────────── */}
       <div
-        className="absolute bottom-7 inset-x-0 z-20 flex items-center justify-between"
-        style={{ paddingLeft: 'clamp(2.5rem, 6vw, 7rem)', paddingRight: 'clamp(2rem, 4vw, 5rem)' }}
+        className="absolute bottom-4 sm:bottom-7 inset-x-0 z-20 flex items-center justify-between"
+        style={{ paddingLeft: 'clamp(0.85rem, 3.5vw, 7rem)', paddingRight: 'clamp(0.85rem, 3.5vw, 5rem)' }}
       >
 
         {/* Slide dots */}

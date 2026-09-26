@@ -29,9 +29,11 @@ function TVShows() {
 
             <div className="pt-4 pb-8 space-y-8" style={{ paddingLeft: 'clamp(0.75rem, 4vw, 4rem)', paddingRight: 'clamp(0.75rem, 4vw, 4rem)' }}>
                 <div className="mb-2 sm:mb-4">
-                    <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-red-500">Explore</p>
-                    <h1 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white">TV Shows</h1>
-                    <p className="mt-2 text-sm text-zinc-400">Binge-worthy series, trending premieres, and fan-favorite episodes.</p>
+                    <div className="flex items-center gap-2.5 mb-3 sm:mb-4">
+                        <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
+                        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-white">TV Shows</h1>
+                    </div>
+                    <p className="text-sm text-zinc-400">Binge-worthy series, trending premieres, and fan-favorite episodes.</p>
                 </div>
 
                 {continueWatching.length > 0 && (
