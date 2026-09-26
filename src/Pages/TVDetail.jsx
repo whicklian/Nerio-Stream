@@ -148,42 +148,6 @@ function TVDetail() {
         alert(subscribed ? "Unsubscribed from notifications." : "You will now be notified when new episodes air!");
     };
 
-    const downloadEpisode = (e, epName, ep) => {
-        e.stopPropagation();
-        const queue = JSON.parse(localStorage.getItem("nerio_downloads") || "[]");
-        const item = {
-            id: `tv-${show.id}-${ep.season_number}-${ep.episode_number}-${Date.now()}`,
-            title: `${show.name} · S${String(ep.season_number).padStart(2, "0")}E${String(ep.episode_number).padStart(2, "0")}`,
-            type: "episode",
-            quality: "1080p",
-            size: "650 MB",
-            sizeBytes: 650000000,
-            duration: `${ep.runtime || 45} min`,
-            downloadedAt: new Date().toISOString(),
-            status: "downloading",
-            progress: 0,
-            thumbnail: ep.still_path ? `https://image.tmdb.org/t/p/w300${ep.still_path}` : "",
-            downloadUrl: "",
-        };
-        localStorage.setItem("nerio_downloads", JSON.stringify([item, ...queue]));
-
-        fetch(item.downloadUrl)
-            .then(response => response.blob())
-            .then(blob => {
-                const url = URL.createObjectURL(blob);
-                const anchor = document.createElement("a");
-                anchor.href = url;
-                anchor.download = `${epName.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.mp4`;
-                anchor.rel = "noopener";
-                anchor.click();
-                URL.revokeObjectURL(url);
-            })
-            .catch(error => {
-                console.error("Episode download failed:", error);
-                alert("This episode cannot be downloaded directly from the current source URL.");
-            });
-    };
-
     if (loading) {
         return (
             <div className="detail-loading">
@@ -415,9 +379,6 @@ function TVDetail() {
                                                                 <div className="ep-number">
                                                                     E{String(ep.episode_number).padStart(2, "0")}
                                                                 </div>
-                                                                <button className="ep-download-btn" onClick={(e) => downloadEpisode(e, ep.name, ep)} title="Download Episode">
-                                                                    ⬇ Download
-                                                                </button>
                                                             </div>
                                                             <div className="ep-name">{ep.name}</div>
                                                             <div className="ep-date">{ep.air_date || "TBA"}</div>

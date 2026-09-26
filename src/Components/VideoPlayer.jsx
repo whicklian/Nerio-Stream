@@ -658,11 +658,6 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
                                         ✨ Ask AI
                                     </button>
 
-                                    {/* Download Pill */}
-                                    <button className="yt-pill-btn" onClick={() => alert(`Downloading "${movieTitle}" in HD...`)}>
-                                        ⬇ Download
-                                    </button>
-
                                     {/* Options Pill */}
                                     <button className="yt-pill-btn yt-more-btn" onClick={() => setSrcIndex((srcIndex + 1) % sources.length)}>
                                         •••

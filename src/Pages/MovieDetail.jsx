@@ -6,59 +6,6 @@ import MovieCard from "../Components/MovieCard";
 import VideoPlayer, { getMovieAllSources } from "../Components/VideoPlayer";
 import "../css/MovieDetail.css";
 
-const STORAGE_KEY = "nerio_downloads";
-
-const getStoredDownloads = () => {
-    try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    } catch {
-        return [];
-    }
-};
-
-const saveStoredDownloads = (list) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-};
-
-const queueMovieDownload = (movie) => {
-    const current = getStoredDownloads();
-    const item = {
-        id: `movie-${movie.id}-${Date.now()}`,
-        title: movie.title,
-        type: "movie",
-        quality: "1080p",
-        size: "1.8 GB",
-        sizeBytes: 1800000000,
-        duration: `${movie.runtime || 120} min`,
-        timestamp: new Date().toISOString(),
-        downloadedAt: new Date().toISOString(),
-        status: "downloading",
-        progress: 0,
-        thumbnail: movie.poster_path ? `https://image.tmdb.org/t/p/w300${movie.poster_path}` : "",
-        downloadUrl: "",
-    };
-
-    saveStoredDownloads([item, ...current]);
-    return item;
-};
-
-const triggerMediaDownload = async (title, mediaUrl) => {
-    try {
-        const response = await fetch(mediaUrl);
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const anchor = document.createElement("a");
-        anchor.href = url;
-        anchor.download = `${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.mp4`;
-        anchor.rel = "noopener";
-        anchor.click();
-        URL.revokeObjectURL(url);
-    } catch (error) {
-        console.error("Download failed:", error);
-        alert("This file cannot be downloaded directly from the current source URL.");
-    }
-};
-
 function MovieDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -121,12 +68,6 @@ function MovieDetail() {
         }
 
         navigate('/');
-    };
-
-    const downloadMovie = async () => {
-        if (!movie) return;
-        const queued = queueMovieDownload(movie);
-        await triggerMediaDownload(movie.title, queued.downloadUrl);
     };
 
     if (loading) {
@@ -263,9 +204,6 @@ function MovieDetail() {
                                     🎬 Trailer
                                 </button>
                             )}
-                            <button className="trailer-btn" onClick={downloadMovie}>
-                                ⬇ Download
-                            </button>
                             {/* Favourite */}
                             <button
                                 className={`fav-action-btn ${favorite ? "active" : ""}`}

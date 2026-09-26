@@ -16,7 +16,7 @@ const PLANS = [
         price: "$9.99",
         period: "per month",
         color: "#e50914",
-        features: ["Ad-free experience", "Full HD (1080p)", "2 Concurrent Streams", "Offline Downloads", "Watch Parties"]
+        features: ["Ad-free experience", "Full HD (1080p)", "2 Concurrent Streams", "Watch Parties"]
     },
     {
         id: "premium",
@@ -25,7 +25,7 @@ const PLANS = [
         period: "per month",
         color: "#ff3b30",
         popular: true,
-        features: ["Ad-free experience", "Ultra HD (4K HDR) & Atmos", "4 Concurrent Streams", "Offline Downloads", "Watch Parties", "Early Access to Originals"]
+        features: ["Ad-free experience", "Ultra HD (4K HDR) & Atmos", "4 Concurrent Streams", "Watch Parties", "Early Access to Originals"]
     }
 ];
 

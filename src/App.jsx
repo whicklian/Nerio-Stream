@@ -12,7 +12,6 @@ import TVShows from './Pages/TVShows';
 import TVDetail from './Pages/TVDetail';
 import LiveTV from './Pages/LiveTV';
 import Profile from './Pages/Profile';
-import Downloads from './Pages/Downloads';
 import Subscriptions from './Pages/Subscriptions';
 import SearchResults from './Pages/SearchResults';
 import Auth from './Pages/Auth';
@@ -42,7 +41,6 @@ function App() {
               <Route path='/profile'        element={<Profile />} />
               <Route path='/auth'           element={<Auth />} />
               <Route path='/login'          element={<Auth />} />
-              <Route path='/downloads'      element={<Downloads />} />
               <Route path='/subscriptions'  element={<Subscriptions />} />
               <Route path='/search'         element={<SearchResults />} />
             </Routes>
