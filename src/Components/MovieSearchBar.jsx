@@ -184,7 +184,7 @@ function MovieSearchBar({ className = "" }) {
               outline: "none",
               boxShadow: "none",
             }}
-            className="w-full h-10 rounded-full border border-white/10 bg-[#17191d]/90 text-xs sm:text-sm text-white placeholder-[#aaaaaa] focus:outline-none focus:border-red-500/80 hover:border-red-500/40 transition-all duration-200 shadow-inner"
+            className="w-full h-9 sm:h-10 rounded-xl border border-white/10 bg-[#17191d]/90 text-xs sm:text-sm text-white placeholder-[#aaaaaa] focus:outline-none focus:border-red-500/80 hover:border-red-500/40 transition-all duration-200 shadow-inner"
           />
 
           {/* Right Action: Loading Spinner or Clear Button Only */}
