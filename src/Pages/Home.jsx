@@ -146,6 +146,16 @@ function Home() {
     fetchData();
   }, [searchQuery]);
 
+  useEffect(() => {
+    if (!searchQuery) {
+      const initialMovies = async () => {
+        const res = await getPopularMovies(1);
+        setExploreMovies(res || []);
+      };
+      initialMovies();
+    }
+  }, [searchQuery]);
+
   const handleLoadMoreMovies = useCallback(async () => {
     if (loadingMore || !hasMore) return;
     setLoadingMore(true);
