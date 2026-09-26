@@ -1,5 +1,5 @@
-const API_KEY = "c9bff9d37b7004fbd0de5008cbd01501";
-const BASE_URL = "https://api.themoviedb.org/3";
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
 
 // ─── Embed URLs (vidsrc.to) ────────────────────────────────────────────────
 export const getMovieEmbedUrl = (tmdbId) =>
@@ -128,12 +128,13 @@ export const getTVByGenre = async (genreId, page = 1) => {
 };
 
 // ─── Live Sports (Sportmonks API) ─────────────────────────────────────────
-const SPORTMONKS_TOKEN = "Nz1xMD7EinA5zpMSqmzHyMwRyuYkxGPeZUECgCIrrsoBGQjkNs13ts8zyFjE";
-const SPORTMONKS_BASE = "https://api.sportmonks.com/v3";
+const SPORTMONKS_TOKEN = import.meta.env.VITE_SPORTMONKS_TOKEN;
+const SPORTMONKS_BASE = import.meta.env.VITE_SPORTMONKS_BASE_URL;
+const ALLORIGINS_BASE = import.meta.env.VITE_ALLORIGINS_BASE_URL;
 
 const fetchSportmonks = async (path) => {
     const rawUrl = `${SPORTMONKS_BASE}${path}`;
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`;
+    const proxyUrl = `${ALLORIGINS_BASE}/raw?url=${encodeURIComponent(rawUrl)}`;
     return fetchJSON(proxyUrl);
 };
 
@@ -170,7 +171,7 @@ export const getTeamSquad = async (teamId = 85) => {
 // ─── Live Sports (SoccersAPI) ─────────────────────────────────────────
 export const getSoccersLeagues = async () => {
     try {
-        const url = `https://api.soccersapi.com/v2.2/leagues/?user=41bJK&token=IvbKSOWNBr&t=list`;
+        const url = `${import.meta.env.VITE_SOCCERS_API_BASE_URL}/leagues/?user=${import.meta.env.VITE_SOCCERS_API_USER}&token=${import.meta.env.VITE_SOCCERS_API_TOKEN}&t=list`;
         const data = await fetchJSON(url);
         return data.data || [];
     } catch (err) {
@@ -182,7 +183,7 @@ export const getSoccersLeagues = async () => {
 // ─── IPTV (Live TV) ───────────────────────────────────────────────────────
 export const getIPTVChannels = async () => {
     try {
-        const data = await fetchJSON("https://iptv-org.github.io/api/channels.json");
+        const data = await fetchJSON(`${import.meta.env.VITE_IPTV_API_BASE_URL}/channels.json`);
         return data || [];
     } catch (err) {
         console.error("IPTV Channels error:", err);
@@ -192,7 +193,7 @@ export const getIPTVChannels = async () => {
 
 export const getIPTVStreams = async () => {
     try {
-        const data = await fetchJSON("https://iptv-org.github.io/api/streams.json");
+        const data = await fetchJSON(`${import.meta.env.VITE_IPTV_API_BASE_URL}/streams.json`);
         return data || [];
     } catch (err) {
         console.error("IPTV Streams error:", err);
