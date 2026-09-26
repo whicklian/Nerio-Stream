@@ -6,6 +6,19 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+try {
+  localStorage.clear();
+  sessionStorage.clear();
+
+  if ('caches' in window) {
+    caches.keys().then((keys) => {
+      return Promise.all(keys.map((key) => caches.delete(key)));
+    }).catch(() => {});
+  }
+} catch (error) {
+  console.debug('Could not clear stale browser cache:', error);
+}
+
 import { StrictMode } from 'react'
 import { BrowserRouter } from 'react-router-dom'  
 import { createRoot } from 'react-dom/client'
