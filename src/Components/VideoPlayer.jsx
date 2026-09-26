@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Hls from "hls.js";
 import "../css/VideoPlayer.css";
+import { getSimilarMovies, getSimilarTV } from "./Apis";
 import { getCustomStreamUrl, saveCustomStreamUrl } from "../utils";
 
 export function getMoviePlayerSrc(id) {
@@ -69,6 +70,11 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
     const [isLiked, setIsLiked] = useState(false);
     const [isDisliked, setIsDisliked] = useState(false);
     const [showShareNotice, setShowShareNotice] = useState(false);
+    const [loadedSimilar, setLoadedSimilar] = useState([]);
+    const [similarPage, setSimilarPage] = useState(1);
+    const [hasMoreSimilar, setHasMoreSimilar] = useState(Boolean(similar?.length));
+    const [loadingMoreSimilar, setLoadingMoreSimilar] = useState(false);
+    const similarSentinelRef = useRef(null);
 
     const controlsTimeoutRef = useRef(null);
 
@@ -90,6 +96,52 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
         }
         return `${m}:${s < 10 ? '0' : ''}${s}`;
     };
+
+    useEffect(() => {
+        setLoadedSimilar((similar || []).slice(0, 6));
+        setSimilarPage(1);
+        setHasMoreSimilar(Boolean((similar || []).length > 0));
+    }, [similar]);
+
+    const loadMoreSimilar = useCallback(async () => {
+        const mediaId = movie?.id || show?.id;
+        if (!mediaId || loadingMoreSimilar || !hasMoreSimilar) return;
+
+        setLoadingMoreSimilar(true);
+        try {
+            const nextPage = similarPage + 1;
+            const moreSimilar = movie
+                ? await getSimilarMovies(mediaId, nextPage)
+                : await getSimilarTV(mediaId, nextPage);
+
+            if (moreSimilar && moreSimilar.length > 0) {
+                setLoadedSimilar(prev => [...prev, ...moreSimilar]);
+                setSimilarPage(nextPage);
+            } else {
+                setHasMoreSimilar(false);
+            }
+        } catch (error) {
+            console.error("Failed to load more similar media:", error);
+            setHasMoreSimilar(false);
+        } finally {
+            setLoadingMoreSimilar(false);
+        }
+    }, [movie, show, loadingMoreSimilar, hasMoreSimilar, similarPage]);
+
+    useEffect(() => {
+        if (!similarSentinelRef.current) return;
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0]?.isIntersecting) {
+                    loadMoreSimilar();
+                }
+            },
+            { rootMargin: "200px", threshold: 0.1 }
+        );
+
+        observer.observe(similarSentinelRef.current);
+        return () => observer.disconnect();
+    }, [loadMoreSimilar, hasMoreSimilar, loadingMoreSimilar]);
 
     useEffect(() => {
         if (isIframeEmbed) return;
@@ -628,11 +680,11 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
                             </div>
 
                             {/* ── More Like This Recommendations Grid ── */}
-                            {similar && similar.length > 0 && (
+                            {loadedSimilar && loadedSimilar.length > 0 && (
                                 <div className="yt-more-section">
                                     <h3 className="yt-more-title">🎬 More Like This</h3>
                                     <div className="yt-more-grid">
-                                        {similar.slice(0, 6).map(item => (
+                                        {loadedSimilar.map(item => (
                                             <div
                                                 key={item.id}
                                                 className="yt-more-card"
@@ -660,6 +712,12 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
                                             </div>
                                         ))}
                                     </div>
+
+                                    {hasMoreSimilar && (
+                                        <div ref={similarSentinelRef} className="yt-more-sentinel">
+                                            {loadingMoreSimilar ? "Loading more..." : "More recommendations"}
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>

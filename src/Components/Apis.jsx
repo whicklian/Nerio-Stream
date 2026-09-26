@@ -87,14 +87,14 @@ export const getMovieDetails = async (movieId) => {
     } catch (err) { console.error(err); return null; }
 };
 
-export const getSimilarMovies = async (movieId) => {
+export const getSimilarMovies = async (movieId, page = 1) => {
     if (!hasTMDBConfig) {
         warnMissingTMDBConfig();
         return [];
     }
 
     try {
-        const data = await fetchJSON(`${BASE_URL}/movie/${movieId}/similar?api_key=${API_KEY}`);
+        const data = await fetchJSON(`${BASE_URL}/movie/${movieId}/similar?api_key=${API_KEY}&page=${page}`);
         return data.results || [];
     } catch (err) { console.error(err); return []; }
 };
@@ -173,14 +173,14 @@ export const getTVSeasonDetails = async (tvId, seasonNumber) => {
     } catch (err) { console.error(err); return null; }
 };
 
-export const getSimilarTV = async (tvId) => {
+export const getSimilarTV = async (tvId, page = 1) => {
     if (!hasTMDBConfig) {
         warnMissingTMDBConfig();
         return [];
     }
 
     try {
-        const data = await fetchJSON(`${BASE_URL}/tv/${tvId}/similar?api_key=${API_KEY}`);
+        const data = await fetchJSON(`${BASE_URL}/tv/${tvId}/similar?api_key=${API_KEY}&page=${page}`);
         return data.results || [];
     } catch (err) { console.error(err); return []; }
 };
