@@ -16,14 +16,7 @@ export function getTVPlayerSrc(id, season, episode) {
 export function getMovieAllSources(id) {
     return [
         `https://vidsrc.me/embed/movie?tmdb=${id}`,
-        `https://vidsrc.me/embed/movie/${id}`,
-        `https://vidsrc.in/embed/movie?tmdb=${id}`,
-        `https://vidsrc.pm/embed/movie?tmdb=${id}`,
-        `https://vidsrc.net/embed/movie?tmdb=${id}`,
-        `https://vidsrc.xyz/embed/movie?tmdb=${id}`,
-        `https://vidsrc.io/embed/movie?tmdb=${id}`,
-        `https://vidsrc.to/embed/movie/${id}`,
-        `https://vidsrc.cc/v2/embed/movie/${id}`,
+        `https://vidsrc.me/embed/movie/${id}`
     ];
 }
 
@@ -32,14 +25,7 @@ export function getTVAllSources(id, season, episode) {
     const e = episode || 1;
     return [
         `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
-        `https://vidsrc.me/embed/tv/${id}/${s}/${e}`,
-        `https://vidsrc.in/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
-        `https://vidsrc.pm/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
-        `https://vidsrc.net/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
-        `https://vidsrc.xyz/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
-        `https://vidsrc.io/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
-        `https://vidsrc.to/embed/tv/${id}/${s}/${e}`,
-        `https://vidsrc.cc/v2/embed/tv/${id}/${s}/${e}`,
+        `https://vidsrc.me/embed/tv/${id}/${s}/${e}`
     ];
 }
 
