@@ -16,11 +16,6 @@ export function getTVPlayerSrc(id, season, episode) {
 export function getMovieAllSources(id) {
     return [
         `https://vidsrc.me/embed/movie?tmdb=${id}`,
-        `https://vidsrc.to/embed/movie/${id}`,
-        `https://vidsrc.xyz/embed/movie?tmdb=${id}`,
-        `https://autoembed.cc/embed/tmdb/movie-${id}`,
-        `https://multiembed.mov/?video_id=${id}&tmdb=1`,
-        `https://2embed.cc/embed/tmdb/movie/${id}`,
     ];
 }
 
@@ -29,11 +24,6 @@ export function getTVAllSources(id, season, episode) {
     const e = episode || 1;
     return [
         `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
-        `https://vidsrc.to/embed/tv/${id}/${s}/${e}`,
-        `https://vidsrc.xyz/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
-        `https://autoembed.cc/embed/tmdb/tv-${id}-${s}-${e}`,
-        `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}`,
-        `https://2embed.cc/embed/tmdb/tv/${id}/${s}/${e}`,
     ];
 }
 
@@ -399,57 +389,16 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
                         {/* Video Player Box */}
                         <div className="yt-player-box">
                             {isIframeEmbed ? (
-                                <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
-                                    {/* Source switcher bar */}
-                                    <div style={{
-                                        display: 'flex', alignItems: 'center', gap: '8px',
-                                        padding: '6px 10px', background: 'rgba(0,0,0,0.85)',
-                                        borderBottom: '1px solid rgba(255,255,255,0.1)', flexShrink: 0
-                                    }}>
-                                        <span style={{ color: '#aaa', fontSize: '12px', marginRight: 'auto' }}>
-                                            Source {srcIndex + 1}/{sources.length}:&nbsp;
-                                            <span style={{ color: '#e50914', fontWeight: 600 }}>
-                                                {new URL(currentSrc).hostname.replace('www.', '')}
-                                            </span>
-                                        </span>
-                                        {sources.map((_, i) => (
-                                            <button
-                                                key={i}
-                                                onClick={() => setSrcIndex(i)}
-                                                style={{
-                                                    background: i === srcIndex ? '#e50914' : 'rgba(255,255,255,0.12)',
-                                                    color: '#fff', border: 'none', borderRadius: '4px',
-                                                    padding: '3px 10px', fontSize: '12px', cursor: 'pointer',
-                                                    fontWeight: i === srcIndex ? 700 : 400,
-                                                    transition: 'background 0.2s'
-                                                }}
-                                            >
-                                                S{i + 1}
-                                            </button>
-                                        ))}
-                                        <button
-                                            onClick={() => setSrcIndex((srcIndex + 1) % sources.length)}
-                                            style={{
-                                                background: 'rgba(229,9,20,0.18)', color: '#e50914',
-                                                border: '1px solid rgba(229,9,20,0.5)', borderRadius: '4px',
-                                                padding: '3px 10px', fontSize: '12px', cursor: 'pointer',
-                                                fontWeight: 600
-                                            }}
-                                        >
-                                            ↻ Next Source
-                                        </button>
-                                    </div>
-                                    <iframe
-                                        key={currentSrc}
-                                        src={currentSrc}
-                                        title={movieTitle}
-                                        allowFullScreen
-                                        allow="autoplay; fullscreen; picture-in-picture"
-                                        referrerPolicy="origin"
-                                        scrolling="no"
-                                        style={{ width: '100%', flex: 1, border: 'none' }}
-                                    />
-                                </div>
+                                <iframe
+                                    key={currentSrc}
+                                    src={currentSrc}
+                                    title={movieTitle}
+                                    allowFullScreen
+                                    allow="autoplay; fullscreen; picture-in-picture"
+                                    referrerPolicy="origin"
+                                    scrolling="no"
+                                    style={{ width: '100%', height: '100%', border: 'none' }}
+                                />
                             ) : (
                                 <div className="yt-video-wrapper" onClick={togglePlay}>
                                     <video
