@@ -20,6 +20,48 @@ function TVShows() {
     const [loading, setLoading] = useState(true);
     const [continueWatching, setContinueWatching] = useState([]);
 
+    const handleLoadMoreTVGenre = async (genreId) => {
+        setGenreRows((prev) =>
+            prev.map((row) =>
+                row.id === genreId
+                    ? { ...row, isLoadingMore: true }
+                    : row
+            )
+        );
+
+        try {
+            const row = genreRows.find((item) => item.id === genreId);
+            if (!row) return;
+
+            const nextPage = (row.page || 1) + 1;
+            const moreShows = await getTVByGenre(genreId, nextPage);
+
+            setGenreRows((prev) =>
+                prev.map((item) => {
+                    if (item.id !== genreId) return item;
+
+                    const mergedShows = [...(item.movies || []), ...(moreShows || [])];
+                    const nextPageValue = moreShows && moreShows.length > 0 ? nextPage : item.page || 1;
+
+                    return {
+                        ...item,
+                        movies: mergedShows,
+                        page: nextPageValue,
+                        hasMore: Boolean(moreShows && moreShows.length > 0),
+                        isLoadingMore: false,
+                    };
+                })
+            );
+        } catch (error) {
+            console.error("Failed to load more TV shows for genre:", genreId, error);
+            setGenreRows((prev) =>
+                prev.map((row) =>
+                    row.id === genreId ? { ...row, isLoadingMore: false } : row
+                )
+            );
+        }
+    };
+
     useEffect(() => {
         const loadInitial = async () => {
             setLoading(true);
@@ -29,10 +71,14 @@ function TVShows() {
 
                 const rows = await Promise.all(
                     DEFAULT_TV_GENRE_ROWS.map(async ({ id, title }) => {
-                        const items = await getTVByGenre(id);
+                        const items = await getTVByGenre(id, 1);
                         return {
+                            id,
                             title,
-                            movies: (items || []).slice(0, 8)
+                            movies: items || [],
+                            page: 1,
+                            hasMore: Boolean((items || []).length > 0),
+                            isLoadingMore: false,
                         };
                     })
                 );
@@ -123,6 +169,17 @@ function TVShows() {
                                         <div className="w-1.5 h-6 bg-red-600 rounded-full shrink-0" />
                                         <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">{row.title}</h2>
                                     </div>
+
+                                    {row.hasMore && (
+                                        <button
+                                            type="button"
+                                            onClick={() => handleLoadMoreTVGenre(row.id)}
+                                            disabled={row.isLoadingMore}
+                                            className="text-xs sm:text-sm font-semibold text-red-500 hover:text-red-400 disabled:text-zinc-500 transition-colors"
+                                        >
+                                            {row.isLoadingMore ? "Loading..." : "Load More"}
+                                        </button>
+                                    )}
                                 </div>
 
                                 <div className="flex gap-4 overflow-x-auto scrollbar-hide py-2.5 scroll-smooth pb-3" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', paddingLeft: '2px', paddingRight: '2px' }}>

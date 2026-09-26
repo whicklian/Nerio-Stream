@@ -41,10 +41,14 @@ function Home() {
       try {
         const rows = await Promise.all(
           DEFAULT_GENRE_ROWS.map(async ({ id, title }) => {
-            const movies = await getMoviesByGenre(id);
+            const movies = await getMoviesByGenre(id, 1);
             return {
+              id,
               title,
-              movies: (movies || []).slice(0, 8)
+              movies: movies || [],
+              page: 1,
+              hasMore: Boolean((movies || []).length > 0),
+              isLoadingMore: false,
             };
           })
         );
@@ -56,6 +60,48 @@ function Home() {
 
     fetchGenreRows();
   }, []);
+
+  const handleLoadMoreGenre = useCallback(async (genreId) => {
+    setGenreRows((prev) =>
+      prev.map((row) =>
+        row.id === genreId
+          ? { ...row, isLoadingMore: true }
+          : row
+      )
+    );
+
+    try {
+      const row = genreRows.find((item) => item.id === genreId);
+      if (!row) return;
+
+      const nextPage = (row.page || 1) + 1;
+      const moreMovies = await getMoviesByGenre(genreId, nextPage);
+
+      setGenreRows((prev) =>
+        prev.map((item) => {
+          if (item.id !== genreId) return item;
+
+          const mergedMovies = [...(item.movies || []), ...(moreMovies || [])];
+          const nextPageValue = moreMovies && moreMovies.length > 0 ? nextPage : item.page || 1;
+
+          return {
+            ...item,
+            movies: mergedMovies,
+            page: nextPageValue,
+            hasMore: Boolean(moreMovies && moreMovies.length > 0),
+            isLoadingMore: false,
+          };
+        })
+      );
+    } catch (error) {
+      console.error("Failed to load more movies for genre:", genreId, error);
+      setGenreRows((prev) =>
+        prev.map((row) =>
+          row.id === genreId ? { ...row, isLoadingMore: false } : row
+        )
+      );
+    }
+  }, [genreRows]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,6 +120,7 @@ function Home() {
         setLoading(false);
       }
     };
+
     fetchData();
   }, [searchQuery]);
 
@@ -193,6 +240,17 @@ function Home() {
                         {row.title}
                       </h2>
                     </div>
+
+                    {row.hasMore && (
+                      <button
+                        type="button"
+                        onClick={() => handleLoadMoreGenre(row.id)}
+                        disabled={row.isLoadingMore}
+                        className="text-xs sm:text-sm font-semibold text-red-500 hover:text-red-400 disabled:text-zinc-500 transition-colors"
+                      >
+                        {row.isLoadingMore ? "Loading..." : "Load More"}
+                      </button>
+                    )}
                   </div>
 
                   <div
