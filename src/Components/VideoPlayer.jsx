@@ -79,6 +79,7 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
     const [playbackSpeed, setPlaybackSpeed] = useState(1);
     const [qualityLevels, setQualityLevels] = useState([]);
     const [currentQuality, setCurrentQuality] = useState(-1);
+    const [isFullscreen, setIsFullscreen] = useState(false);
     const [showControls, setShowControls] = useState(true);
     const [hoverTime, setHoverTime] = useState(null);
     const [hoverPos, setHoverPos] = useState(0);
@@ -279,6 +280,26 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
         }
     };
 
+    const toggleFullscreen = async () => {
+        try {
+            if (document.fullscreenElement) {
+                await document.exitFullscreen();
+                return;
+            }
+
+            const mediaElement = isIframeEmbed ? containerRef.current?.querySelector("iframe") : videoRef.current;
+            await (mediaElement?.requestFullscreen?.() || containerRef.current?.requestFullscreen?.());
+        } catch (error) {
+            console.error("Fullscreen error:", error);
+        }
+    };
+
+    useEffect(() => {
+        const handleFullscreenChange = () => setIsFullscreen(Boolean(document.fullscreenElement));
+        document.addEventListener("fullscreenchange", handleFullscreenChange);
+        return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    }, []);
+
     const handleMouseMove = () => {
         setShowControls(true);
         if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
@@ -302,6 +323,7 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
                     break;
                 case "f":
                     e.preventDefault();
+                    toggleFullscreen();
                     break;
                 case "m":
                     e.preventDefault();
@@ -340,7 +362,7 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
 
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [togglePlay, isIframeEmbed]);
+    }, [togglePlay, toggleFullscreen, isIframeEmbed]);
 
     const handleLike = () => {
         if (isLiked) {
@@ -519,7 +541,14 @@ function VideoPlayer({ src, allSources = [], title = "Video Player", overview, m
                                                 </div>
 
                                                 <button className="yt-btn" onClick={togglePiP} title="Miniplayer">🗔</button>
-                                                <button className="yt-btn" title="Full screen disabled">⛶</button>
+                                                <button
+                                                    className="yt-btn"
+                                                    onClick={toggleFullscreen}
+                                                    title={isFullscreen ? "Exit full screen" : "Full screen (f)"}
+                                                    aria-label={isFullscreen ? "Exit full screen" : "Full screen"}
+                                                >
+                                                    {isFullscreen ? "⛶" : "⛶"}
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
