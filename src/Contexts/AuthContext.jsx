@@ -20,60 +20,43 @@ import { getRedirectResult } from "firebase/auth";
 
 const AuthContext = createContext();
 
-const getGuestProfile = () => {
-  const fallback = {
-    uid: "guest",
-    email: "guest@nerio.local",
-    displayName: "Guest User",
-    photoURL: "",
-    isGuest: true,
-    profile: {
-      streamingQuality: "Auto",
-      preferredLanguage: "en",
-      avatarTheme: "dark"
-    },
-    subscription: {
-      tier: "free",
-      status: "guest"
-    },
-    favorites: [],
-    continueWatching: [],
-    customStreams: {},
-    watchedEpisodes: {},
-    points: 0,
-    level: 1,
-    badges: []
-  };
-
-  try {
-    const saved = localStorage.getItem("nerio_guest_profile");
-    if (!saved) return fallback;
-
-    const parsed = JSON.parse(saved);
-    return {
-      ...fallback,
-      ...parsed,
-      profile: { ...fallback.profile, ...(parsed.profile || {}) },
-      subscription: { ...fallback.subscription, ...(parsed.subscription || {}) },
-      favorites: Array.isArray(parsed.favorites) ? parsed.favorites : [],
-      continueWatching: Array.isArray(parsed.continueWatching) ? parsed.continueWatching : [],
-      customStreams: parsed.customStreams || {},
-      watchedEpisodes: parsed.watchedEpisodes || {},
-      points: Number(parsed.points || 0),
-      level: Number(parsed.level || 1),
-      badges: Array.isArray(parsed.badges) ? parsed.badges : []
-    };
-  } catch (error) {
-    console.debug("Failed to parse guest profile:", error);
-    return fallback;
-  }
+const guestUser = {
+  uid: "guest",
+  email: "guest@nerio.local",
+  displayName: "Guest User",
+  photoURL: "",
+  isGuest: true
 };
+
+const getGuestProfile = () => ({
+  uid: guestUser.uid,
+  email: guestUser.email,
+  displayName: guestUser.displayName,
+  photoURL: guestUser.photoURL,
+  isGuest: true,
+  profile: {
+    streamingQuality: "Auto",
+    preferredLanguage: "en",
+    avatarTheme: "dark"
+  },
+  subscription: {
+    tier: "free",
+    status: "guest"
+  },
+  favorites: [],
+  continueWatching: [],
+  customStreams: {},
+  watchedEpisodes: {},
+  points: 0,
+  level: 1,
+  badges: []
+});
 
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(() => (
-    typeof window === "undefined" ? null : { uid: "guest", email: "guest@nerio.local", displayName: "Guest User", photoURL: "", isGuest: true }
+    typeof window === "undefined" ? null : { ...guestUser }
   ));
   const [userProfile, setUserProfile] = useState(() => (typeof window === "undefined" ? null : getGuestProfile()));
   const [loading, setLoading] = useState(true);
@@ -81,7 +64,7 @@ export const AuthProvider = ({ children }) => {
   // Handle Google redirect result on page load (fallback from popup-blocked scenario)
   useEffect(() => {
     if (!auth || !hasFirebaseConfig) {
-      setCurrentUser({ uid: "guest", email: "guest@nerio.local", displayName: "Guest User", photoURL: "", isGuest: true });
+      setCurrentUser({ ...guestUser });
       setUserProfile(getGuestProfile());
       setLoading(false);
       return;
@@ -103,7 +86,7 @@ export const AuthProvider = ({ children }) => {
   // Sync user profile document from Firestore
   useEffect(() => {
     if (!auth || !db || !hasFirebaseConfig) {
-      setCurrentUser({ uid: "guest", email: "guest@nerio.local", displayName: "Guest User", photoURL: "", isGuest: true });
+      setCurrentUser({ ...guestUser });
       setUserProfile(getGuestProfile());
       setLoading(false);
       return;
@@ -115,7 +98,7 @@ export const AuthProvider = ({ children }) => {
       if (user) {
         setCurrentUser(user);
       } else {
-        setCurrentUser({ uid: "guest", email: "guest@nerio.local", displayName: "Guest User", photoURL: "", isGuest: true });
+        setCurrentUser({ ...guestUser });
         setUserProfile(getGuestProfile());
       }
 
@@ -211,13 +194,13 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     if (!auth || !hasFirebaseConfig) {
-      setCurrentUser({ uid: "guest", email: "guest@nerio.local", displayName: "Guest User", photoURL: "", isGuest: true });
+      setCurrentUser({ ...guestUser });
       setUserProfile(getGuestProfile());
       return Promise.resolve();
     }
 
     return signOut(auth).then(() => {
-      setCurrentUser({ uid: "guest", email: "guest@nerio.local", displayName: "Guest User", photoURL: "", isGuest: true });
+      setCurrentUser({ ...guestUser });
       setUserProfile(getGuestProfile());
     });
   };
