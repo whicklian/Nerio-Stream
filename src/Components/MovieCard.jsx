@@ -20,6 +20,7 @@ function MovieCard({ movie }) {
     const rating = movie.vote_average ? movie.vote_average.toFixed(1) : "N/A";
     const releaseYear = movie.release_date?.split("-")[0] || movie.first_air_date?.split("-")[0] || "TBA";
     const title = movie.title || movie.name || "Untitled";
+    const mediaType = movie.media_type === "tv" ? "TV" : "Movie";
     const posterUrl = movie.poster_path
         ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
         : null;
@@ -85,9 +86,14 @@ function MovieCard({ movie }) {
 
                 {/* Compact Movie Title Footer */}
                 <div className="movie-info p-2.5 bg-zinc-900/90 border-t border-zinc-800/60">
-                    <h3 className="text-xs sm:text-sm font-bold text-zinc-100 truncate transition-colors duration-200 group-hover:text-red-500" title={title}>
-                        {title}
-                    </h3>
+                    <div className="flex items-center justify-between gap-2">
+                        <h3 className="text-xs sm:text-sm font-bold text-zinc-100 truncate transition-colors duration-200 group-hover:text-red-500" title={title}>
+                            {title}
+                        </h3>
+                        <span className="px-1.5 py-0.5 rounded bg-zinc-800 text-[9px] font-semibold uppercase tracking-wide text-zinc-300 border border-zinc-700/60 shrink-0">
+                            {mediaType}
+                        </span>
+                    </div>
                 </div>
             </div>
         </Link>
