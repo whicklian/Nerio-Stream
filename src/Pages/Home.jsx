@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { getPopularMovies, searchMovies, getMoviesByGenre, getTrending, getTopRatedMovies } from "../Components/Apis";
+import { getPopularMovies, searchMulti, getMoviesByGenre, getTrending, getTopRatedMovies } from "../Components/Apis";
 import { getContinueWatching } from "../utils";
 import MovieCard from "../Components/MovieCard";
 import { Link, useSearchParams } from "react-router-dom";
@@ -130,7 +130,7 @@ function Home() {
       setLoading(true);
       try {
         if (searchQuery) {
-          const results = await searchMovies(searchQuery);
+          const results = await searchMulti(searchQuery);
           setMovies(results);
         } else {
           const popularMovies = await getPopularMovies();
