@@ -38,7 +38,7 @@ export const getPopularMovies = async (page = 1) => {
     } catch (err) { console.error(err); return []; }
 };
 
-export const searchMovies = async (query, page = 1) => {
+export const searchMulti = async (query, page = 1) => {
     if (!query) return [];
     if (!hasTMDBConfig) {
         warnMissingTMDBConfig();
@@ -46,9 +46,22 @@ export const searchMovies = async (query, page = 1) => {
     }
 
     try {
-        const data = await fetchJSON(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`);
-        return data.results || [];
+        const data = await fetchJSON(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`);
+        return (data.results || [])
+            .filter((item) => item && (item.media_type === "movie" || item.media_type === "tv"))
+            .map((item) => ({
+                ...item,
+                media_type: item.media_type || (item.first_air_date ? "tv" : "movie"),
+                title: item.title || item.name || "Untitled",
+                name: item.name || item.title || "Untitled",
+                release_date: item.release_date || item.first_air_date || "",
+            }));
     } catch (err) { console.error(err); return []; }
+};
+
+export const searchMovies = async (query, page = 1) => {
+    const results = await searchMulti(query, page);
+    return results.filter((item) => item.media_type === "movie");
 };
 
 export const getGenres = async () => {
@@ -137,16 +150,8 @@ export const getTVShows = async (page = 1) => {
 };
 
 export const searchTV = async (query, page = 1) => {
-    if (!query) return [];
-    if (!hasTMDBConfig) {
-        warnMissingTMDBConfig();
-        return [];
-    }
-
-    try {
-        const data = await fetchJSON(`${BASE_URL}/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`);
-        return data.results || [];
-    } catch (err) { console.error(err); return []; }
+    const results = await searchMulti(query, page);
+    return results.filter((item) => item.media_type === "tv");
 };
 
 export const getTVDetails = async (tvId) => {

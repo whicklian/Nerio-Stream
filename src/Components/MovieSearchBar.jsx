@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { searchMovies, getGenres } from "./Apis";
+import { searchMulti, getGenres } from "./Apis";
 
 // Fallback genre dictionary for instant tag lookup
 const DEFAULT_GENRES = {
@@ -74,8 +74,8 @@ function MovieSearchBar({ className = "" }) {
     setIsLoading(true);
     const timer = setTimeout(async () => {
       try {
-        const results = await searchMovies(trimmed);
-        setSuggestions(results.slice(0, 5)); // Show top 5 items cleanly without scrollbar
+        const results = await searchMulti(trimmed);
+        setSuggestions(results.slice(0, 5));
         setIsOpen(true);
         setSelectedIndex(-1);
       } catch (err) {
@@ -116,8 +116,9 @@ function MovieSearchBar({ className = "" }) {
   };
 
   // Select a suggestion item
-  const handleSelectMovie = (movie) => {
-    navigate(`/movie/${movie.id}`);
+  const handleSelectMovie = (item) => {
+    const targetPath = item?.media_type === "tv" ? `/tv/${item.id}` : `/movie/${item.id}`;
+    navigate(targetPath);
     setQuery("");
     setSuggestions([]);
     setIsOpen(false);
@@ -177,7 +178,7 @@ function MovieSearchBar({ className = "" }) {
               if (query.trim() && suggestions.length > 0) setIsOpen(true);
             }}
             onKeyDown={handleKeyDown}
-            placeholder="Search movies..."
+            placeholder="Search movies & shows..."
             style={{
               paddingLeft: "2.75rem",
               paddingRight: "2.5rem",
@@ -239,10 +240,12 @@ function MovieSearchBar({ className = "" }) {
               </div>
               
               {suggestions.map((movie, index) => {
+                const mediaType = movie.media_type === "tv" ? "TV" : "Movie";
                 const releaseYear = movie.release_date ? movie.release_date.slice(0, 4) : null;
                 const posterUrl = movie.poster_path
                   ? `https://image.tmdb.org/t/p/w92${movie.poster_path}`
                   : null;
+                const title = movie.title || movie.name || "Untitled";
                 const genres = (movie.genre_ids || [])
                   .slice(0, 2)
                   .map((id) => genreMap[id])
@@ -252,7 +255,7 @@ function MovieSearchBar({ className = "" }) {
 
                 return (
                   <div
-                    key={movie.id}
+                    key={`${movie.media_type}-${movie.id}`}
                     onClick={() => handleSelectMovie(movie)}
                     onMouseEnter={() => setSelectedIndex(index)}
                     className={`group flex items-center justify-between gap-3 p-2 rounded-xl transition-all duration-200 cursor-pointer ${
@@ -268,21 +271,24 @@ function MovieSearchBar({ className = "" }) {
                         {posterUrl ? (
                           <img
                             src={posterUrl}
-                            alt={movie.title}
+                            alt={title}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-slate-500 text-xs">
-                            🎬
+                            {movie.media_type === "tv" ? "TV" : "🎬"}
                           </div>
                         )}
                       </div>
 
                       {/* Movie Information */}
                       <div className="flex-1 min-w-0 flex flex-col justify-center gap-1">
-                        <h4 className="text-xs sm:text-sm font-semibold text-slate-100 group-hover:text-indigo-300 truncate transition-colors">
-                          {movie.title}
-                        </h4>
+                        <div className="flex items-center gap-2 truncate">
+                          <h4 className="text-xs sm:text-sm font-semibold text-slate-100 group-hover:text-indigo-300 truncate transition-colors">
+                            {title}
+                          </h4>
+                          <span className="text-[9px] uppercase tracking-wide text-slate-500 shrink-0">{mediaType}</span>
+                        </div>
 
                         <div className="flex items-center gap-2 text-[11px] text-slate-400 truncate">
                           {releaseYear && <span className="font-medium text-slate-400 shrink-0">{releaseYear}</span>}
@@ -329,8 +335,8 @@ function MovieSearchBar({ className = "" }) {
             /* Empty State */
             <div className="p-4 text-center text-xs text-slate-400 flex flex-col items-center gap-2">
               <span className="text-2xl">🔍</span>
-              <p>No movies found for "<span className="text-slate-200 font-medium">{query}</span>"</p>
-              <p className="text-[11px] text-slate-500">Try searching for another movie or keyword</p>
+              <p>No results found for "<span className="text-slate-200 font-medium">{query}</span>"</p>
+              <p className="text-[11px] text-slate-500">Try searching for another title, series, or keyword</p>
             </div>
           ) : null}
         </div>
