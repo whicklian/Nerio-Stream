@@ -37,7 +37,8 @@ function App() {
               <Route path='/favourites'     element={<Favourites />} />
               <Route path='/movie/:id'      element={<MovieDetail />} />
               <Route path='/tv/:id'         element={<TVDetail />} />
-              <Route path='/live'           element={<LiveTV />} />
+              <Route path='/live'           element={<LiveTV mode="channels" />} />
+              <Route path='/sports'         element={<LiveTV mode="sports" />} />
               <Route path='/profile'        element={<Profile />} />
               <Route path='/auth'           element={<Auth />} />
               <Route path='/login'          element={<Auth />} />

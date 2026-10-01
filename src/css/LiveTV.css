@@ -110,6 +110,21 @@
     align-items: stretch;
 }
 
+.sports-page-title {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #f8fafc;
+}
+
+.sports-main-area {
+    min-height: 560px;
+}
+
+.sports-mode .social-stadium {
+    width: 100%;
+    min-width: 0;
+}
+
 .live-player-section,
 .social-stadium {
     min-width: 0;
@@ -483,5 +498,603 @@ select.ctrl-select {
 
     .social-stadium {
         width: 100%;
+    }
+}
+
+/* Live channels broadcast interface */
+.live-channels-page {
+    --broadcast-accent: #c7f36b;
+    --broadcast-red: #ff514d;
+    --broadcast-border: rgba(224, 235, 224, 0.1);
+    --broadcast-panel: rgba(17, 22, 20, 0.92);
+    position: relative;
+    width: min(100%, 1680px);
+    min-height: calc(100vh - 70px);
+    margin: 0 auto;
+    padding: clamp(18px, 3vw, 38px);
+    gap: 20px;
+    background-image:
+        linear-gradient(rgba(187, 217, 167, 0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(187, 217, 167, 0.018) 1px, transparent 1px),
+        linear-gradient(140deg, rgba(31, 43, 34, 0.36), transparent 44%);
+    background-size: 34px 34px, 34px 34px, auto;
+    color: #f3f5ef;
+}
+
+.live-page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 4px 0 6px;
+    animation: live-enter 420ms ease-out both;
+}
+
+.live-page-eyebrow,
+.guide-index {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #a5b09f;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.live-status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    border-radius: 50%;
+    background: var(--broadcast-red);
+    box-shadow: 0 0 12px rgba(255, 81, 77, 0.55);
+}
+
+.live-page-header h1 {
+    margin: 10px 0 3px;
+    color: #f4f4eb;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(2rem, 4vw, 3.3rem);
+    font-weight: 500;
+    line-height: 1.05;
+}
+
+.live-page-header p {
+    margin: 0;
+    color: #9da49a;
+    font-size: 0.92rem;
+}
+
+.live-page-count {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--broadcast-border);
+    border-radius: 7px;
+    background: rgba(13, 17, 15, 0.7);
+    color: #a5b09f;
+    font-size: 0.76rem;
+    white-space: nowrap;
+}
+
+.live-page-count-value {
+    color: var(--broadcast-accent);
+    font-size: 1.2rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.live-channels-page .epg-container,
+.live-channels-page .live-player-section {
+    border: 1px solid var(--broadcast-border);
+    border-radius: 9px;
+    background: var(--broadcast-panel);
+    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.18);
+}
+
+.live-channels-page .epg-container {
+    order: 3;
+    padding: 18px 18px 14px;
+    animation: live-enter 520ms 50ms ease-out both;
+}
+
+.live-channels-page .epg-header {
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 16px;
+}
+
+.guide-heading h2 {
+    margin: 4px 0 0;
+    color: #f1f3eb;
+    font-size: 1.08rem;
+    font-weight: 700;
+}
+
+.live-channels-page .guide-index {
+    color: var(--broadcast-accent);
+    font-size: 0.61rem;
+}
+
+.guide-tools {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.live-channels-page .guide-date-select,
+.live-channels-page .live-search-input {
+    min-height: 39px;
+    border: 1px solid var(--broadcast-border);
+    border-radius: 5px;
+    background: #111613;
+    color: #e9ece5;
+    font: inherit;
+    font-size: 0.8rem;
+}
+
+.live-channels-page .guide-date-select {
+    padding: 0 30px 0 11px;
+}
+
+.live-search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: min(310px, 34vw);
+}
+
+.live-channels-page .live-search-input {
+    width: 100%;
+    padding: 0 52px 0 12px;
+    outline: none;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.live-channels-page .live-search-input::placeholder {
+    color: #70796f;
+}
+
+.live-channels-page .live-search-input:focus {
+    border-color: rgba(199, 243, 107, 0.65);
+    box-shadow: 0 0 0 3px rgba(199, 243, 107, 0.1);
+}
+
+.live-voice-button {
+    position: absolute;
+    right: 6px;
+    min-width: 38px;
+    height: 27px;
+    border: 1px solid rgba(199, 243, 107, 0.2);
+    border-radius: 4px;
+    background: rgba(199, 243, 107, 0.08);
+    color: var(--broadcast-accent);
+    cursor: pointer;
+    font-size: 0.58rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.live-channels-page .live-category-row {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 13px;
+    overflow-x: auto;
+    padding: 2px 1px 7px;
+    scrollbar-width: thin;
+}
+
+.live-channels-page .epg-category-btn {
+    flex: 0 0 auto;
+    padding: 7px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.035);
+    color: #a5ada2;
+    font-size: 0.72rem;
+    font-weight: 650;
+    transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.live-channels-page .epg-category-btn:hover {
+    border-color: rgba(199, 243, 107, 0.35);
+    background: rgba(199, 243, 107, 0.08);
+    color: #f2f5eb;
+}
+
+.live-channels-page .epg-category-btn.active {
+    border-color: var(--broadcast-accent);
+    background: var(--broadcast-accent);
+    color: #171c12;
+}
+
+.live-channels-page .epg-timeline {
+    gap: 9px;
+    padding: 2px 1px 8px;
+    scrollbar-color: #414a3e transparent;
+    scrollbar-width: thin;
+}
+
+.live-channels-page .epg-channel {
+    position: relative;
+    display: flex;
+    flex: 0 0 205px;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+    min-height: 86px;
+    padding: 13px 14px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    background: linear-gradient(145deg, #1a201b, #121714);
+    color: #f1f2ed;
+    text-align: left;
+    cursor: pointer;
+    scroll-snap-align: start;
+    transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.live-channels-page .epg-channel::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: transparent;
+    content: "";
+    transition: background 160ms ease;
+}
+
+.live-channels-page .epg-channel:hover {
+    transform: translateY(-2px);
+    border-color: rgba(199, 243, 107, 0.42);
+}
+
+.live-channels-page .epg-channel.active {
+    border-color: rgba(199, 243, 107, 0.72);
+    background: linear-gradient(145deg, rgba(199, 243, 107, 0.12), #151a16 72%);
+}
+
+.live-channels-page .epg-channel.active::before {
+    background: var(--broadcast-accent);
+}
+
+.live-channels-page .epg-channel:focus-visible {
+    outline: 2px solid var(--broadcast-accent);
+    outline-offset: 2px;
+}
+
+.live-channels-page .epg-channel-name {
+    display: block;
+    margin: 0 0 8px;
+    overflow: hidden;
+    color: #f5f6ef;
+    font-size: 0.88rem;
+    font-weight: 750;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.live-channels-page .epg-show-title {
+    overflow: hidden;
+    color: #98a091;
+    font-size: 0.72rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.live-empty-state {
+    display: flex;
+    align-items: center;
+    min-height: 86px;
+    padding: 12px;
+    color: #9da49a;
+    font-size: 0.82rem;
+}
+
+.live-channels-page .live-main-area {
+    order: 2;
+    display: block;
+    min-height: 0;
+}
+
+.live-channels-page .live-player-section {
+    gap: 14px;
+    padding: 16px;
+    animation: live-enter 620ms 100ms ease-out both;
+}
+
+.player-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-width: 0;
+    padding: 0 2px 2px;
+}
+
+.player-heading > div {
+    min-width: 0;
+}
+
+.player-heading h2 {
+    margin: 4px 0 2px;
+    overflow: hidden;
+    color: #f3f4ee;
+    font-size: 1.05rem;
+    font-weight: 750;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.player-heading p {
+    margin: 0;
+    overflow: hidden;
+    color: #929b90;
+    font-size: 0.77rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.player-live-pill {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 9px;
+    border: 1px solid rgba(255, 81, 77, 0.24);
+    border-radius: 4px;
+    background: rgba(255, 81, 77, 0.1);
+    color: #ff8580;
+    font-size: 0.62rem;
+    font-weight: 850;
+    letter-spacing: 0.1em;
+}
+
+.live-channels-page .player-advanced-controls {
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.055);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.025);
+    color: #a6aea3;
+}
+
+.live-channels-page .control-group {
+    gap: 7px;
+}
+
+.live-channels-page .ctrl-btn {
+    min-height: 33px;
+    padding: 7px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 4px;
+    background: #222923;
+    color: #d5dbd1;
+    font-size: 0.72rem;
+    font-weight: 650;
+}
+
+.live-channels-page .ctrl-btn:hover {
+    border-color: rgba(199, 243, 107, 0.35);
+    background: #2a332b;
+    color: #fff;
+}
+
+.live-channels-page .ctrl-btn.active {
+    border-color: var(--broadcast-accent);
+    background: var(--broadcast-accent);
+    color: #171c12;
+}
+
+.live-channels-page .multiview-grid {
+    gap: 10px;
+}
+
+.live-channels-page .live-screen {
+    border: 1px solid rgba(199, 243, 107, 0.18);
+    border-radius: 6px;
+    background-color: #050706;
+    background-image: linear-gradient(135deg, rgba(199, 243, 107, 0.025), transparent 55%);
+}
+
+.live-channels-page .live-screen.active {
+    border-color: rgba(199, 243, 107, 0.48);
+}
+
+.live-channels-page .live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 8px;
+    border-radius: 3px;
+    background: var(--broadcast-red);
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.28);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+}
+
+.live-channels-page .live-screen > div[style*="justify-content: center"] {
+    color: #7c867a !important;
+    font-size: 0.82rem;
+}
+
+.live-channels-page select.ctrl-select {
+    min-height: 32px;
+    padding: 5px 8px;
+    border-color: rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+    background: #161c17;
+    color: #d8ded4;
+    font-size: 0.72rem;
+}
+
+.live-channels-page .stream-error-overlay {
+    background: rgba(15, 18, 16, 0.94);
+    color: #ffaaa4;
+}
+
+.live-channels-page .live-loading-overlay {
+    position: relative;
+    inset: auto;
+    z-index: 1;
+    min-height: 0;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 11px 14px;
+    border: 1px solid var(--broadcast-border);
+    border-radius: 6px;
+    background: rgba(19, 25, 20, 0.9);
+    color: #bbc5b4;
+    font-size: 0.78rem;
+    text-align: left;
+}
+
+.live-channels-page .live-spinner {
+    width: 18px;
+    height: 18px;
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.12);
+    border-top-color: var(--broadcast-accent);
+}
+
+@keyframes live-enter {
+    from { opacity: 0; transform: translateY(9px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+    .live-channels-page {
+        padding: 18px 14px 24px;
+        gap: 14px;
+    }
+
+    .live-channels-page .epg-header {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .live-channels-page .epg-timeline {
+        flex-direction: row;
+        flex-wrap: nowrap;
+    }
+
+    .live-channels-page .live-player-section {
+        padding: 13px;
+    }
+
+    .live-channels-page .player-advanced-controls {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+@media (max-width: 620px) {
+    .live-channels-page {
+        padding: 18px 12px 26px;
+        gap: 12px;
+        background-size: 26px 26px, 26px 26px, auto;
+    }
+
+    .live-page-header {
+        align-items: center;
+    }
+
+    .live-page-header h1 {
+        font-size: 2.05rem;
+    }
+
+    .live-page-header p {
+        font-size: 0.8rem;
+    }
+
+    .live-page-count {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0;
+        padding: 8px 9px;
+        font-size: 0.61rem;
+    }
+
+    .live-page-count-value {
+        font-size: 1rem;
+    }
+
+    .live-channels-page .epg-container {
+        padding: 13px 12px 10px;
+    }
+
+    .live-channels-page .epg-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .guide-tools {
+        display: grid;
+        grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    }
+
+    .live-search-wrap {
+        width: 100%;
+    }
+
+    .live-channels-page .epg-channel {
+        flex-basis: 176px;
+        min-height: 78px;
+        padding: 11px 12px;
+    }
+
+    .live-channels-page .live-player-section {
+        gap: 10px;
+        padding: 11px;
+    }
+
+    .live-channels-page .player-advanced-controls {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 9px;
+    }
+
+    .live-channels-page .control-group {
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .live-channels-page .live-screen video {
+        height: 100%;
+        max-height: none;
+    }
+}
+
+@media (max-width: 390px) {
+    .live-page-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .live-page-count {
+        max-width: 92px;
+        white-space: normal;
+        text-align: right;
+    }
+
+    .guide-tools {
+        grid-template-columns: 1fr;
+    }
+
+    .live-channels-page .control-group {
+        flex-wrap: wrap;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .live-page-header,
+    .live-channels-page .epg-container,
+    .live-channels-page .live-player-section {
+        animation: none;
     }
 }

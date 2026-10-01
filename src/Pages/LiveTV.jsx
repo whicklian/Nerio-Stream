@@ -53,9 +53,8 @@ const HlsVideo = ({ src, onError, onLoaded }) => {
     return <video ref={videoRef} autoPlay loop playsInline controls />;
 };
 
-function LiveTV() {
+function LiveTV({ mode = "channels" }) {
     const [activeCategory, setActiveCategory] = useState("All");
-    const [multiviewCount, setMultiviewCount] = useState(1); // 1, 2, or 4
     const [channels, setChannels] = useState([]);
     const [categories, setCategories] = useState(["All"]);
     const [activeStreams, setActiveStreams] = useState([]);
@@ -71,8 +70,6 @@ function LiveTV() {
     const [chatInput, setChatInput] = useState("");
     const [popupEvent, setPopupEvent] = useState(null);
     const [streamErrors, setStreamErrors] = useState({});
-
-    const isPlayableUrl = (url) => typeof url === 'string' && /\.(m3u8|mp4|webm|ogg|mov)(\?.*)?$/i.test(url);
 
     const handleStreamError = (channelId, message = 'Playback unavailable for this stream.') => {
         setStreamErrors(prev => ({ ...prev, [channelId]: message }));
@@ -103,6 +100,7 @@ function LiveTV() {
         const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase()) || (c.currentShow && c.currentShow.toLowerCase().includes(searchQuery.toLowerCase()));
         return matchesCat && matchesSearch;
     }).slice(0, 100); // Slice to 100 strictly for DOM performance
+    const activeStream = activeStreams[0];
 
     useEffect(() => {
         const fetchMatchInfo = async () => {
@@ -115,7 +113,6 @@ function LiveTV() {
             const leagues = await getSoccersLeagues();
             if (leagues) setLeaguesData(leagues.slice(0, 20)); // Keep top 20 leagues
         };
-        fetchMatchInfo();
 
         const fetchIPTV = async () => {
             setIsLoadingStreams(true);
@@ -158,10 +155,12 @@ function LiveTV() {
                 setIsLoadingStreams(false);
             }
         };
-        fetchIPTV();
+
+        if (mode === "sports") fetchMatchInfo();
+        if (mode === "channels") fetchIPTV();
 
         return undefined;
-    }, []);
+    }, [mode]);
 
     const handleChannelClick = (channel) => {
         setStreamErrors(prev => {
@@ -169,19 +168,7 @@ function LiveTV() {
             delete next[channel.id];
             return next;
         });
-
-        if (multiviewCount === 1) {
-            setActiveStreams([channel]);
-        } else {
-            if (activeStreams.length < multiviewCount && !activeStreams.find(c => c.id === channel.id)) {
-                setActiveStreams([...activeStreams, channel]);
-            } else if (activeStreams.length === multiviewCount) {
-                // replace last
-                const newStreams = [...activeStreams];
-                newStreams[newStreams.length - 1] = channel;
-                setActiveStreams(newStreams);
-            }
-        }
+        setActiveStreams([channel]);
     };
 
     const handleChatSubmit = (e) => {
@@ -210,36 +197,51 @@ function LiveTV() {
     };
 
     return (
-        <div className={`live-tv-container ${isLoadingStreams ? 'loading' : ''}`}>
-            {isLoadingStreams && (
+        <div className={`live-tv-container ${mode === "channels" ? 'live-channels-page' : ''} ${isLoadingStreams && mode === "channels" ? 'loading' : ''} ${mode === "sports" ? 'sports-mode' : ''}`}>
+            {mode === "channels" && <header className="live-page-header">
+                <div>
+                    <div className="live-page-eyebrow"><span className="live-status-dot" /> ON AIR · CHANNELS</div>
+                    <h1>Live television</h1>
+                    <p>Find a channel and settle in.</p>
+                </div>
+                <div className="live-page-count">
+                    <span className="live-page-count-value">{channels.length}</span>
+                    <span>available channels</span>
+                </div>
+            </header>}
+            {mode === "sports" && <h1 className="sports-page-title">Sports Center</h1>}
+            {mode === "channels" && isLoadingStreams && (
                 <div className="live-loading-overlay">
                     <div className="live-spinner" />
                     <div className="live-loading-text">Loading channels...</div>
                 </div>
             )}
             {/* EPG Top Bar */}
-            <div className="epg-container">
+            {mode === "channels" && <div className="epg-container">
                 <div className="epg-header">
-                    <h2>📡 Live Channel Guide</h2>
-                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                        <select className="ctrl-select" value={epgDate} onChange={e => setEpgDate(e.target.value)} style={{ padding: '4px 8px', fontSize: '0.85rem' }}>
+                    <div className="guide-heading">
+                        <span className="guide-index">01 / GUIDE</span>
+                        <h2>Choose a channel</h2>
+                    </div>
+                    <div className="guide-tools">
+                        <select className="ctrl-select guide-date-select" value={epgDate} onChange={e => setEpgDate(e.target.value)}>
                             <option value="Today">Today</option>
                             <option value="Tomorrow">Tomorrow</option>
                             <option value="Upcoming">Upcoming (Week)</option>
                         </select>
-                        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                        <div className="live-search-wrap">
                             <input
+                                className="live-search-input"
                                 type="text"
                                 placeholder="Search channels or shows..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                style={{ padding: '6px 30px 6px 12px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.3)', color: 'white', fontSize: '0.85rem' }}
                             />
-                            <button type="button" onClick={handleVoiceSearch} style={{ position: 'absolute', right: '8px', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1rem' }} title="Voice Search">🎤</button>
+                            <button className="live-voice-button" type="button" onClick={handleVoiceSearch} title="Voice Search" aria-label="Voice search">MIC</button>
                         </div>
                     </div>
                 </div>
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '15px', overflowX: 'auto', paddingBottom: '5px' }}>
+                <div className="live-category-row">
                     {categories.map(cat => (
                         <button
                             key={cat}
@@ -253,36 +255,40 @@ function LiveTV() {
                 </div>
                 <div className="epg-timeline">
                     {filteredChannels.map(channel => (
-                        <div
+                        <button
+                            type="button"
                             key={channel.id}
                             className={`epg-channel ${activeStreams.find(c => c.id === channel.id) ? 'active' : ''} ${streamErrors[channel.id] ? 'error' : ''}`}
                             onClick={() => handleChannelClick(channel)}
+                            aria-pressed={Boolean(activeStreams.find(c => c.id === channel.id))}
                         >
                             <div className="epg-channel-name">
                                 {channel.name}
-                                {channel.category === "Sport" && "⚽"}
                             </div>
                             <div className="epg-show-title">
                                 {channel.currentShow}
                                 {streamErrors[channel.id] && <span style={{ display: 'block', marginTop: '6px', color: '#f97316', fontSize: '0.75rem' }}>Unavailable</span>}
                             </div>
-                        </div>
+                        </button>
                     ))}
+                    {!isLoadingStreams && filteredChannels.length === 0 && <div className="live-empty-state">No channels match this search.</div>}
                 </div>
-            </div>
+            </div>}
 
             {/* Main Area */}
-            <div className="live-main-area">
+            <div className={`live-main-area ${mode === "sports" ? 'sports-main-area' : ''}`}>
                 {/* Left: Player & Controls */}
-                <div className="live-player-section">
+                {mode === "channels" && <div className="live-player-section">
+                    <div className="player-heading">
+                        <div>
+                            <span className="guide-index">NOW PLAYING</span>
+                            <h2>{activeStream?.name || "Select a channel"}</h2>
+                            <p>{activeStream?.currentShow || "Your selected channel will appear here"}</p>
+                        </div>
+                        <span className="player-live-pill"><span className="live-status-dot" /> LIVE</span>
+                    </div>
                     {/* Multiview Options */}
                     <div className="player-advanced-controls" style={{ background: 'transparent', padding: '0 0 10px 0' }}>
-                        <div className="control-group">
-                            <span style={{ fontSize: '0.9rem', color: '#9ca3af' }}>Multiview:</span>
-                            <button className={`ctrl-btn ${multiviewCount === 1 ? 'active' : ''}`} onClick={() => { setMultiviewCount(1); setActiveStreams([activeStreams[0]]); }}>1 Screen</button>
-                            <button className={`ctrl-btn ${multiviewCount === 2 ? 'active' : ''}`} onClick={() => setMultiviewCount(2)}>2 Screens</button>
-                            <button className={`ctrl-btn ${multiviewCount === 4 ? 'active' : ''}`} onClick={() => setMultiviewCount(4)}>4 Screens</button>
-                        </div>
                         <div className="control-group">
                             <button className="ctrl-btn" onClick={() => alert("Custom Playlist imported successfully!")}>+ Import Playlist</button>
                             <button className="ctrl-btn">⭐ Add to Favorites</button>
@@ -290,46 +296,41 @@ function LiveTV() {
                     </div>
 
                     {/* Video Grid */}
-                    <div className={`multiview-grid multiview-${multiviewCount}`}>
-                        {Array.from({ length: multiviewCount }).map((_, idx) => {
-                            const stream = activeStreams[idx];
-                            return (
-                                <div key={idx} className={`live-screen ${stream ? 'active' : ''}`}>
-                                    {stream ? (
-                                        <>
-                                            <div className="live-badge">LIVE</div>
-                                            {stream.videoUrl.toLowerCase().includes('.m3u8') ? (
-                                                <HlsVideo
-                                                    src={stream.videoUrl}
-                                                    onError={() => handleStreamError(stream.id, 'HLS playback failed.')}
-                                                    onLoaded={() => handleStreamLoaded(stream.id)}
-                                                />
-                                            ) : (
-                                                <video
-                                                    src={stream.videoUrl}
-                                                    autoPlay
-                                                    loop
-                                                    playsInline
-                                                    controls
-                                                    onError={() => handleStreamError(stream.id, 'Playback failed for this stream.')}
-                                                    onLoadedData={() => handleStreamLoaded(stream.id)}
-                                                />
-                                            )}
-                                            {streamErrors[stream.id] && (
-                                                <div className="stream-error-overlay">{streamErrors[stream.id]}</div>
-                                            )}
-                                            <div style={{ position: 'absolute', bottom: 10, left: 10, background: 'rgba(0,0,0,0.6)', padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem', zIndex: 2 }}>
-                                                {stream.currentShow}
-                                            </div>
-                                        </>
+                    <div className="multiview-grid multiview-1">
+                        <div className={`live-screen ${activeStream ? 'active' : ''}`}>
+                            {activeStream ? (
+                                <>
+                                    <div className="live-badge">LIVE</div>
+                                    {activeStream.videoUrl.toLowerCase().includes('.m3u8') ? (
+                                        <HlsVideo
+                                            src={activeStream.videoUrl}
+                                            onError={() => handleStreamError(activeStream.id, 'HLS playback failed.')}
+                                            onLoaded={() => handleStreamLoaded(activeStream.id)}
+                                        />
                                     ) : (
-                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#666' }}>
-                                            Select a channel from EPG
-                                        </div>
+                                        <video
+                                            src={activeStream.videoUrl}
+                                            autoPlay
+                                            loop
+                                            playsInline
+                                            controls
+                                            onError={() => handleStreamError(activeStream.id, 'Playback failed for this stream.')}
+                                            onLoadedData={() => handleStreamLoaded(activeStream.id)}
+                                        />
                                     )}
+                                    {streamErrors[activeStream.id] && (
+                                        <div className="stream-error-overlay">{streamErrors[activeStream.id]}</div>
+                                    )}
+                                    <div style={{ position: 'absolute', bottom: 10, left: 10, background: 'rgba(0,0,0,0.6)', padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem', zIndex: 2 }}>
+                                        {activeStream.currentShow}
+                                    </div>
+                                </>
+                            ) : (
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#666' }}>
+                                    Select a channel from EPG
                                 </div>
-                            );
-                        })}
+                            )}
+                        </div>
                     </div>
 
                     {/* Infrastructure & DVR Controls */}
@@ -361,10 +362,10 @@ function LiveTV() {
                             </button>
                         </div>
                     </div>
-                </div>
+                </div>}
 
                 {/* Right: Social Stadium */}
-                <div className="social-stadium">
+                {mode === "sports" && <div className="social-stadium">
                     <div className="stadium-header" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             🏟️ Social Stadium
@@ -492,7 +493,7 @@ function LiveTV() {
                             </form>
                         </>
                     )}
-                </div>
+                </div>}
             </div>
         </div>
     );

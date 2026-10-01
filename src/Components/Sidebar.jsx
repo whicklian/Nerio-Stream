@@ -55,6 +55,12 @@ const RadioIcon = () => (
   </Icon>
 );
 
+const SportsIcon = () => (
+  <Icon>
+    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+  </Icon>
+);
+
 const HeartIcon = () => (
   <Icon>
     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
@@ -90,7 +96,8 @@ const XIcon = () => (
 const navItems = [
   { to: "/",              Icon: ClapperboardIcon, label: "Movies",       end: true },
   { to: "/tv",            Icon: TvIcon,           label: "TV Shows" },
-  { to: "/live",          Icon: RadioIcon,        label: "Live & Sports" },
+  { to: "/live",          Icon: RadioIcon,        label: "Live Channels" },
+  { to: "/sports",        Icon: SportsIcon,       label: "Sports" },
   { to: "/subscriptions", Icon: GemIcon,          label: "Premium" },
   { to: "/profile",       Icon: UserIcon,         label: "Profile" },
 ];

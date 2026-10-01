@@ -39,7 +39,8 @@ function BottomNav() {
   const navItems = [
     { to: "/", label: "Movies", end: true, Icon: HomeIcon },
     { to: "/tv", label: "TV Shows", Icon: TvIcon },
-    { to: "/live", label: "Live & Sports", Icon: FlameIcon },
+    { to: "/live", label: "Live Channels", Icon: TvIcon },
+    { to: "/sports", label: "Sports", Icon: FlameIcon },
     { to: "/subscriptions", label: "Premium", Icon: HeartIcon },
     { to: "/profile", label: "Profile", Icon: UserIcon },
   ];
